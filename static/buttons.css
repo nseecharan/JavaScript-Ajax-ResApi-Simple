@@ -1,0 +1,26 @@
+button{
+
+    border-radius: 4px;
+    border: 1px solid black;
+}
+.btn_sizing{
+
+    padding: 4px;
+    margin: 4px;
+}
+.btn_delete{
+
+    background-color: crimson;
+}
+#login button{
+
+    margin: 0px;
+}
+#test_buttons{
+
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+    margin: 0.4em 0px;
+    max-width: 14em;
+    display: inline-block;
+}

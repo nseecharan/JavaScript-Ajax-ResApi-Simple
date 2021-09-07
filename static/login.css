@@ -1,0 +1,40 @@
+.login_win{
+
+    display: inline-grid;
+    text-align: left;
+    width: max-content;
+    height: 10em;
+    border: 1px solid black;
+    border-radius: 0.4em;
+    padding: 2em;
+    background-image: linear-gradient(45deg, royalblue, lightblue);
+}
+#login_page{
+    height: 100%;
+    background-image: linear-gradient(0deg,black,slategrey);
+}
+#loginbtn_div{
+
+    margin: 1em 0;
+}
+.center_content{
+
+    text-align: center;
+}
+#errors{
+
+    margin: 1em;
+}
+#error_msg{
+
+    padding: 0.4em;
+    border-radius: 4px;
+}
+.error_background{
+
+    background-color: white;
+}
+.no_background{
+
+    background-color: none;
+}

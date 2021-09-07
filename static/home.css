@@ -1,0 +1,113 @@
+html{
+
+    background: radial-gradient(circle at 85% 88%, palegreen -10%, lightseagreen 75%);
+}
+body{
+    margin: 0px;
+}
+li{
+
+    list-style-type: none;
+}
+pre{
+
+    margin: 0px;
+}
+.left_indent{
+
+    margin-left: 0.4em;
+}
+.underline{
+
+    color: rgba(255,255,255,0.8);
+    border-bottom: 2px solid rgba(255,255,255,0.8);
+}
+.titles{
+
+    background-color: rgba(0,0,0,0.5);
+    color: rgba(255,255,255,0.8);
+}
+#title_div{
+
+    padding: 1em 0.4em;
+}
+#title_heading{
+
+    display: inline-table;
+}
+#title_heading h3{
+
+   margin: 0px;
+}
+#login{
+
+    float: right;
+}
+#data_display{
+
+    display: flex;
+    justify-content: center;
+}
+#raw_data, #mock_data{
+
+    resize: none;
+    height: inherit;
+    overflow: auto;
+    width: 100%;
+}
+#json_dsp,#styled_dsp{
+
+    width: 40%;
+    height: 24em;
+    border-radius: 8px;
+    background-color: rgba(0,0,0,0.2);
+    color: white;
+    float: left;
+    padding: 1em;
+    margin: 0.4em;
+}
+#test_buttons div{
+
+    display: table-cell;
+}
+#test_buttons span{
+
+    background-color: rgba(255, 255, 255, 0.8);
+    display: block;
+}
+#mock_display tr{
+
+    border: 1px solid black;
+}
+.center_content{
+
+    text-align: center;
+}
+
+/*render data*/
+.table_styling{
+
+    border-spacing: 0;
+    width:inherit;
+}
+.th_style{
+
+    width:10em;
+    padding:0.4em;
+}
+.th_action{
+
+    width:10em;
+    padding:0.4em;
+    text-align:right
+}
+.thead_style{
+
+    background-color:rgb(100,100,100);
+    text-align:left;
+}
+.td_style{
+
+    padding:0.4em;
+    border-bottom:1px solid rgba(0,0,0,0.5);
+}

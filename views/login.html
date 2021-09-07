@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" id="login_page">
+<head>
+    <script src="../static/index.js"></script>
+    <link rel="stylesheet" href="../static/login.css">
+    <link rel="stylesheet" href="../static/buttons.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+</head>
+<body>
+    <h3 class="center_content">Admin Login</h3>
+    <form id="login" onsubmit = "event.preventDefault()"> <!--action="/api/login" method="POST"-->
+        <div class="center_content">
+            <div class="login_win">
+
+                    <label for="username">User Name</label>
+                    <input id="username" name="username" type="text">
+
+                    <label for="password">Password</label>
+                    <input id="password" name="password" type="password">
+
+                <div id="loginbtn_div" class="center_content">
+                    <button onclick="login()">Login</button> <!--type="submit"-->
+                </div>        
+            </div>
+        </div>
+    </form>
+    <div id="errors" class="center_content">
+        <span id="error_msg"></span>
+    </div>
+</body>
+</html>
