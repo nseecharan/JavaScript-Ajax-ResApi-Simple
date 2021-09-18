@@ -16,9 +16,8 @@ let employeeSchema = new mongoose.Schema({
     gender: String,
     image: String,
     status: String
-    //status flags demo/editable
-    //-demo is for protected demo examples that can not be modified or deleted
-    //-editable is for newly added data that users can modify or delete
+    //-demo for status is essentially read only
+    //-editable for status is for newly added data that users can modify or delete
 },
     { collection: 'employee_data' }
 );
@@ -75,7 +74,7 @@ module.exports.connect = function () {
 
             //reset to default number of employees and tasks
 
-            Employee.deleteMany({ $or: [{ status: "editable" }, { status: "test" }] })
+            Employee.deleteMany({ $or: [{ status: "editable" }] })
                 .exec()
                 .then(() => {
 
@@ -86,7 +85,7 @@ module.exports.connect = function () {
                     console.log("There was an error deleting all new employees", err);
                 });
 
-            Task.deleteMany({ $or: [{ status: "editable" }, { status: "test" }] })
+            Task.deleteMany({ $or: [{ status: "editable" }] })
                 .exec()
                 .then(() => {
 
@@ -98,7 +97,7 @@ module.exports.connect = function () {
                 });
 
             resolve("Connected to database");
-        });       
+        });
     });
 };
 
@@ -115,22 +114,22 @@ module.exports.createAdmin = function () {
 
         bcrypt.hash(process.env.DEMO_ADMIN_PASSWORD, 10).then(hash => {
 
-            let newAdmin = new Admin({username:"Admin",password:hash});
-           
-            newAdmin.save((err)=>{
+            let newAdmin = new Admin({ username: "Admin", password: hash });
 
-                if(err){
+            newAdmin.save((err) => {
 
-                    if(err.code == 11000){
+                if (err) {
+
+                    if (err.code == 11000) {
 
                         reject("User Name taken");
                     }
-                    else{
+                    else {
 
                         reject("Error creating Admin: " + err);
                     }
                 }
-                else{
+                else {
 
                     resolve("added Admin");
                 }
@@ -144,6 +143,10 @@ module.exports.createEmployee = function (empData) {
     return new Promise(function (resolve, reject) {
 
         let newEmp = new Employee(empData);
+
+        newEmp.status = "editable";//explicitly making it editable for the demo
+
+        console.log(newEmp)
 
         newEmp.save((err, data) => {
 
@@ -165,7 +168,7 @@ module.exports.createTask = function (taskData) {
 
         let newTask = new Task(taskData);
 
-        //newTask.status = "editable";//explicitly making it editable
+        newTask.status = "editable";//explicitly making it editable for the demo
 
         newTask.save((err, data) => {
 
@@ -231,22 +234,21 @@ module.exports.getAllEmployees = function () {
     });
 };
 
-module.exports.findEmployee = function (fname, lname) {
+module.exports.findEmployee = function (id) {
 
-
-    console.log("data-service find emp", fname, lname)
+    console.log("data-service find emp", id)
 
     return new Promise(function (resolve, reject) {
 
         //.exec is needed to make this a proper promise if no callback function is passed to the find() after the array arg
-        Employee.find({ first_name: fname, last_name: lname })
+        Employee.find({ _id: id })
             //.limit(1)
             .exec()
             .then((employee) => {
 
                 if (employee.length == 0) {
 
-                    reject("Unable to find employee " + employee.first_name);
+                    reject("Unable to find employee");
                 }
                 else {
 
@@ -306,18 +308,18 @@ module.exports.getAllTask = function (req, res) {
     });
 };
 
-module.exports.findTask = function (task_name) {
+module.exports.findTask = function (id) {
 
     return new Promise(function (resolve, reject) {
 
-        Task.find({ task: task_name })
+        Task.find({ _id: id })
             .limit(1)
             .exec()
             .then((task) => {
 
                 if (task.length == 0) {
 
-                    reject("Unable to find task " + task.task);
+                    reject("Unable to find task");
                 }
                 else {
 
@@ -342,7 +344,7 @@ module.exports.updateEmployee = function (id, employee) {
     return new Promise(function (resolve, reject) {
 
         //updateOne args = search query, document fields to change, flag to update multiple matching documents
-        Employee.updateOne({ _id: id, $or: [{ status: "editable" }, { status: "test" }] },
+        Employee.updateOne({ _id: id, $or: [{ status: "editable" }] },
             {
                 $set: {
                     first_name: employee.first_name,
@@ -370,7 +372,7 @@ module.exports.updateTask = function (id, task) {
 
     return new Promise(function (resolve, reject) {
 
-        Task.updateOne({ _id: id, $or: [{ status: "editable" }, { status: "test" }] }, { $set: { task: task.task } })
+        Task.updateOne({ _id: id, $or: [{ status: "editable" }] }, { $set: { task: task.task } })
             .exec()
             .then(() => {
 
@@ -393,7 +395,7 @@ module.exports.deleteEmployee = function (id) {
     console.log("delete one emp")
     return new Promise(function (resolve, reject) {
 
-        Employee.deleteOne({ _id: id, $or: [{ status: "editable" }, { status: "test" }] })
+        Employee.deleteOne({ _id: id, $or: [{ status: "editable" }] })
             .exec()
             .then(() => {
 
@@ -411,7 +413,7 @@ module.exports.deleteTask = function (id) {
 
     return new Promise(function (resolve, reject) {
 
-        Task.deleteOne({ _id: id, $or: [{ status: "editable" }, { status: "test" }] })
+        Task.deleteOne({ _id: id, $or: [{ status: "editable" }] })
             .exec()
             .then(() => {
 

@@ -1,8 +1,3 @@
-const th_style = "class='th_style'"
-const th_action = "class='th_action'";
-const thead_style = "class='thead_style'";
-const td_style = "class='td_style'";
-
 let emp_route = "/api/employees";//optional name as param
 let emp_find = emp_route + "/search"
 let emp_register = emp_route + "/register";
@@ -11,7 +6,7 @@ let emp_delete = emp_route + "/delete";//id as param
 
 let task_route = "/api/tasks";//optional name as param
 let task_find = task_route + "/search";
-let task_add = task_route + "/api/tasks/add";
+let task_add = task_route + "/add";
 let task_update = task_route + "/update";//id as param
 let task_delete = task_route + "/delete";//id as param
 
@@ -19,115 +14,87 @@ let demo_empId = "", demo_taskId = "";//will store the unique id of the demo ite
 
 let token;// make this a cookie instead
 
+let dbData = [];//contains the array of objects returned from database
+let searchResults = [];//contains only the results fron the search
+
 /***************************************************************
                         AJAX FUNCTIONS                           
 ***************************************************************/
 
 function makeAjaxRequest(method, url, data) {
 
-   // if (data) {
+    // if (data) {
 
-        fetch(url, {
-            method: method,
-            body: JSON.stringify(data),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'jwt ' + token
+    fetch(url, {
+        method: method,
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'jwt ' + token
 
-                //this will need to authorize for all routes except login
+            //this will need to authorize for all routes except login
+        }
+    })
+        .then((response) => response.json())
+        .then((json) => {
+
+            //DELETE THIS; it is only for testing
+            if (json.token) {
+                token = json.token;
             }
+
+            dbData = json;
+            renderData(dbData, "#tableBody");
         })
-            .then((response) => response.json())
-            .then((json) => {
+        .catch((err) => {
 
-                //DELETE THIS; it is only for testing
-                if(json.token){
-                   token = json.token;
-                }
-               
-                renderData(json);
-            })
-            .catch((err) => {
-
-                renderData(err);
-            });
-   // }
+            renderData(err, "#tableBody");
+        });
+    // }
 
 }
-
-
-/***************************************************************
-                        DEMO FUNCTIONS                          
-***************************************************************/
-
-//demo_create
-function demoCreateEmployee() {
-
-    makeAjaxRequest("POST", "/api/demo/employees/create");
-}
-
-function demoCreateTask() {
-
-    makeAjaxRequest("POST", "/api/demo/tasks/create");
-}
-
-//demo_read --find by name
-function demofindEmployee() {
-
-    makeAjaxRequest("GET","/api/demo/employees/find?fname=Jim&lname=Callen");
-}
-
-function demofindTask() {
-
-    makeAjaxRequest("GET","/api/demo/tasks/find?taskName=Washroom Duty");
-}
-
-//demo_update --update by id
-function demoUpdateEmployee(id, fname, lname, email, gender, image) {
-
-    let empData = {
-
-        first_name: fname,
-        last_name: lname,
-        email: email,
-        gender: gender,
-        image: image
-    }
-
-    makeAjaxRequest("PUT", "/api/demo/employees/update?empID=" + id + "", empData);
-}
-
-function demoUpdateTask(id, taskName) {
-
-    let taskData = {
-
-        task: taskName,
-    }
-
-    makeAjaxRequest("PUT", "/api/demo/tasks/update?taskID=" + id + "", taskData);
-}
-
-//demo_delete --delete by id
-function demoDeleteEmployee(id) {
-
-    console.log("client delete emp id", id)
-    makeAjaxRequest("DELETE", "/api/demo/employees/delete?empID=" + id + "");
-}
-
-function demoDeleteTask(id) {
-
-    makeAjaxRequest("DELETE","/api/demo/tasks/delete?taskID=" + id + "");
-}
-
 
 /***************************************************************
                         MAIN FUNCTIONS                          
 ***************************************************************/
 
+
+//consider creating an event that tracks the length of the dbData
+function searchData(e) {
+
+    let query = e.target.value;
+
+    if (query.length !== 0 || query !== undefined) {
+
+        clearTable("renderTable");
+
+        searchResults = [];
+        dbData.map((data) => {
+
+            if (data.first_name) {
+
+                if (String(data.first_name + " " + data.last_name).toLocaleLowerCase().includes(query.toLocaleLowerCase())) {
+
+                    searchResults.push(data);
+                }
+            }
+            else {
+
+                if (String(data.task).toLocaleLowerCase().includes(query.toLocaleLowerCase())) {
+
+                    searchResults.push(data);
+                }
+            }
+        });
+
+        renderData(searchResults, "#tableBody");
+    }
+}
+
 //login
 function login() {
 
-    let form = document.forms[0];
+    let form = document.forms[2];
 
     //code sanitization here
 
@@ -138,16 +105,50 @@ function login() {
     }
 
     makeAjaxRequest("POST", "/api/login", formdata);
+
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
 }
 
 //create
-function createEmployee(empData) {
+function createEmployee() {
 
-    makeAjaxRequest("POST", emp_register, empData);
+    let form = document.forms[1];
+    //code sanitization here
+    let formdata = {
+
+        first_name: form.elements[0].value,
+        last_name: form.elements[1].value,
+        email: form.elements[2].value,
+        gender: form.elements[3].value,
+        image: ""
+    }
+
+    let reader = new FileReader();
+    let imageSrc = form.elements[4].files[0];
+
+    reader.readAsDataURL(imageSrc);
+    reader.onload = function (e) {
+        formdata.image = e.target.result;
+        console.log(form);
+        makeAjaxRequest("POST", emp_register, formdata);
+    }
+    
 }
-function createTask(taskData) {
 
-    makeAjaxRequest("POST", task_add, taskData);
+function createTask() {
+
+    let form = document.forms[0];
+
+    //code sanitization here
+    let formdata = {
+
+        task: form.elements[0].value,
+
+    }
+
+    console.log("create task", formdata)
+    makeAjaxRequest("POST", task_add, formdata);
 }
 
 //read
@@ -155,10 +156,12 @@ function getAllEmployees() {
 
     makeAjaxRequest("GET", emp_route);
 }
+
 function getAllTasks() {
 
     makeAjaxRequest("GET", task_route);
 }
+
 function loginPage() {
 
     window.location.href = "/login";
@@ -199,189 +202,177 @@ function deleteTask(id) {
 }
 
 /***************************************************************
-                        DOM FUNCTIONS                           
+                        DOM FUNCTIONS
 ***************************************************************/
 
-function renderData(json) {
+function renderError(message) {
 
-    //console.log("client: render to DOM", json)
+    let error_msg = document.getElementById("error_msg");
+
+    if (error_msg) {
+
+        error_msg.innerHTML = message;
+
+        if (message.length == 0) {
+
+            error_msg.className = "no_background";
+        }
+        else {
+
+            error_msg.className = "error_background";
+        }
+    }
+}
+
+function renderData(data, parentId) {
 
     //check to see if its just a message and to see if there is an exclusive error message section of the html to display the error
-    if (json.message) {
+    if (data.message) {
 
-        let error_msg = document.getElementById("error_msg");
-
-        if (error_msg) {
-
-            error_msg.innerHTML = json.message;
-
-            if (json.message.length == 0) {
-
-                error_msg.className = "no_background";
-            }
-            else {
-
-                error_msg.className = "error_background";
-            }
-        }
+        renderError(data.message)
     }
 
-    document.getElementById("raw_data").innerHTML = JSON.stringify(json, null, '\t');
+    document.getElementById("raw_data").innerHTML = JSON.stringify(data, null, '\t');
 
-    if (json[0] != undefined) {
+    if (data[0] != undefined) {
 
-        if (json[0].first_name) {
+        clearTable("renderTable");
 
-            empMockup(json);
+        if (data[0].first_name) {
+
+            createTableHeader(["Image", "Name", "Email", "Action"], "tableHdr")
         }
         else {
 
-            taskMockup(json);
+            createTableHeader(["Task", "Action"], "tableHdr")
         }
+
+        data.map((obj, index) => {
+
+            renderRow(obj, index, parentId);
+        })
     }
 }
 
+function clearTable(tableId) {
 
-//MEMO convert all hard coded css to classes in styles.css
-function empMockup(data) {
+    if (document.getElementById(tableId)) {
 
-    if (!data) {
-
-        //console.log("client: mockup had bad data")
-        return;
+        document.getElementById(tableId).childNodes[2].textContent = "";
+        document.getElementById(tableId).childNodes[4].textContent = "";
     }
-
-    let table = "<table class='table_styling'>";
-    let updateBtn = "<button class='btn_sizing'  onclick='loadUpdate()'>Update</button>";
-    let deleteBtn = "";
-    let count = 0;
-    let row_color = "";
-
-    table += "<thead " + thead_style + "><th " + th_style + ">Image</th><th " + th_style + ">Name</th><th " + th_style + ">Email</th><th " + th_action + ">Action</th></thead>";
-    table += "<tbody>";
-
-    while (count < data.length) {
-
-        let name = data[count].first_name + " " + data[count].last_name;
-        let email = data[count].email;
-        let image = data[count].image;
-        let _id = data[count]._id;
-        //let gender = data[count].gender;
-
-        deleteBtn = "<button class='btn_sizing btn_delete'  onclick=\"demoDeleteEmployee(\'" + _id + "\')\">Delete</button>";
-        row_color = (count % 2 == 0) ? "background-color:white;" : "background-color:lightgrey;";
-        table += "<tr style='" + row_color + "'>";
-        table += "<td " + td_style + "'><img src='" + image + "' alt='Image of employee'></td>";
-        table += "<td " + td_style + "'>" + name + "</td>";
-        table += "<td " + td_style + "'>" + email + "</td>";
-
-        if (data[count].status != "demo") {
-
-            if (data[count].status == "test") {
-
-                updateBtn = "<button class='btn_sizing'  onclick=\"demoUpdateEmployee(\'" +
-                    _id + "\',\'Dr. Jimmy\',\'Callen\',\'j.callen@_demo.ca\',\'Male\',\'\')\">Update</button>"
-            }
-
-            table += "<td " + td_style + "'>" + "<div style='float:right;width:max-content;'>" + updateBtn + deleteBtn + "</div>" + "</td>";
-        }
-        else {
-
-            table += "<td " + td_style + "'></td>";
-        }
-
-        table += "</tr>";
-
-        count++;
-    }
-
-    table += "</tbody></table>";
-
-    document.getElementById("mock_data").innerHTML = table;
 }
 
-function taskMockup(data) {
+function createTableHeader(headerList, parentId) {
 
-    if (!data) {
+    let tHead = document.getElementById(parentId);
+    tHead.textContent = "";
+    let last = headerList.length - 1;
+    headerList.map((header, index) => {
+        let th = document.createElement('th');
+        th.innerHTML = header;
+        th.className = index === last ? "th_action" : "th_style";
+        tHead.appendChild(th);
+    })
 
-        console.log("client: mockup had bad data")
-        return;
-    }
-
-    let table = "<table class='table_styling'>";
-    let updateBtn = "<button class='btn_sizing' onclick='loadUpdate()'>Update</button>";
-    let deleteBtn = "";
-    let count = 0;
-    let row_color = "";
-
-    table += "<thead " + thead_style + "><th " + th_style + ">Task</th><th " + th_action + ">Action</th></thead>";
-    table += "<tbody>";
-
-    while (count < data.length) {
-
-        let name = data[count].task;
-        let _id = data[count]._id;
-
-        deleteBtn = "<button class='btn_sizing btn_delete'  onclick=\"demoDeleteTask(\'" + _id + "\')\">Delete</button>";
-        row_color = (count % 2 == 0) ? "background-color:white;" : "background-color:lightgrey;";
-        table += "<tr style='" + row_color + "'>";
-        table += "<td " + td_style + "'>" + name + "</td>";
-
-        if (data[count].status != "demo") {
-
-            if (data[count].status == "test") {
-
-                updateBtn = "<button class='btn_sizing'  onclick=\"demoUpdateTask(\'" +
-                    _id + "\',\'Janitor Duty\')\">Update</button>"
-            }
-
-            table += "<td " + td_style + "'>" + "<div style='float:right;width:max-content;'>" + updateBtn + deleteBtn + "</div>" + "</td>";
-        }
-        else {
-
-            table += "<td " + td_style + "'></td>";
-        }
-
-        table += "</tr>";
-
-        count++;
-    }
-
-    table += "</tbody></table>";
-
-    document.getElementById("mock_data").innerHTML = table;
+    document.querySelector("#renderTable").appendChild(tHead);
 }
 
-function loadUpdate() {
+function createTableRow(detailList, index, _id) {
 
-    console.log("does nothing yet")
-    //window.location.href='will contain relevant route';
+    let row_color = (index % 2 == 0) ? "background-color:white;" : "background-color:lightgrey;";
+    let row = document.createElement('tr');
+    row.style = row_color;
+    row.id = _id;
 
+    detailList.map((td) => {
+
+        td.className = "td_style";
+        row.appendChild(td);
+    })
+
+    return row;
 }
 
-//load image from database
-function loadDBImage(files) {
+function updateRowData(data, _id) {
 
-    if (!files) {
+    let row = document.getElementById(_id);
 
-        return "";
-    }
+    if (data.first_name) {
 
-    //console.log("file data ", files.data)
-    let array = new Uint8Array(files.data);
-    let b = new Blob([array], { type: "image/jpeg" })
-    let reader = new FileReader();
-    reader.readAsDataURL(b);
-
-    if (reader) {
-
-        reader.onload = (data) => {
-
-            return data.target.result;
-        }
+        row.childNodes[0].lastChild.src = data.image;
+        row.childNodes[1].innerHTML = data.first_name + " " + data.last_name;
+        row.childNodes[2].innerHTML = data.email;
     }
     else {
 
-        return "";
+        row.childNodes[0].innerHTML = data.task;
     }
+}
+
+function renderRow(data, index, parentId) {
+
+    if (!data) {
+
+        return;
+    }
+
+    let name = data.first_name + " " + data.last_name;
+    let email = data.email;
+    let _id = data._id;
+    //let gender = data.gender;
+
+    //row elements
+    let row;
+    let td1 = document.createElement('td');
+    let td2 = document.createElement('td');
+    td2.innerHTML = name;
+    let td3 = document.createElement('td');
+    td3.innerHTML = email;
+    let td4 = document.createElement('td');
+
+    //row buttons
+    let buttonDiv = document.createElement('div');
+    buttonDiv.style = "float:right;width:max-content;";
+    let updateBtn = document.createElement('button');
+    updateBtn.className = "btn_sizing";
+    updateBtn.innerHTML = "Update";
+    let deleteBtn = document.createElement('button');
+    deleteBtn.className = "btn_sizing btn_delete";
+    deleteBtn.innerHTML = "Delete";
+
+    if (data.status == "test") {
+
+        if (data.first_name) {
+
+            buttonDiv.innerHTML =
+                "<button class='btn_sizing'  onclick=\"demoUpdateEmployee(\'" + _id + "\',\'Dr. Jimmy\',\'Callen\',\'j.callen@_demo.ca\',\'Male\',\'\')\">Update</button>" +
+                "<button class='btn_sizing btn_delete'  onclick=\"demoDeleteEmployee(\'" + _id + "\')\">Delete</button>";
+        }
+        else {
+
+            buttonDiv.innerHTML =
+                "<button class='btn_sizing'  onclick=\"demoUpdateTask(\'" + _id + "\',\'Janitor Duty\')\">Update</button>" +
+                "<button class='btn_sizing btn_delete'  onclick=\"demoDeleteTask(\'" + _id + "\')\">Delete</button>"
+        }
+    }
+
+    td4.appendChild(buttonDiv);
+
+    //create cloumns
+    if (data.first_name) {
+
+        let img = new Image();
+        img.src = data.image;
+        img.alt = "Image of employee";
+        td1.appendChild(img);
+        row = createTableRow([td1, td2, td3, td4], index, _id)
+    }
+    else {
+
+        td1.innerHTML = data.task;
+        row = createTableRow([td1, td4], index, _id)
+    }
+
+    document.querySelector(parentId).appendChild(row);
 }

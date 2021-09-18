@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <script src="../static/index.js"></script>
     <link rel="stylesheet" href="../static/home.css">
@@ -8,6 +9,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+
 <body>
     <div id="Title_div" class="titles">
         <div id="title_heading">
@@ -21,66 +23,83 @@
     <div id="api_info" class="left_indent">
         <p>This api is for demo purposes, and has routes that access small lists of data related to employees and tasks
         </p>
-        <p>Try clicking the routes buttons before and after loggin in
-        </p>
         <a href='https://nigelcodes.wordpress.com/'>Click here to learn more about me</a>
     </div>
-    <br/>
-    <div class="left_indent">
+    <br />
+    <div class="left_indent api_features">
         <div id="test_buttons">
             <span>Routes</span>
             <div>
                 <button class="btn_sizing" onclick="getAllEmployees()">/api/employees</button>
-            </div>
-            <div>
                 <button class="btn_sizing" onclick="getAllTasks()">/api/tasks</button>
             </div>
         </div>
-
         <div id="test_buttons">
-            <span>Test Employee: Jim Callen</span>
-            <div>
-                <button class="btn_sizing" onclick="demoCreateEmployee()">Create</button>
-            </div>
-            <div>
-                <button class="btn_sizing" onclick="demofindEmployee()">Find</button>
-            </div>
+            <span>Create Demo Task</span>
+            <form class="create_form" onsubmit="event.preventDefault()">
+                <div>
+                    <label>Task Name:</label>
+                    <input type="text" placeholder="Task Name">
+                    <button onclick="createTask()">Create</button>
+                </div>
+            </form>
         </div>
         <div id="test_buttons">
-            <span>Test Task: Washroom Duty</span>
-            <div>
-                <button class="btn_sizing" onclick="demoCreateTask()">Create</button>
-            </div>
-            <div>
-                <button class="btn_sizing" onclick="demofindTask()">Find</button>
-            </div>
+            <span>Create Demo Employee</span>
+            <form class="create_form" onsubmit="event.preventDefault()">
+                <div>
+                    <label>First Name:</label>
+                    <input type="text" placeholder="First Name">
+                    <label>Last Name:</label>
+                    <input type="text" placeholder="Last Name">
+                    <label>Email:</label>
+                    <input type="text" placeholder="Email">
+                    <label>Gender:</label>
+                    <input type="text" placeholder="Gender">
+                    <label>image:</label>
+                    <input type="file" placeholder="First Name">
+                    <button type="submit" onclick="createEmployee()">Create</button>
+                </div>
+            </form>
         </div>
     </div>
-
-    <div>  
+    <div class="left_indent login">
         <h3>Admin Login</h3>
-        <form  onsubmit = "event.preventDefault()">
+        <p>Loggin in will eventually allow a user to create, update, and delete database entries</p>
+        <p>These capabilities will be added in future iterations, including an option to restore the database to house
+            the original data</p>
+        <form onsubmit="event.preventDefault()">
             <div>
-                <div> 
-    
-                        <label for="username">User Name</label>
-                        <input id="username" name="username" type="text">
-    
-                        <label for="password">Password</label>
-                        <input id="password" name="password" type="password">
-                        <button onclick="login()">Login</button>
+                <div>
+
+                    <label for="username">User Name</label>
+                    <input id="username" name="username" type="text">
+
+                    <label for="password">Password</label>
+                    <input id="password" name="password" type="password">
+                    <button onclick="login()">Login</button>
                 </div>
             </div>
         </form>
     </div>
     <h3 class="left_indent underline">Display Data</h3>
+    <div class="left_indent">
+        <label>
+            Search
+            <input id="search" type="text" onchange="searchData(event)" onkeyup="searchData(event)" />
+        </label>
+    </div>
     <div id="data_display" class="left_indent">
-
         <div id="json_dsp">
             <pre id="raw_data"></pre>
         </div>
         <div id="styled_dsp">
-            <div id="mock_data"></div>
+            <div id="mock_data">
+                <table id="renderTable" class="table_styling">
+                    <thead id="tableHdr" class="thead_style"></thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
         </div>
 
     </div>
