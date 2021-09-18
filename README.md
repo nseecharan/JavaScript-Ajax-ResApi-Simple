@@ -20,17 +20,15 @@ These are the main routes which will allow you to execute various CRUD (create, 
 ## Get
  <h3>/api/employees</h3>
  <h3>/api/tasks</h3>
-  <p>When sent with a "Get," request, these routes will fetch all the employees, and tasks, from their individual lists in the database</p>
+  <p>When sent with a "Get," request, these routes will fetch all the task, and employee entries from their respective lists in the database</p>
   
 ## 
 
- <h3>/api/employees/search</h3>
- <h3>/api/tasks/search</h3> 
- <p>These routes are similar to the ones above, however they require some search parameters before you can submit this with a "Get," request.</p>
- <p>For the "employees," route, you need to provide two parameters: a first name, and last name.</p>
- <p>For the "tasks," route, you need to provide only the task name.</p>
+ <h3>/api/employees/find</h3>
+ <h3>/api/tasks/find</h3> 
+ <p>These routes are similar to the ones above, however these also require the entry's ID, and will attempt to return only one entry.</p>
+
  <p>A typical use case for this type of route, would be if you wanted to load the full data for a specific employee, or task, that you see in the list. The reason for this is that some databases have two versions of the same data. One light version for quick retrieval, and a dense one that contains the full data for each entry in a list. Trying to load that version, especially if it contains thousands of entries, would result in potential slowdowns when displaying the data. Therefore, it is better to load the light version for when you want quickly list all entries, and then only at the users request, use the entry's data in the lighter list, to look up it's full information in the heavier one.</p>
- <h6>*Please note, as this project develops, the parameters for these routes are subject to change. All revisions will be reflected in this description.*</h6>
  
 ## Post
 
@@ -42,10 +40,10 @@ These are the main routes which will allow you to execute various CRUD (create, 
 
  <p>/api/employees/update/:empID</p>
  <p>/api/tasks/update/:taskID</p> 
- <p>When sent with a "Put," request, as well as the entry's ID as a parameter, these routes will enable the API to locate, and apply the updates to the correct entry in the database</p>
+ <p>When sent with a "Put," request, in combination wiht the entry's ID, and an object payload containing the changes, these routes will enable the API to locate, and apply the updates from the payload, to the correct entry in the database</p>
 
 ## Delete
 
  <p>/api/employees/delete</p>
  <p>/api/tasks/delete</p> 
- <p>These routes are similar to ones in the "Put," section, but use the "Delete" prefix instead. This will enable the API to locate, and delete the correct entry in the database</p>
+ <p>These routes are similar to ones in the "Put," section, but use the "Delete" prefix, and only requires the entry's ID. This will enable the API to locate, and delete the correct entry in the database</p>
