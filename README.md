@@ -7,13 +7,13 @@ This documentation is written with non technical people in mind, therefore it ma
 
 # npm start
 You run this command within the project folder, through the use of the command prompt terminal.
-For exemple: C:/user/desktop/[web app project folder]/ npm start
+<p>For exemple: C:/user/desktop/[web app project folder]/ npm start</p>
 Doing so will allow you to view the web application at this link: http://localhost:8080/
 
 # Api Routes
-<p>/api/employees</p>
-<p>/api/tasks</p>
-These are the main routes which will allow you to execute various CRUD (create, read, update, delete) procedures
+<h3>/api/employees</h3>
+<h3>/api/tasks</h3>
+These are the main routes which will allow you to execute various CRUD (create, read, update, delete) procedures. They are secured with a "JSON Web Token," which is a secure piece of data to idetify you as a registered user, and grant the necessary access. As the project is still in early development, the route to create a new admin has not been implemented. However, this feature will be added once the API has an option to reset itself to a default setting. For now you may freely read the data fron the database, but you will not be able to, create, update, or delete any data until then. Demo routes are the exception to this rule, and will allow you to do all three, for one already provided employee, and task.
 
 ## Get
 
@@ -32,8 +32,7 @@ These are the main routes which will allow you to execute various CRUD (create, 
 ## Post
 
  <p>/api/employees/register</p>
- <p>/api/tasks/add</p>
- 
+ <p>/api/tasks/add</p> 
  <p>These routes when sent with a "Post request," will allow you to add new employees, and tasks to the database. Therefore, these routes require data is in the form of an object to work properly. ( Think of an object as a completed registration form, that contains information to identify itself).</p>
  
 ## Put
