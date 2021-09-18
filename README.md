@@ -19,7 +19,7 @@ These are the main routes which will allow you to execute various CRUD (create, 
 
  <h3>/api/employees</h3>
  <h3>/api/tasks</h3>
-  <p>You may make a "Get," request using these routes, to fetch all the employees, and tasks respectively</p>
+  <p>These routes when sent with a "Get request," will fetch all the employees, and tasks, from their individual lists in the database</p>
  <br/>
 
  <h3>/api/employees/search</h3>
@@ -33,6 +33,8 @@ These are the main routes which will allow you to execute various CRUD (create, 
 
  <p>/api/employees/register</p>
  <p>/api/tasks/add</p>
+ 
+ <p>These routes when sent with a "Post request," will allow you to add new employees, and tasks to the database. Therefore, these routes require data is in the form of an object to work properly. ( Think of an object as a completed registration form, that contains information to identify itself).</p>
  
 ## Put
 
