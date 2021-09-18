@@ -1,6 +1,6 @@
 # JavaScript Ajax RestApi
 This is a simple RestApi that runs on a Express server.
-This documentation is written with non technical people in mind, therefore it may be a bit more verbose than what programmers may expect.
+Also, this documentation is written with non technical people in mind, therefore it may be a bit more verbose than what programmers may expect.
 <div>
       <img width="700" src="https://user-images.githubusercontent.com/44081182/133871712-6b2129de-96c3-4ec4-bf6f-6d86b0b61e45.PNG">
 </div>
