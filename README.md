@@ -31,7 +31,6 @@ These are the main routes which will allow you to execute various CRUD (create, 
  <p>For the "tasks," route, you need to provide only the task name.</p>
  <p>A typical use case for this type of route, would be if you wanted to load the full data for a specific employee, or task, that you see in the list. The reason for this is that some databases have two versions of the same data. One light version for quick retrieval, and a dense one that contains the full data for each entry in a list. Trying to load that version, especially if it contains thousands of entries, would result in potential slowdowns when displaying the data. Therefore, it is better to load the light version for when you want quickly list all entries, and then only at the users request, use the entry's data in the lighter list, to look up it's full information in the heavier one.</p>
  <h6>*Please note, as this project develops, the parameters for these routes are subject to change. All revisions will be reflected in this description.*</h6>
- <br/>
  
 ## Post
 
