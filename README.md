@@ -18,10 +18,9 @@ You run this command within the project folder, through the use of the command p
 These are the main routes which will allow you to execute various CRUD (create, read, update, delete) procedures. They are secured with a "JSON Web Token," which is a secure piece of data to idetify you as a registered user, and grant the necessary access. As the project is still in early development, the route to create a new admin has not been implemented. However, this feature will be added once the API has an option to restore itself to a default setting. For now you may freely read the data fron the database, but you will not be able to, create, update, or delete any data until then. Demo routes are the exception to this rule, and will allow you to do all three, for one already provided employee, and task.
 
 ## Get
-
  <h3>/api/employees</h3>
  <h3>/api/tasks</h3>
-  <p>These routes when sent with a "Get request," will fetch all the employees, and tasks, from their individual lists in the database</p>
+  <p>When sent with a "Get," request, these routes will fetch all the employees, and tasks, from their individual lists in the database</p>
   
 ## 
 
@@ -38,15 +37,16 @@ These are the main routes which will allow you to execute various CRUD (create, 
 
  <p>/api/employees/register</p>
  <p>/api/tasks/add</p> 
- <p>These routes when sent with a "Post request," will allow you to add new employees, and tasks to the database. Therefore, these routes require data is in the form of an object to work properly. ( Think of an object as a completed registration form, that contains information to identify itself).</p>
+ <p>When sent with a "Post," request, these routes will allow you to add new employees, and tasks to the database. Therefore, these routes require data is in the form of an object to work properly. ( Think of an object as a completed registration form, that contains information to identify itself).</p>
  
 ## Put
 
- <p>/api/employees/update</p>
- <p>/api/tasks/update</p> 
+ <p>/api/employees/update/:empID</p>
+ <p>/api/tasks/update/:taskID</p> 
+ <p>When sent with a "Put," request, as well as the entry's ID as a parameter, these routes will enable the API to locate, and apply the updates to the correct entry in the database</p>
 
 ## Delete
 
  <p>/api/employees/delete</p>
  <p>/api/tasks/delete</p> 
-
+ <p>These routes are similar to ones in the "Put," section, but use the "Delete" prefix instead. This will enable the API to locate, and delete the correct entry in the database</p>
