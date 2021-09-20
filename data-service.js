@@ -146,8 +146,6 @@ module.exports.createEmployee = function (empData) {
 
         newEmp.status = "editable";//explicitly making it editable for the demo
 
-        console.log(newEmp)
-
         newEmp.save((err, data) => {
 
             if (err) {
@@ -235,8 +233,6 @@ module.exports.getAllEmployees = function () {
 };
 
 module.exports.findEmployee = function (id) {
-
-    console.log("data-service find emp", id)
 
     return new Promise(function (resolve, reject) {
 
@@ -339,8 +335,6 @@ module.exports.findTask = function (id) {
 
 module.exports.updateEmployee = function (id, employee) {
 
-    //console.log("update emp data from data-service",employee)
-
     return new Promise(function (resolve, reject) {
 
         //updateOne args = search query, document fields to change, flag to update multiple matching documents
@@ -368,8 +362,6 @@ module.exports.updateEmployee = function (id, employee) {
 
 module.exports.updateTask = function (id, task) {
 
-    //console.log("update task data from data-service",task)
-
     return new Promise(function (resolve, reject) {
 
         Task.updateOne({ _id: id, $or: [{ status: "editable" }] }, { $set: { task: task.task } })
@@ -391,8 +383,6 @@ module.exports.updateTask = function (id, task) {
 
 module.exports.deleteEmployee = function (id) {
 
-
-    console.log("delete one emp")
     return new Promise(function (resolve, reject) {
 
         Employee.deleteOne({ _id: id, $or: [{ status: "editable" }] })
@@ -429,8 +419,6 @@ module.exports.deleteTask = function (id) {
 module.exports.adminCheck = function (adminData) {
 
     return new Promise(function (resolve, reject) {
-
-        console.log("data service admin check", adminData.username)
 
         Admin.find({ username: adminData.username })
             .limit(1)

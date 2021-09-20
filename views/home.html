@@ -1,9 +1,9 @@
 <html>
 
 <head>
-    <script src="../static/index.js"></script>
-    <link rel="stylesheet" href="../static/home.css">
-    <link rel="stylesheet" href="../static/buttons.css">
+    <script defer src="../static/index.js"></script>
+    <link rel="stylesheet" href="../static/css/home.css">
+    <link rel="stylesheet" href="../static/css/buttons.css">
     <title>Nigel Seecharan Simple Api</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,6 +15,7 @@
         <div id="title_heading">
             <h3 class="left_indent">Welcome to Nigel Seecharan's Simple Api</h3>
         </div>
+        <!--disabled for now until a cookie session has been implemented as this redirects to another page-->
         <!--div id="login">
             <button class="btn_sizing" onclick="loginPage()">Admin Login</button>
         </div-->
@@ -64,6 +65,7 @@
         </div>
     </div>
     <div class="left_indent login">
+        <!--remove this login form when cookie session has been implemented-->
         <h3>Admin Login</h3>
         <p>Loggin in will eventually allow a user to create, update, and delete database entries</p>
         <p>These capabilities will be added in future iterations, including an option to restore the database to house
@@ -88,6 +90,7 @@
             Search
             <input id="search" type="text" onchange="searchData(event)" onkeyup="searchData(event)" />
         </label>
+        <p>Before you enter your search, please click one of the route buttons to load the data.</p>
     </div>
     <div id="data_display" class="left_indent">
         <div id="json_dsp">

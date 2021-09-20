@@ -139,8 +139,6 @@ app.get(emp_route, (req, res, next) => {
 
             res.status(500).json({ "message": err }).end();
         });
-
-    console.log("find all")
 });
 
 app.get(task_route, (req, res, next) => {
