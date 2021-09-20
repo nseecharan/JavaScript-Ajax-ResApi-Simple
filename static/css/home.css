@@ -10,8 +10,7 @@ li {
 pre {
     margin: 0px;
 }
-img{
-
+img {
     width: 50px;
 }
 .left_indent {
@@ -37,6 +36,9 @@ img{
 #login {
     float: right;
 }
+#search {
+    display: none;
+}
 #data_display {
     display: flex;
     justify-content: center;
@@ -59,12 +61,21 @@ img{
     padding: 1em;
     margin: 0.4em;
 }
-#test_buttons span {
-    background-color: rgba(255, 255, 255, 0.8);
-    display: block;
-}
 #mock_display tr {
     border: 1px solid black;
+}
+.options {
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+    height: max-content;
+    width: 33.33%;
+    max-width: 200px;
+    min-height: 6em;
+    margin: 4px;
+}
+.options span {
+    background-color: rgba(255, 255, 255, 0.8);
+    display: block;
 }
 .center_content {
     text-align: center;
@@ -76,14 +87,15 @@ img{
     padding: 4px;
     text-align: center;
 }
-.create_form input{
-    margin: 2px;
-    width: 180px;
+.create_form input,
+select {
+    width: 100%;
 }
 .api_features {
     min-height: 20em;
+    display: flex;
 }
-.login{
+.login {
     display: inline-block;
 }
 
