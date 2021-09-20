@@ -105,9 +105,7 @@ function login() {
     }
 
     makeAjaxRequest("POST", "/api/login", formdata);
-
-    document.getElementById("username").value = "";
-    document.getElementById("password").value = "";
+    form.reset();
 }
 
 //create
@@ -126,14 +124,18 @@ function createEmployee() {
 
     let reader = new FileReader();
     let imageSrc = form.elements[4].files[0];
-
-    reader.readAsDataURL(imageSrc);
-    reader.onload = function (e) {
-        formdata.image = e.target.result;
-        console.log(form);
-        makeAjaxRequest("POST", emp_register, formdata);
+    if (imageSrc) {
+        reader.readAsDataURL(imageSrc);
+        reader.onload = function (e) {
+            formdata.image = e.target.result;
+            makeAjaxRequest("POST", emp_register, formdata);
+            form.reset();
+        }
     }
-    
+    else {
+        makeAjaxRequest("POST", emp_register, formdata);
+        form.reset();
+    }
 }
 
 function createTask() {
@@ -144,22 +146,25 @@ function createTask() {
     let formdata = {
 
         task: form.elements[0].value,
-
     }
 
-    console.log("create task", formdata)
     makeAjaxRequest("POST", task_add, formdata);
+    form.reset();
 }
 
 //read
 function getAllEmployees() {
 
     makeAjaxRequest("GET", emp_route);
+    
+    //elementDisplay("#search");
 }
 
 function getAllTasks() {
 
     makeAjaxRequest("GET", task_route);
+
+    //elementDisplay("#search");
 }
 
 function loginPage() {
@@ -204,6 +209,18 @@ function deleteTask(id) {
 /***************************************************************
                         DOM FUNCTIONS
 ***************************************************************/
+
+function elementDisplay(elementIdentifier) {
+
+    const element = document.querySelector(elementIdentifier);
+
+    if (element.hidden === "false") {
+        element.hidden = "true";
+    }
+    else {
+        element.hidden = "false";
+    }
+}
 
 function renderError(message) {
 
@@ -341,18 +358,18 @@ function renderRow(data, index, parentId) {
     deleteBtn.className = "btn_sizing btn_delete";
     deleteBtn.innerHTML = "Delete";
 
-    if (data.status == "test") {
+    if (data.status == "editable") {
 
         if (data.first_name) {
 
             buttonDiv.innerHTML =
-                "<button class='btn_sizing'  onclick=\"demoUpdateEmployee(\'" + _id + "\',\'Dr. Jimmy\',\'Callen\',\'j.callen@_demo.ca\',\'Male\',\'\')\">Update</button>" +
+                "<button class='btn_sizing' disabled='true'>Update</button>" +
                 "<button class='btn_sizing btn_delete'  onclick=\"demoDeleteEmployee(\'" + _id + "\')\">Delete</button>";
         }
         else {
 
             buttonDiv.innerHTML =
-                "<button class='btn_sizing'  onclick=\"demoUpdateTask(\'" + _id + "\',\'Janitor Duty\')\">Update</button>" +
+                "<button class='btn_sizing' disabled='true'>Update</button>" +
                 "<button class='btn_sizing btn_delete'  onclick=\"demoDeleteTask(\'" + _id + "\')\">Delete</button>"
         }
     }

@@ -1,9 +1,13 @@
 # JavaScript Ajax RestApi
-This is a simple RestApi that runs on a Express server.
+This is a simple RestApi that runs on a Express server. The Front-End componet is a work in progress, and used strictly for testing the api in a more interactive way.
+If you wish to see my Front-End design skills, please look at these examples:
+<a href="https://clever-shirley-2f5664.netlify.app/">React Demo</a>
+<a href="https://boring-hamilton-295e9a.netlify.app/">Angular Demo</a>
 Also, this documentation is written with non technical people in mind, therefore it may be a bit more verbose than what programmers may expect.
 <div>
       <img width="700" alt="api image" src="https://user-images.githubusercontent.com/44081182/133896882-41135e59-09e9-4fed-b71d-35c3527dd993.PNG">
 </div>
+<a href="https://employee-task-api.herokuapp.com/">https://employee-task-api.herokuapp.com/</a>
 
 # npm start
 You run this command within the project folder, through the use of the command prompt terminal.
