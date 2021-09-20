@@ -21,7 +21,7 @@ let searchResults = [];//contains only the results fron the search
                         AJAX FUNCTIONS                           
 ***************************************************************/
 
-function makeAjaxRequest(method, url, data) {
+ function makeAjaxRequest(method, url, data) {
 
     // if (data) {
 
@@ -60,7 +60,7 @@ function makeAjaxRequest(method, url, data) {
 
 
 //consider creating an event that tracks the length of the dbData
-function searchData(e) {
+ function searchData(e) {
 
     let query = e.target.value;
 
@@ -92,9 +92,9 @@ function searchData(e) {
 }
 
 //login
-function login() {
+ function login() {
 
-    let form = document.forms[2];
+    let form = document.forms[0];
 
     //code sanitization here
 
@@ -109,38 +109,48 @@ function login() {
 }
 
 //create
-function createEmployee() {
+ async function createEmployee() {
 
-    let form = document.forms[1];
+    let form = document.forms[2];
+
     //code sanitization here
+
     let formdata = {
 
         first_name: form.elements[0].value,
         last_name: form.elements[1].value,
         email: form.elements[2].value,
-        gender: form.elements[3].value,
+        sex: form.elements[3].value,
         image: ""
     }
 
-    let reader = new FileReader();
     let imageSrc = form.elements[4].files[0];
+
     if (imageSrc) {
-        reader.readAsDataURL(imageSrc);
-        reader.onload = function (e) {
-            formdata.image = e.target.result;
-            makeAjaxRequest("POST", emp_register, formdata);
-            form.reset();
-        }
+
+        formdata.image = await readImage(imageSrc);
     }
-    else {
-        makeAjaxRequest("POST", emp_register, formdata);
-        form.reset();
-    }
+
+    makeAjaxRequest("POST", emp_register, formdata);
+
+    form.reset();
 }
 
-function createTask() {
+ function readImage(image) {
 
-    let form = document.forms[0];
+    let reader = new FileReader();
+
+    reader.readAsDataURL(image);
+    return new Promise((resolve, reject) => {
+        reader.onload = function (e) {
+            resolve(e.target.result);
+        }
+    })
+}
+
+ function createTask() {
+
+    let form = document.forms[1];
 
     //code sanitization here
     let formdata = {
@@ -153,40 +163,44 @@ function createTask() {
 }
 
 //read
-function getAllEmployees() {
+ function getAllEmployees() {
 
     makeAjaxRequest("GET", emp_route);
-    
-    //elementDisplay("#search");
+
+    if (dbData.length === 0) {
+        elementDisplay("#search");
+    }
 }
 
-function getAllTasks() {
+ function getAllTasks() {
 
     makeAjaxRequest("GET", task_route);
 
-    //elementDisplay("#search");
+    if (dbData.length === 0) {
+        elementDisplay("#search");
+    }
 }
 
-function loginPage() {
+ function loginPage() {
 
     window.location.href = "/login";
 }
 
 //update
-function updateEmployee(id, fname, lname, email, gender, image) {
+ function updateEmployee(id, fname, lname, email, sex, image) {
 
     let empData = {
 
         first_name: fname,
         last_name: lname,
         email: email,
-        gender: gender,
+        sex: sex,
         image: image
     }
 
     makeAjaxRequest("PUT", emp_update + "?empID=" + id + "", empData);
 }
-function updateTask(id, taskName) {
+ function updateTask(id, taskName) {
 
     let taskData = {
 
@@ -197,32 +211,34 @@ function updateTask(id, taskName) {
 }
 
 //delete
-function deleteEmployee(id) {
+ function deleteEmployee(id) {
 
-    makeAjaxRequest("DELETE", emp_delete + "?empID=" + id + "");
+    makeAjaxRequest("DELETE", "/api/employees/delete?empID=" + id + "");
 }
-function deleteTask(id) {
+ function deleteTask(id) {
 
-    makeAjaxRequest("DELETE", task_delete + "?taskID=" + id + "");
+    makeAjaxRequest("DELETE","/api/tasks/delete?taskID=" + id + "");
 }
 
 /***************************************************************
                         DOM FUNCTIONS
 ***************************************************************/
 
-function elementDisplay(elementIdentifier) {
+ function elementDisplay(elementIdentifier) {
 
-    const element = document.querySelector(elementIdentifier);
+    let style = document.querySelector(elementIdentifier).style;
 
-    if (element.hidden === "false") {
-        element.hidden = "true";
+    if (!style.display || style.display === "none") {
+      
+        style.display = "block";
     }
     else {
-        element.hidden = "false";
+      
+        style.display = "none";
     }
 }
 
-function renderError(message) {
+ function renderError(message) {
 
     let error_msg = document.getElementById("error_msg");
 
@@ -241,7 +257,7 @@ function renderError(message) {
     }
 }
 
-function renderData(data, parentId) {
+ function renderData(data, parentId) {
 
     //check to see if its just a message and to see if there is an exclusive error message section of the html to display the error
     if (data.message) {
@@ -271,7 +287,7 @@ function renderData(data, parentId) {
     }
 }
 
-function clearTable(tableId) {
+ function clearTable(tableId) {
 
     if (document.getElementById(tableId)) {
 
@@ -280,7 +296,7 @@ function clearTable(tableId) {
     }
 }
 
-function createTableHeader(headerList, parentId) {
+ function createTableHeader(headerList, parentId) {
 
     let tHead = document.getElementById(parentId);
     tHead.textContent = "";
@@ -295,7 +311,7 @@ function createTableHeader(headerList, parentId) {
     document.querySelector("#renderTable").appendChild(tHead);
 }
 
-function createTableRow(detailList, index, _id) {
+ function createTableRow(detailList, index, _id) {
 
     let row_color = (index % 2 == 0) ? "background-color:white;" : "background-color:lightgrey;";
     let row = document.createElement('tr');
@@ -311,7 +327,7 @@ function createTableRow(detailList, index, _id) {
     return row;
 }
 
-function updateRowData(data, _id) {
+ function updateRowData(data, _id) {
 
     let row = document.getElementById(_id);
 
@@ -327,7 +343,7 @@ function updateRowData(data, _id) {
     }
 }
 
-function renderRow(data, index, parentId) {
+ function renderRow(data, index, parentId) {
 
     if (!data) {
 
@@ -337,7 +353,7 @@ function renderRow(data, index, parentId) {
     let name = data.first_name + " " + data.last_name;
     let email = data.email;
     let _id = data._id;
-    //let gender = data.gender;
+    //let sex = data.sex;
 
     //row elements
     let row;
@@ -364,13 +380,13 @@ function renderRow(data, index, parentId) {
 
             buttonDiv.innerHTML =
                 "<button class='btn_sizing' disabled='true'>Update</button>" +
-                "<button class='btn_sizing btn_delete'  onclick=\"demoDeleteEmployee(\'" + _id + "\')\">Delete</button>";
+                "<button class='btn_sizing btn_delete'  onclick=\"deleteEmployee(\'" + _id + "\')\">Delete</button>";
         }
         else {
 
             buttonDiv.innerHTML =
                 "<button class='btn_sizing' disabled='true'>Update</button>" +
-                "<button class='btn_sizing btn_delete'  onclick=\"demoDeleteTask(\'" + _id + "\')\">Delete</button>"
+                "<button class='btn_sizing btn_delete'  onclick=\"deleteTask(\'" + _id + "\')\">Delete</button>"
         }
     }
 

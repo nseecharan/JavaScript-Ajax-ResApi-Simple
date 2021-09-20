@@ -3,11 +3,16 @@ button{
     border-radius: 4px;
     border: 1px solid black;
     width: max-content;
+    cursor: pointer;
 }
 .btn_sizing{
 
     padding: 4px;
     margin: 4px;
+}
+.btn_sizing:disabled{
+
+    cursor:not-allowed;
 }
 .btn_delete{
 
@@ -16,14 +21,4 @@ button{
 #login button{
 
     margin: 0px;
-}
-#test_buttons{
-
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    border-radius: 4px;
-    height: max-content;
-    width: 200px;
-    min-height: 6em;
-    float: left;
-    margin: 4px;
 }

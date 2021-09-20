@@ -201,7 +201,7 @@ app.get(task_find + "/:taskID", (req, res, next) => {
 //UPDATE
 /**************************************************************/
 
-app.put(emp_update + "/:empID", (req, res, next) => {
+app.put(emp_update, (req, res, next) => {
 
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
@@ -223,7 +223,7 @@ app.put(emp_update + "/:empID", (req, res, next) => {
     })(req, res, next);
 })
 
-app.put(task_update + "/:taskID", (req, res, next) => {
+app.put(task_update, (req, res, next) => {
 
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
@@ -248,14 +248,38 @@ app.put(task_update + "/:taskID", (req, res, next) => {
 //DELETE
 /**************************************************************/
 
-app.delete(emp_delete + "/:empID", (req, res, next) => {
+app.delete(emp_delete, (req, res, next) => {
 
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
         if (err) { return next(err); }
         if (!success) { return res.status(401).json({ "message": "Please log in" }); }
 
-        dataService.deleteEmployee(req.query.empID)
+        let id = req.query.empID + "";
+
+        dataService.deleteEmployee(id)
+            .then((msg) => {
+
+                res.status(200).json({ "message": msg });
+            })
+            .catch((err) => {
+
+                res.json({ "message": msg });
+            });
+    })(req, res, next);
+});
+
+
+app.delete(task_delete, (req, res, next) => {
+
+    passport.authenticate('jwt', { session: false }, (err, success, info) => {
+
+        if (err) { return next(err); }
+        if (!success) { return res.status(401).json({ "message": "Please log in" }); }
+
+        let id = req.query.taskID + "";
+
+        dataService.deleteTask(id)
             .then((msg) => {
 
                 res.status(200).json({ "message": msg });
@@ -264,29 +288,9 @@ app.delete(emp_delete + "/:empID", (req, res, next) => {
 
                 res.json({ "message": err });
             });
-
     })(req, res, next);
 });
 
-app.delete(task_delete + "/:taskID", (req, res, next) => {
-
-    passport.authenticate('jwt', { session: false }, (err, success, info) => {
-
-        if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ "message": "Please log in" }); }
-
-        dataService.deleteTask(req.query.taskID)
-            .then((msg) => {
-
-                res.status(200).json({ "message": msg });
-            })
-            .catch((err) => {
-
-                res.json({ "message": err });
-            });
-
-    })(req, res, next);
-});
 
 /***************************************************************
                        END OF ROUTES                         

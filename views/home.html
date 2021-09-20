@@ -20,50 +20,12 @@
             <button class="btn_sizing" onclick="loginPage()">Admin Login</button>
         </div-->
     </div>
-
     <div id="api_info" class="left_indent">
         <p>This api is for demo purposes, and has routes that access small lists of data related to employees and tasks
         </p>
         <a href='https://nigelcodes.wordpress.com/'>Click here to learn more about me</a>
     </div>
     <br />
-    <div class="left_indent api_features">
-        <div id="test_buttons">
-            <span>Routes</span>
-            <div>
-                <button class="btn_sizing" onclick="getAllEmployees()">/api/employees</button>
-                <button class="btn_sizing" onclick="getAllTasks()">/api/tasks</button>
-            </div>
-        </div>
-        <div id="test_buttons">
-            <span>Create Demo Task</span>
-            <form class="create_form" onsubmit="event.preventDefault()">
-                <div>
-                    <label>Task Name:</label>
-                    <input type="text" placeholder="Task Name">
-                    <button onclick="createTask()">Create</button>
-                </div>
-            </form>
-        </div>
-        <div id="test_buttons">
-            <span>Create Demo Employee</span>
-            <form class="create_form" onsubmit="event.preventDefault()">
-                <div>
-                    <label>First Name:</label>
-                    <input type="text" placeholder="First Name">
-                    <label>Last Name:</label>
-                    <input type="text" placeholder="Last Name">
-                    <label>Email:</label>
-                    <input type="text" placeholder="Email">
-                    <label>Gender:</label>
-                    <input type="text" placeholder="Gender">
-                    <label>image:</label>
-                    <input type="file" placeholder="First Name">
-                    <button type="submit" onclick="createEmployee()">Create</button>
-                </div>
-            </form>
-        </div>
-    </div>
     <div class="left_indent login">
         <!--remove this login form when cookie session has been implemented-->
         <h3>Admin Login</h3>
@@ -73,24 +35,66 @@
         <form onsubmit="event.preventDefault()">
             <div>
                 <div>
-
-                    <label for="username">User Name</label>
-                    <input id="username" name="username" type="text">
-
-                    <label for="password">Password</label>
-                    <input id="password" name="password" type="password">
+                    <div>
+                        <label for="username">User Name</label>
+                        <input id="username" name="username" type="text">
+                    </div>
+                    <div>
+                        <label for="password">Password</label>
+                        <input id="password" name="password" type="password">
+                    </div>
                     <button onclick="login()">Login</button>
                 </div>
             </div>
         </form>
     </div>
     <h3 class="left_indent underline">Display Data</h3>
-    <div class="left_indent">
+    <div class="left_indent api_features">
+        <div id="load-data" class="options">
+            <span>Routes</span>
+            <div>
+                <button class="btn_sizing" onclick="getAllEmployees()">/api/employees</button>
+                <button class="btn_sizing" onclick="getAllTasks()">/api/tasks</button>
+            </div>
+        </div>
+        <div id="create-task" class="options">
+            <span>Create Demo Task</span>
+            <form class="create_form" onsubmit="event.preventDefault()">
+                <div>
+                    <label>Task Name:</label>
+                    <input type="text" placeholder="Task Name">
+                    <button onclick="createTask()">Create</button>
+                </div>
+            </form>
+        </div>
+        <div id="create-emp" class="options">
+            <span>Create Demo Employee</span>
+            <form class="create_form" onsubmit="event.preventDefault()">
+                <div>
+                    <label>First Name:</label>
+                    <input type="text" placeholder="First Name">
+                    <label>Last Name:</label>
+                    <input type="text" placeholder="Last Name">
+                    <label>Email:</label>
+                    <input type="text" placeholder="Email">
+                    <label>Sex:</label>
+                    <select>
+                        <option value="" selected>Add Sex</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                    <label>image:</label>
+                    <input type="file" placeholder="First Name">
+                    <button type="submit" onclick="createEmployee()">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="search" class="left_indent">
         <label>
             Search
-            <input id="search" type="text" onchange="searchData(event)" onkeyup="searchData(event)" />
+            <input type="text" onchange="searchData(event)" onkeyup="searchData(event)" />
         </label>
-        <p>Before you enter your search, please click one of the route buttons to load the data.</p>
     </div>
     <div id="data_display" class="left_indent">
         <div id="json_dsp">

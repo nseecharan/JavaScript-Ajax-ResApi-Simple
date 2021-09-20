@@ -13,7 +13,7 @@ let employeeSchema = new mongoose.Schema({
         type: String,
         unique: true
     },
-    gender: String,
+    sex: String,
     image: String,
     status: String
     //-demo for status is essentially read only
@@ -74,32 +74,37 @@ module.exports.connect = function () {
 
             //reset to default number of employees and tasks
 
-            Employee.deleteMany({ $or: [{ status: "editable" }] })
-                .exec()
-                .then(() => {
-
-                    console.log("removed all new employees");
-                })
-                .catch((err) => {
-
-                    console.log("There was an error deleting all new employees", err);
-                });
-
-            Task.deleteMany({ $or: [{ status: "editable" }] })
-                .exec()
-                .then(() => {
-
-                    console.log("removed all new tasks");
-                })
-                .catch((err) => {
-
-                    console.log("There was an error deleting all new tasks", err);
-                });
+            // resetDatabase();
 
             resolve("Connected to database");
         });
     });
 };
+
+module.exports.resetDatabase = function () {
+
+    Employee.deleteMany({ $or: [{ status: "editable" }] })
+        .exec()
+        .then(() => {
+
+            console.log("removed all new employees");
+        })
+        .catch((err) => {
+
+            console.log("There was an error deleting all new employees", err);
+        });
+
+    Task.deleteMany({ $or: [{ status: "editable" }] })
+        .exec()
+        .then(() => {
+
+            console.log("removed all new tasks");
+        })
+        .catch((err) => {
+
+            console.log("There was an error deleting all new tasks", err);
+        });
+}
 
 /***************************************************************
                        DB CREATE                          
@@ -344,7 +349,7 @@ module.exports.updateEmployee = function (id, employee) {
                     first_name: employee.first_name,
                     last_name: employee.last_name,
                     email: employee.email,
-                    gender: employee.gender,
+                    sex: employee.sex,
                     image: employee.image
                 }
             })
