@@ -2,19 +2,18 @@ button{
 
     border-radius: 4px;
     border: 1px solid black;
-    width: max-content;
     cursor: pointer;
 }
-.btn_sizing{
+.btn-sizing{
 
     padding: 4px;
     margin: 4px;
 }
-.btn_sizing:disabled{
+.btn-sizing:disabled{
 
     cursor:not-allowed;
 }
-.btn_delete{
+.btn-red{
 
     background-color: crimson;
 }

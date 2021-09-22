@@ -41,20 +41,15 @@ function onHttpStart() {
                        API ROUTES                          
 ***************************************************************/
 
-//Admin Login
+//Login
 /**************************************************************/
+
 app.post("/api/login", (req, res) => {
 
-    dataService.adminCheck(req.body)
+    dataService.login(req.body)
         .then((data) => {
 
-            var payload = {
-
-                _id: data._id,
-                username: data.username
-            }
-
-            var token = jwt.sign(payload, pAuth.jwtOptions().secretOrKey);
+            var token = jwt.sign(data, pAuth.jwtOptions().secretOrKey);
 
             res.json({ "message": "login sucessful", "token": token });
 
@@ -64,6 +59,25 @@ app.post("/api/login", (req, res) => {
             res.status(422).json({ "message": err });
         })
 })
+
+//Pages
+/**************************************************************/
+
+//home page
+app.get("/", (req, res) => {
+
+    res.sendFile(path.join(__dirname, "/views/home.html"));
+
+    return 0;
+});
+
+//login page
+app.get("/login", (req, res) => {
+
+    res.sendFile(path.join(__dirname, "/views/login.html"));
+
+    return 0;
+});
 
 //CREATE
 /**************************************************************/
@@ -111,24 +125,7 @@ app.post(task_add, (req, res, next) => {
 //READ
 /**************************************************************/
 
-//home page
-app.get("/", (req, res) => {
-
-    res.sendFile(path.join(__dirname, "/views/home.html"));
-
-    return 0;
-});
-
-//login page
-app.get("/login", (req, res) => {
-
-    res.sendFile(path.join(__dirname, "/views/login.html"));
-
-    return 0;
-});
-
 //Find all items
-
 app.get(emp_route, (req, res, next) => {
 
     dataService.getAllEmployees().then((data) => {
@@ -295,7 +292,6 @@ app.delete(task_delete, (req, res, next) => {
 /***************************************************************
                        END OF ROUTES                         
 ***************************************************************/
-
 
 app.use((req, res) => {
     res.status(404).end();

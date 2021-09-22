@@ -421,7 +421,10 @@ module.exports.deleteTask = function (id) {
     })
 }
 
-module.exports.adminCheck = function (adminData) {
+//check if credentials match what is stored in the database
+//password is hashed in database, so bcrypt is used to here
+//send back only the id, and username of the logged in user so that it can be stored in a JWT
+module.exports.login = function (adminData) {
 
     return new Promise(function (resolve, reject) {
 
@@ -442,7 +445,7 @@ module.exports.adminCheck = function (adminData) {
                             if (res === true) {
 
                                 console.log("login sucessful")
-                                resolve(admin[0]);
+                                resolve({_id:admin[0]._id, username: admin[0].username});
                             }
                             else {
 

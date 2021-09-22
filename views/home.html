@@ -4,6 +4,7 @@
     <script defer src="../static/index.js"></script>
     <link rel="stylesheet" href="../static/css/home.css">
     <link rel="stylesheet" href="../static/css/buttons.css">
+    <link rel="stylesheet" href="../static/css/login.css">
     <title>Nigel Seecharan Simple Api</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,105 +12,84 @@
 </head>
 
 <body>
-    <div id="Title_div" class="titles">
-        <div id="title_heading">
-            <h3 class="left_indent">Welcome to Nigel Seecharan's Simple Api</h3>
+    <div id="Title-div" class="titles">
+        <div id="title-heading">
+            <h3 class="left-indent">Welcome to Nigel Seecharan's Simple Api</h3>
         </div>
-        <!--disabled for now until a cookie session has been implemented as this redirects to another page-->
-        <!--div id="login">
-            <button class="btn_sizing" onclick="loginPage()">Admin Login</button>
-        </div-->
     </div>
-    <div id="api_info" class="left_indent">
-        <p>This api is for demo purposes, and has routes that access small lists of data related to employees and tasks
+    <div id="api-info" class="left-indent">
+        <p>This api is for demo purposes, and has routes that access small lists of data related to employees and tasks.
+        </p>
+        <p>Route structure goes as follows: [website url]/api/[emoloyees or tasks]
+        </p>
+        <p>For more information on the routes, please refer to the project
+            <a href='https://github.com/nseecharan/JavaScript-Ajax-ResApi-Simple'>readme</a>.
         </p>
         <a href='https://nigelcodes.wordpress.com/'>Click here to learn more about me</a>
     </div>
     <br />
-    <div class="left_indent login">
-        <!--remove this login form when cookie session has been implemented-->
+    <div class="left-indent login">
         <h3>Admin Login</h3>
-        <p>Loggin in will eventually allow a user to create, update, and delete database entries</p>
-        <p>These capabilities will be added in future iterations, including an option to restore the database to house
-            the original data</p>
-        <form onsubmit="event.preventDefault()">
+        <p>Loggin in to create, or delete newly created employees or tasks. Please note that default entries do not have
+            the option to be modified.</p>
+        <p>Currently the update interface has not been implemented yet.</p>
+        <form id="login-form" onsubmit="event.preventDefault()">
             <div>
-                <div>
-                    <div>
-                        <label for="username">User Name</label>
-                        <input id="username" name="username" type="text">
-                    </div>
-                    <div>
-                        <label for="password">Password</label>
-                        <input id="password" name="password" type="password">
-                    </div>
-                    <button onclick="login()">Login</button>
-                </div>
+                <label for="username">User Name</label>
+                <input id="username" name="username" type="text">
             </div>
+            <div>
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password">
+            </div>
+            <button onclick="login()">Login</button>
         </form>
     </div>
-    <h3 class="left_indent underline">Display Data</h3>
-    <div class="left_indent api_features">
-        <div id="load-data" class="options">
-            <span>Routes</span>
-            <div>
-                <button class="btn_sizing" onclick="getAllEmployees()">/api/employees</button>
-                <button class="btn_sizing" onclick="getAllTasks()">/api/tasks</button>
+    <h3 class="left-indent underline">Display Data</h3>
+    <div class="api-features">
+        <div id="load-data" class="option-border api-option-display">
+            <span class="api-option-title">Api Options</span>
+            <div class="api-option-inputs">
+                <div id="option-inputs">
+                    <button class="btn-sizing" onclick="getAllEmployees()">Get Employees</button>
+                    <button class="btn-sizing" onclick="getAllTasks()">Get Tasks</button>
+                </div>
+                <div id="search">
+                    <label>Search</label>
+                    <input type="text" onchange="searchData(event)" onkeyup="searchData(event)" />
+                </div>
             </div>
         </div>
-        <div id="create-task" class="options">
-            <span>Create Demo Task</span>
-            <form class="create_form" onsubmit="event.preventDefault()">
-                <div>
-                    <label>Task Name:</label>
-                    <input type="text" placeholder="Task Name">
-                    <button onclick="createTask()">Create</button>
+        <div id="data-display">
+            <div id="styled-dsp">
+                <div id="create-options">
+                    <button class="btn-sizing" onclick="createEmpForm()">New Employee</button>
+                    <button class="btn-sizing" onclick="createTaskForm()">New Task</button>
                 </div>
-            </form>
-        </div>
-        <div id="create-emp" class="options">
-            <span>Create Demo Employee</span>
-            <form class="create_form" onsubmit="event.preventDefault()">
-                <div>
-                    <label>First Name:</label>
-                    <input type="text" placeholder="First Name">
-                    <label>Last Name:</label>
-                    <input type="text" placeholder="Last Name">
-                    <label>Email:</label>
-                    <input type="text" placeholder="Email">
-                    <label>Sex:</label>
-                    <select>
-                        <option value="" selected>Add Sex</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                    </select>
-                    <label>image:</label>
-                    <input type="file" placeholder="First Name">
-                    <button type="submit" onclick="createEmployee()">Create</button>
+                <div id="mock-data">
+                    <table id="renderTable" class="table-styling">
+                        <thead id="tableHdr" class="thead-style"></thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
                 </div>
-            </form>
-        </div>
-    </div>
-    <div id="search" class="left_indent">
-        <label>
-            Search
-            <input type="text" onchange="searchData(event)" onkeyup="searchData(event)" />
-        </label>
-    </div>
-    <div id="data_display" class="left_indent">
-        <div id="json_dsp">
-            <pre id="raw_data"></pre>
-        </div>
-        <div id="styled_dsp">
-            <div id="mock_data">
-                <table id="renderTable" class="table_styling">
-                    <thead id="tableHdr" class="thead_style"></thead>
-                    <tbody id="tableBody"></tbody>
-                </table>
+                <div id="create-forms">
+                    <div id="submit-emp"></div>
+                    <div id="submit-task"></div>
+                </div>
             </div>
         </div>
-
+        <div id="json-dsp">
+            <pre>Raw Data Display</pre>
+            <pre id="raw-data"></pre>
+        </div>
     </div>
 </body>
+<footer>
+    <div id="Title-div" class="titles">
+        <div id="title-heading">
+            <h3 class="left-indent">Created by Nigel Seecharan 2021</h3>
+        </div>
+    </div>
+</footer>
 
 </html>

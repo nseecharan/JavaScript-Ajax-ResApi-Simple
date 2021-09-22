@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" id="login_page">
+<html lang="en" id="login-page">
 <head>
     <script defer src="../static/index.js"></script>
-    <link rel="stylesheet" href="../static/css/home.css">
+    <link rel="stylesheet" href="../static/css/login.css">
     <link rel="stylesheet" href="../static/css/buttons.css">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,10 +10,10 @@
     <title>Admin Login</title>
 </head>
 <body>
-    <h3 class="center_content">Admin Login</h3>
+    <h3 class="center-content">Admin Login</h3>
     <form id="login" onsubmit = "event.preventDefault()"> <!--action="/api/login" method="POST"-->
-        <div class="center_content">
-            <div class="login_win">
+        <div class="center-content">
+            <div class="login-win">
 
                     <label for="username">User Name</label>
                     <input id="username" name="username" type="text">
@@ -21,14 +21,14 @@
                     <label for="password">Password</label>
                     <input id="password" name="password" type="password">
 
-                <div id="loginbtn_div" class="center_content">
+                <div id="loginbtn-div" class="center-content">
                     <button onclick="login()">Login</button> <!--type="submit"-->
                 </div>        
             </div>
         </div>
     </form>
-    <div id="errors" class="center_content">
-        <span id="error_msg"></span>
+    <div id="errors" class="center-content">
+        <span id="error-msg"></span>
     </div>
 </body>
 </html>
