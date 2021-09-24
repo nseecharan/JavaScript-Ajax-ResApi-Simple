@@ -1,6 +1,6 @@
 import { createButton } from './renderInputs.js';
 import { updateEmpForm, updateTaskForm } from '../events.js';
-import { deleteEmployee, deleteTask } from '../requests.js';
+import { deleteEmployee, deleteTask } from '../dataManager.js';
 
 export function clearTable(tableId) {
 

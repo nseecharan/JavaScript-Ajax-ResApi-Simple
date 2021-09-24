@@ -1,8 +1,8 @@
 import { createButton, createSelect, createInput } from './renderInputs.js';
 
-export function renderTaskForm(formTitle, formId, submintBtnName, elementIdentifier) {
+export function renderTaskForm(formTitle, formId, cancelBtnID, submintBtnName, elementIdentifier) {
 
-    renderFormStructure(formTitle, formId, elementIdentifier);
+    renderFormStructure(formTitle, formId, cancelBtnID, elementIdentifier);
 
     let form = document.getElementById(formId);
 
@@ -15,9 +15,9 @@ export function renderTaskForm(formTitle, formId, submintBtnName, elementIdentif
     form.append(labelTask, taskInput, submitButton);
 }
 
-export function renderEmployeeForm(formTitle, formId, submintBtnName, elementIdentifier) {
+export function renderEmployeeForm(formTitle, formId, cancelBtnID, submintBtnName, elementIdentifier) {
 
-    renderFormStructure(formTitle, formId, elementIdentifier);
+    renderFormStructure(formTitle, formId, cancelBtnID, elementIdentifier);
 
     let form = document.getElementById(formId);
 
@@ -53,12 +53,12 @@ export function renderEmployeeForm(formTitle, formId, submintBtnName, elementIde
         imageInput, submitButton);
 }
 
-function renderFormStructure(formTitle, formId, elementIdentifier) {
+function renderFormStructure(formTitle, formId, cancelBtnID, elementIdentifier) {
 
     let container = document.createElement('div');
     let customHeader = document.createElement('div');
     let title = document.createElement('span');
-    let cancelButton = createButton("cancel-btn", "btn-red", "X", "button");
+    let cancelButton = createButton(cancelBtnID, "btn-red float-right", "X", "button");
     let form = document.createElement('form');
 
     customHeader.className = "form-heading";

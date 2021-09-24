@@ -43,9 +43,6 @@ img {
 #login-form div {
     margin-bottom: 0.4em;
 }
-/*#create-options,
-#submint-emp,
-#submint-task,*/
 #search {
     display: none;
 }
@@ -54,9 +51,6 @@ img {
 }
 #form-title {
     float: left;
-}
-#cancel-btn {
-    float: right;
 }
 #data-display {
     margin: auto;
@@ -100,6 +94,12 @@ img {
 }
 #search input {
     width: 100%;
+}
+.float-right {
+    float: right;
+}
+.float-left {
+    float: left;
 }
 .api-option-inputs {
     width: 200px;
