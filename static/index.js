@@ -19,9 +19,7 @@ let searchResults = [];//contains only the results fron the search
                         AJAX FUNCTIONS                           
 ***************************************************************/
 
-function makeAjaxRequest(method, url, data) {
-
-    // if (data) {
+ function makeAjaxRequest(method, url, data) {
 
     fetch(url, {
         method: method,
@@ -41,23 +39,23 @@ function makeAjaxRequest(method, url, data) {
                 token = json.token;
             }
 
-            dbData = json;
-            renderData(dbData, "#tableBody");
+           // if (dbData.length > 0) {
+                dbData = json;
+                renderData(dbData, "#tableBody");
+           // }
         })
         .catch((err) => {
 
             renderData(err, "#tableBody");
         });
-    // }
-
 }
+
 /***************************************************************
                         MAIN FUNCTIONS                          
 ***************************************************************/
 
-
 //consider creating an event that tracks the length of the dbData
-function searchData(e) {
+ function searchData(e) {
 
     let query = e.target.value;
 
@@ -88,8 +86,9 @@ function searchData(e) {
     }
 }
 
-//login
-function login() {
+//LOGIN
+/*******************************************************/
+ function login() {
 
     let form = document.forms[0];
 
@@ -103,10 +102,12 @@ function login() {
 
     makeAjaxRequest("POST", "/api/login", formdata);
     form.reset();
+    clearTable("renderTable");
 }
 
-//create
-async function createEmployee(formId) {
+//CREATE
+/*******************************************************/
+ async function createEmployee(formId) {
 
     let form = document.getElementById(formId);
 
@@ -133,19 +134,7 @@ async function createEmployee(formId) {
     form.reset();
 }
 
-function readImage(image) {
-
-    let reader = new FileReader();
-
-    reader.readAsDataURL(image);
-    return new Promise((resolve, reject) => {
-        reader.onload = function (e) {
-            resolve(e.target.result);
-        }
-    })
-}
-
-function createTask(formId) {
+ function createTask(formId) {
 
     let form = document.getElementById(formId);
 
@@ -159,8 +148,9 @@ function createTask(formId) {
     form.reset();
 }
 
-//read
-function getAllEmployees() {
+//READ
+/*******************************************************/
+ function getAllEmployees() {
 
     makeAjaxRequest("GET", emp_route);
 
@@ -169,7 +159,7 @@ function getAllEmployees() {
     }
 }
 
-function getAllTasks() {
+ function getAllTasks() {
 
     makeAjaxRequest("GET", task_route);
 
@@ -178,13 +168,14 @@ function getAllTasks() {
     }
 }
 
-function loginPage() {
+ function loginPage() {
 
     window.location.href = "/login";
 }
 
-//update
-async function updateEmployee(id,formId) {
+//UPDATE
+/*******************************************************/
+ async function updateEmployee(id, formId) {
 
     let form = document.getElementById(formId);
 
@@ -209,7 +200,7 @@ async function updateEmployee(id,formId) {
     makeAjaxRequest("PUT", emp_update + "?empID=" + id + "", formdata);
     form.reset();
 }
-function updateTask(id, formId) {
+ function updateTask(id, formId) {
 
     let form = document.getElementById(formId);
 
@@ -223,40 +214,31 @@ function updateTask(id, formId) {
     form.reset();
 }
 
-//delete
-function deleteEmployee(id) {
+//DELETE
+/*******************************************************/
+ function deleteEmployee(id) {
 
     makeAjaxRequest("DELETE", "/api/employees/delete?empID=" + id + "");
 }
-function deleteTask(id) {
+ function deleteTask(id) {
 
     makeAjaxRequest("DELETE", "/api/tasks/delete?taskID=" + id + "");
 }
 
-/***************************************************************
-                        DOM FUNCTIONS
-***************************************************************/
+ function closeTaskForm() {
 
-function resetForm(elementIdentifier) {
+    clearElement("#submit-task");
+    renderData(dbData, "#tableBody");
+}
+ function closeEmpForm() {
 
-    document.querySelector(elementIdentifier).reset();
+    clearElement("#submit-emp");
+    renderData(dbData, "#tableBody");
 }
 
-function elementDisplay(elementIdentifier) {
-
-    let elm = document.querySelector(elementIdentifier);
-
-    if (!elm.style.display || elm.style.display === "none") {
-
-        elm.style.display = "block";
-    }
-    else {
-
-        elm.style.display = "none";
-    }
-}
-
-function createTaskForm() {
+//WRAPPER FUNCTIONS
+/*******************************************************/
+ function createTaskForm() {
 
     let taskForm = document.querySelector("#task-form");
 
@@ -272,7 +254,7 @@ function createTaskForm() {
     }
 }
 
-function updateTaskForm(_id) {
+ function updateTaskForm(_id) {
 
     let taskForm = document.querySelector("#task-form");
 
@@ -288,7 +270,7 @@ function updateTaskForm(_id) {
     }
 }
 
-function createEmpForm() {
+ function createEmpForm() {
 
     let empForm = document.querySelector("#emp-form");
 
@@ -304,7 +286,7 @@ function createEmpForm() {
     }
 }
 
-function updateEmpForm(_id) {
+ function updateEmpForm(_id) {
 
     let empForm = document.querySelector("#emp-form");
 
@@ -319,165 +301,17 @@ function updateEmpForm(_id) {
         empForm.replaceChild(newButton, empForm.lastChild);
     }
 }
-function closeTaskForm() {
 
-    clearElement("#submit-task");
-}
-function closeEmpForm() {
+/***************************************************************
+                        RENDER DATA                           
+***************************************************************/
 
-    clearElement("#submit-emp");
-}
+//This function passes data to relevant functions that will configure the table
+//and render data in the table body. You must pass the ID (or Class) of the table
+//body you want to add the data to.
+ function renderData(data, tableBodyId) {
 
-function clearElement(elementIdentifier) {
-
-    document.querySelector(elementIdentifier).textContent = "";
-}
-
-function renderFormStructure(formTitle, formId, cancleFunc, elementIdentifier) {
-
-    let container = document.createElement('div');
-    let customHeader = document.createElement('div');
-    let title = document.createElement('span');
-    let cancelButton = createButton("cancel-btn", "btn-red", "X", "button", cancleFunc);
-    let form = document.createElement('form');
-
-    customHeader.className = "form-heading";
-    title.innerHTML = formTitle;
-    title.id = formId + "-title";
-
-    customHeader.append(title, cancelButton);
-
-    container.className = "option-border options";
-    form.id = formId;
-    form.className = "create-form";
-    form.onsubmit = "event.preventDefault()";
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-    })
-    container.append(customHeader, form);
-
-    document.querySelector(elementIdentifier).appendChild(container);
-}
-
-function createButton(id, classes, name, type, clickEvent) {
-
-    let parser = new DOMParser()
-    let btnId = id ? `id=` + id + " " : "";
-    let btnClasses = classes ? `class='` + classes + "' " : "";
-    let btnType = type ? `type=` + type + " " : "";
-    let btnClick = clickEvent ? `onclick=` + clickEvent + " " : "";
-    let newButton = `<button ` + btnId + btnClasses + btnType + btnClick + `>` + name + `</button>`
-    let result = parser.parseFromString(newButton, "text/html");
-
-    return result.body.lastChild;
-}
-function createSelect(selectId, selClass, optionsObject) {
-
-    let selectElement = document.createElement('select');
-    selectElement.id = selectId;
-    selectElement.className = selClass;
-
-    optionsObject.map((option, index) => {
-
-        let opt = document.createElement('option');
-        if (index === 0) {
-
-            opt.selected = true;
-        }
-        opt.value = option.value;
-        opt.text = option.text;
-        selectElement.appendChild(opt);
-    })
-
-    return selectElement;
-}
-
-function createInput(inputId, inputClass, inputType, placeholder) {
-
-    let newInput = document.createElement('input');
-    newInput.id = inputId;
-    newInput.className = inputClass;
-    newInput.type = inputType;
-    newInput.placeholder = placeholder;
-
-    return newInput;
-}
-
-function renderEmployeeForm(formTitle, formId, submitFunc, submintBtnName, cancleFunc, elementIdentifier) {
-
-    renderFormStructure(formTitle, formId, cancleFunc, elementIdentifier);
-
-    let form = document.getElementById(formId);
-
-    let labelFname = document.createElement('label');
-    let labelLname = document.createElement('label');
-    let labelEmail = document.createElement('label');
-    let labelSex = document.createElement('label');
-    let labelImage = document.createElement('label');
-    let submitButton = createButton("submit-btn", "", submintBtnName, "submit", submitFunc);
-
-    labelFname.innerHTML = "First Name";
-    labelLname.innerHTML = "Last Name";
-    labelEmail.innerHTML = "Email";
-    labelSex.innerHTML = "Sex";
-    labelImage.innerHTML = "Image"
-
-    let fnameInput = createInput("", "", "text", "First Name");
-    let lnameInput = createInput("", "", "text", "Last Name");
-    let emailInput = createInput("", "", "text", "Email");
-    let imageInput = createInput("", "", "file", "");
-
-    let optionsArray = [
-        { value: "", text: "Add Sex" },
-        { value: "Male", text: "Male" },
-        { value: "Female", text: "Female" },
-    ]
-    sexSelect = createSelect("", "", optionsArray)
-
-    form.append(
-        labelFname, fnameInput, labelLname,
-        lnameInput, labelEmail, emailInput,
-        labelSex, sexSelect, labelImage,
-        imageInput, submitButton)
-}
-
-function renderTaskForm(formTitle, formId, submitFunc, submintBtnName, cancleFunc, elementIdentifier) {
-
-    renderFormStructure(formTitle, formId, cancleFunc, elementIdentifier);
-
-    let form = document.getElementById(formId);
-
-    let labelTask = document.createElement('label');
-    let taskInput = createInput("", "", "text", "Task Name");
-    let submitButton = createButton("submit-btn", "", submintBtnName, "submit", submitFunc);
-
-    labelTask.innerHTML = "Task Name";
-
-    form.append(labelTask, taskInput, submitButton)
-}
-
-function renderError(message) {
-
-    let error_msg = document.getElementById("error-msg");
-
-    if (error_msg) {
-
-        error_msg.innerHTML = message;
-
-        if (message.length == 0) {
-
-            error_msg.className = "no-background";
-        }
-        else {
-
-            error_msg.className = "error-background";
-        }
-    }
-}
-
-function renderData(data, parentId) {
-
-    if (!document.querySelector(parentId)) {
+    if (!document.querySelector(tableBodyId)) {
 
         return;
     }
@@ -509,12 +343,36 @@ function renderData(data, parentId) {
 
         data.map((obj, index) => {
 
-            renderRow(obj, index, parentId);
+            renderRow(obj, index, tableBodyId);
         })
     }
 }
 
-function clearTable(tableId) {
+//Renders an error message in any element that has "error-msg" as it's ID.
+function renderError(message) {
+
+    let error_msg = document.getElementById("error-msg");
+
+    if (error_msg) {
+
+        error_msg.innerHTML = message;
+
+        if (message.length == 0) {
+
+            error_msg.className = "no-background";
+        }
+        else {
+
+            error_msg.className = "error-background";
+        }
+    }
+}
+
+/***************************************************************
+                        RENDER TABLE                           
+***************************************************************/
+
+ function clearTable(tableId) {
 
     if (document.getElementById(tableId)) {
 
@@ -523,11 +381,12 @@ function clearTable(tableId) {
     }
 }
 
-function createTableHeader(headerList, parentId) {
+ function createTableHeader(headerList, parentId) {
 
     let tHead = document.getElementById(parentId);
     tHead.textContent = "";
     let last = headerList.length - 1;
+
     headerList.map((header, index) => {
         let th = document.createElement('th');
         th.innerHTML = header;
@@ -538,39 +397,7 @@ function createTableHeader(headerList, parentId) {
     document.querySelector("#renderTable").appendChild(tHead);
 }
 
-function createTableRow(detailList, index, _id) {
-
-    let row_color = (index % 2 == 0) ? "background-color:white;" : "background-color:lightgrey;";
-    let row = document.createElement('tr');
-    row.style = row_color;
-    row.id = _id;
-    let last = detailList.length - 1;
-    detailList.map((td, index) => {
-
-        td.className = index === last ? "td-action" : "td-style";
-        row.appendChild(td);
-    })
-
-    return row;
-}
-
-function updateRowData(data, _id) {
-
-    let row = document.getElementById(_id);
-
-    if (data.first_name) {
-
-        row.childNodes[0].lastChild.src = data.image;
-        row.childNodes[1].innerHTML = data.first_name + " " + data.last_name;
-        row.childNodes[2].innerHTML = data.email;
-    }
-    else {
-
-        row.childNodes[0].innerHTML = data.task;
-    }
-}
-
-function renderRow(data, index, parentId) {
+ function renderRow(data, index, parentId) {
 
     if (!data) {
 
@@ -621,13 +448,200 @@ function renderRow(data, index, parentId) {
         img.src = data.image;
         img.alt = "Image of employee";
         td1.appendChild(img);
-        row = createTableRow([td1, td2, td3, td4], index, _id)
+        row = addRowDetails([td1, td2, td3, td4], index, _id)
     }
     else {
 
         td1.innerHTML = data.task;
-        row = createTableRow([td1, td4], index, _id)
+        row = addRowDetails([td1, td4], index, _id)
     }
 
     document.querySelector(parentId).appendChild(row);
 }
+
+function addRowDetails(detailList, index, _id) {
+
+    let row_color = (index % 2 == 0) ? "background-color:white;" : "background-color:lightgrey;";
+    let row = document.createElement('tr');
+    row.style = row_color;
+    row.id = _id;
+    let last = detailList.length - 1;
+    detailList.map((td, index) => {
+
+        td.className = index === last ? "td-action" : "td-style";
+        row.appendChild(td);
+    })
+
+    return row;
+}
+
+/***************************************************************
+                        RENDER FORM                           
+***************************************************************/
+
+ function renderTaskForm(formTitle, formId, submitFunc, submintBtnName, cancleFunc, elementIdentifier) {
+
+    renderFormStructure(formTitle, formId, cancleFunc, elementIdentifier);
+
+    let form = document.getElementById(formId);
+
+    let labelTask = document.createElement('label');
+    let taskInput = createInput("", "", "text", "Task Name");
+    let submitButton = createButton("submit-btn", "", submintBtnName, "submit", submitFunc);
+
+    labelTask.innerHTML = "Task Name";
+
+    form.append(labelTask, taskInput, submitButton)
+}
+
+ function renderEmployeeForm(formTitle, formId, submitFunc, submintBtnName, cancleFunc, elementIdentifier) {
+
+    renderFormStructure(formTitle, formId, cancleFunc, elementIdentifier);
+
+    let form = document.getElementById(formId);
+
+    let labelFname = document.createElement('label');
+    let labelLname = document.createElement('label');
+    let labelEmail = document.createElement('label');
+    let labelSex = document.createElement('label');
+    let labelImage = document.createElement('label');
+    let submitButton = createButton("submit-btn", "", submintBtnName, "submit", submitFunc);
+
+    labelFname.innerHTML = "First Name";
+    labelLname.innerHTML = "Last Name";
+    labelEmail.innerHTML = "Email";
+    labelSex.innerHTML = "Sex";
+    labelImage.innerHTML = "Image"
+
+    let fnameInput = createInput("", "", "text", "First Name");
+    let lnameInput = createInput("", "", "text", "Last Name");
+    let emailInput = createInput("", "", "text", "Email");
+    let imageInput = createInput("", "", "file", "");
+
+    let optionsArray = [
+        { value: "", text: "Add Sex" },
+        { value: "Male", text: "Male" },
+        { value: "Female", text: "Female" },
+    ]
+    let sexSelect = createSelect("", "", optionsArray)
+
+    form.append(
+        labelFname, fnameInput, labelLname,
+        lnameInput, labelEmail, emailInput,
+        labelSex, sexSelect, labelImage,
+        imageInput, submitButton)
+}
+
+function renderFormStructure(formTitle, formId, cancleFunc, elementIdentifier) {
+
+    let container = document.createElement('div');
+    let customHeader = document.createElement('div');
+    let title = document.createElement('span');
+    let cancelButton = createButton("cancel-btn", "btn-red", "X", "button", cancleFunc);
+    let form = document.createElement('form');
+
+    customHeader.className = "form-heading";
+    title.innerHTML = formTitle;
+    title.id = formId + "-title";
+
+    customHeader.append(title, cancelButton);
+
+    container.className = "option-border options";
+    form.id = formId;
+    form.className = "create-form";
+    form.onsubmit = "event.preventDefault()";
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+    })
+    container.append(customHeader, form);
+
+    document.querySelector(elementIdentifier).appendChild(container);
+}
+
+/***************************************************************
+                        RENDER INPUTS                           
+***************************************************************/
+
+ function createButton(id, classes, name, type, clickEvent) {
+
+    let parser = new DOMParser()
+    let btnId = id ? `id=` + id + " " : "";
+    let btnClasses = classes ? `class='` + classes + "' " : "";
+    let btnType = type ? `type=` + type + " " : "";
+    let btnClick = clickEvent ? `onclick=` + clickEvent + " " : "";
+    let newButton = `<button ` + btnId + btnClasses + btnType + btnClick + `>` + name + `</button>`
+    let result = parser.parseFromString(newButton, "text/html");
+
+    return result.body.lastChild;
+}
+
+ function createSelect(selectId, selClass, optionsObject) {
+
+    let selectElement = document.createElement('select');
+    selectElement.id = selectId;
+    selectElement.className = selClass;
+
+    optionsObject.map((option, index) => {
+
+        let opt = document.createElement('option');
+        if (index === 0) {
+
+            opt.selected = true;
+        }
+        opt.value = option.value;
+        opt.text = option.text;
+        selectElement.appendChild(opt);
+    })
+
+    return selectElement;
+}
+
+ function createInput(inputId, inputClass, inputType, placeholder) {
+
+    let newInput = document.createElement('input');
+    newInput.id = inputId;
+    newInput.className = inputClass;
+    newInput.type = inputType;
+    newInput.placeholder = placeholder;
+
+    return newInput;
+}
+
+/***************************************************************
+                        RENDER TOOLS                           
+***************************************************************/
+
+//This function will clear out all the child nodes for the specified element.
+ function clearElement(elementIdentifier) {
+
+    document.querySelector(elementIdentifier).textContent = "";
+}
+
+ function elementDisplay(elementIdentifier) {
+
+    let elm = document.querySelector(elementIdentifier);
+
+    if (!elm.style.display || elm.style.display === "none") {
+
+        elm.style.display = "block";
+    }
+    else {
+
+        elm.style.display = "none";
+    }
+}
+
+//This function will attempt to load an image into memory for file upload.
+ function readImage(image) {
+
+    let reader = new FileReader();
+
+    reader.readAsDataURL(image);
+    return new Promise((resolve, reject) => {
+        reader.onload = function (e) {
+            resolve(e.target.result);
+        }
+    })
+}
+
+

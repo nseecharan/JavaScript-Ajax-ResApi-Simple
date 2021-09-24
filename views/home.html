@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <script defer src="../static/index.js"></script>
+    <script defer type="module" src="../static/scripts/home.js"></script>
     <link rel="stylesheet" href="../static/css/home.css">
     <link rel="stylesheet" href="../static/css/buttons.css">
     <link rel="stylesheet" href="../static/css/login.css">
@@ -42,7 +42,7 @@
                 <label for="password">Password</label>
                 <input id="password" name="password" type="password">
             </div>
-            <button onclick="login()">Login</button>
+            <button>Login</button>
         </form>
     </div>
     <h3 class="left-indent underline">Display Data</h3>
@@ -51,30 +51,30 @@
             <span class="api-option-title">Api Options</span>
             <div class="api-option-inputs">
                 <div id="option-inputs">
-                    <button class="btn-sizing" onclick="getAllEmployees()">Get Employees</button>
-                    <button class="btn-sizing" onclick="getAllTasks()">Get Tasks</button>
+                    <button class="btn-sizing">Get Employees</button>
+                    <button class="btn-sizing">Get Tasks</button>
                 </div>
                 <div id="search">
                     <label>Search</label>
-                    <input type="text" onchange="searchData(event)" onkeyup="searchData(event)" />
+                    <input id="search-input" type="text" />
                 </div>
             </div>
         </div>
         <div id="data-display">
             <div id="styled-dsp">
                 <div id="create-options">
-                    <button class="btn-sizing" onclick="createEmpForm()">New Employee</button>
-                    <button class="btn-sizing" onclick="createTaskForm()">New Task</button>
+                    <button class="btn-sizing">New Employee</button>
+                    <button class="btn-sizing">New Task</button>
+                </div>
+                <div id="create-forms">
+                    <div id="submit-emp"></div>
+                    <div id="submit-task"></div>
                 </div>
                 <div id="mock-data">
                     <table id="renderTable" class="table-styling">
                         <thead id="tableHdr" class="thead-style"></thead>
                         <tbody id="tableBody"></tbody>
                     </table>
-                </div>
-                <div id="create-forms">
-                    <div id="submit-emp"></div>
-                    <div id="submit-task"></div>
                 </div>
             </div>
         </div>
