@@ -1,5 +1,5 @@
-import { clearTable, createTableHeader, renderRow } from './renderTable.js';
-import { elementDisplay } from './renderTools.js';
+import { createTableHeader, renderRow } from './renderTable.js';
+import { elementDisplay, clearElement } from './renderTools.js';
 
 //This function passes data to relevant functions that will configure the table
 //and render data in the table body. You must pass the ID (or Class) of the table
@@ -25,7 +25,8 @@ export function renderData(data, tableBodyId, token) {
 
     if (data[0] != undefined) {
 
-        clearTable("renderTable");
+        clearElement("#tableHdr");
+        clearElement("#tableBody");
 
         if (data[0].first_name) {
 

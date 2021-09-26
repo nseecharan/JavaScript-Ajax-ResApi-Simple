@@ -37,15 +37,25 @@ let taskSchema = new mongoose.Schema({
 let adminSchema = new mongoose.Schema({
 
     username: String,
-    password: String
+    password: String,
+    role: String
 },
     { collection: 'admin_data' }
 );
 
+let dbImageSchema = new mongoose.Schema({
+
+    image: String,
+    imageName: String
+
+},
+    { collection: 'default_images' }
+);
+
 let Employee;
 let Task;
-
 let Admin;
+let dbImages;
 
 let db = mongoose.createConnection(mongoDBConnectionString,
     {
@@ -68,9 +78,8 @@ module.exports.connect = function () {
             console.log("connected");
             Employee = db.model("employee_data", employeeSchema);
             Task = db.model("task_data", taskSchema);
-
-            //admin if schema does not exist
             Admin = db.model("admin_data", adminSchema);
+            dbImages = db.model("default_images", dbImageSchema);
 
             //reset to default number of employees and tasks
 
@@ -193,6 +202,29 @@ module.exports.createTask = function (taskData) {
 
 //EMPLOYEES
 /**************************************************************/
+
+module.exports.getDefaultImages = function () {
+
+    return new Promise(function (resolve, reject) {
+        
+        dbImages.find({})
+            .exec()
+            .then((images) => {
+                if (images.length == 0) {
+
+                    reject("no images to load from database");
+                }
+                else {
+
+                    resolve(images);
+                }
+            })
+            .catch((err) => {
+
+                reject("Critical error trying to retrieve database images");
+            })
+    })
+}
 
 module.exports.getSetOfEmployees = function (limit) {
 
@@ -445,7 +477,7 @@ module.exports.login = function (adminData) {
                             if (res === true) {
 
                                 console.log("login sucessful")
-                                resolve({_id:admin[0]._id, username: admin[0].username});
+                                resolve({ _id: admin[0]._id, username: admin[0].username });
                             }
                             else {
 

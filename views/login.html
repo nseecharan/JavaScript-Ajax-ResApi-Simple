@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" id="login-page">
+
 <head>
     <script defer src="../static/index.js"></script>
     <link rel="stylesheet" href="../static/css/login.css">
@@ -9,21 +10,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login</title>
 </head>
+
 <body>
     <h3 class="center-content">Admin Login</h3>
-    <form id="login" onsubmit = "event.preventDefault()"> <!--action="/api/login" method="POST"-->
+    <form id="login" onsubmit="event.preventDefault()">
+        <!--action="/api/login" method="POST"-->
         <div class="center-content">
             <div class="login-win">
 
-                    <label for="username">User Name</label>
-                    <input id="username" name="username" type="text">
+                <label for="username">User Name</label>
+                <input id="username" name="username" type="text" autocomplete="username">
 
-                    <label for="password">Password</label>
-                    <input id="password" name="password" type="password">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" autocomplete="current-password">
 
                 <div id="loginbtn-div" class="center-content">
-                    <button onclick="login()">Login</button> <!--type="submit"-->
-                </div>        
+                    <button onclick="login()">Login</button>
+                    <!--type="submit"-->
+                </div>
             </div>
         </div>
     </form>
@@ -31,4 +35,5 @@
         <span id="error-msg"></span>
     </div>
 </body>
+
 </html>

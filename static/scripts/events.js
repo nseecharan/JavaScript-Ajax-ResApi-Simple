@@ -1,6 +1,6 @@
 import { createButton } from './render/renderInputs.js';
 import { clearElement, elementDisplay, readImage } from './render/renderTools.js';
-import { renderTaskForm, renderEmployeeForm } from './render/renderForm.js';
+import { renderTaskForm, renderEmployeeForm, preloadFormData } from './render/renderForm.js';
 import {
     createEmployee, createTask,
     getAllEmployees, getAllTasks,
@@ -34,11 +34,12 @@ export function createTaskForm() {
     }
     else {
 
-        changeForm(false, false, taskFormTitleID, "Create Task", taskFormID, "Create")
+        changeForm(false, false, taskFormTitleID, "Create Task", taskFormID, "Create");
+        taskForm.reset();
     }
 }
 
-export function updateTaskForm(_id) {
+export function updateTaskForm(_id, data) {
 
     let taskForm = document.getElementById(taskFormID);
 
@@ -53,8 +54,10 @@ export function updateTaskForm(_id) {
     }
     else {
 
-        changeForm(false, true, taskFormTitleID, "Update Task", taskFormID, "Update", _id)
+        changeForm(false, true, taskFormTitleID, "Update Task", taskFormID, "Update", _id);
     }
+
+    preloadFormData(taskFormID, data);
 }
 
 export function createEmpForm() {
@@ -72,11 +75,13 @@ export function createEmpForm() {
     }
     else {
 
-        changeForm(true, false, empFormTitleID, "Create Employee", empFormID, "Create")
+        changeForm(true, false, empFormTitleID, "Create Employee", empFormID, "Create");
+        empForm.reset();
+        empForm.getElementsByTagName('img')[0].src = "";
     }
 }
 
-export function updateEmpForm(_id) {
+export function updateEmpForm(_id, data) {
 
     let empForm = document.getElementById(empFormID);
 
@@ -91,17 +96,19 @@ export function updateEmpForm(_id) {
     }
     else {
 
-        changeForm(true, true, empFormTitleID, "Update Employee", empFormID, "Update", _id)
+        changeForm(true, true, empFormTitleID, "Update Employee", empFormID, "Update", _id);
     }
+
+    preloadFormData(empFormID, data);
 }
 
-function closeTaskForm() {
+export function closeTaskForm() {
 
     clearElement("#submit-task");
     dataRefresh("tableBody");
 }
 
-function closeEmpForm() {
+export function closeEmpForm() {
 
     clearElement("#submit-emp");
     dataRefresh("tableBody");
