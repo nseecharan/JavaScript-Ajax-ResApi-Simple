@@ -1,23 +1,23 @@
 import { createButton } from './render/renderInputs.js';
 import { clearElement, elementDisplay, readImage } from './render/renderTools.js';
-import { renderTaskForm, renderEmployeeForm } from './render/renderForm.js';
+import { renderTaskForm, renderEmployeeForm, preloadFormData } from './render/renderForm.js';
 import {
     createEmployee, createTask,
     getAllEmployees, getAllTasks,
     updateEmployee, updateTask,
     deleteEmployee, deleteTask,
     dataRefresh
-} from './requests.js';
+} from './dataManager.js';
 
 const taskFormParentID = "submit-task";
 const taskFormTitleID = "task-form-title";
 const taskFormID = "task-form";
+const taskCancelBtnID = "task-cancel-btn";
 
 const empFormParentID = "submit-emp";
 const empFormTitleID = "emp-form-title";
 const empFormID = "emp-form";
-
-const cancleBtnID = "cancel-btn";
+const EmpCancelBtnID = "emp-cancel-btn";
 
 export function createTaskForm() {
 
@@ -26,35 +26,38 @@ export function createTaskForm() {
     if (!taskForm) {
 
         createForm(false, false, "Create Task", taskFormID, "Create", taskFormParentID);
+
+        document.getElementById(taskCancelBtnID).addEventListener('click', () => {
+
+            closeTaskForm();
+        })
     }
     else {
 
-        changeForm(false, false, taskFormTitleID, "Create Task", taskFormID, "Create")
+        changeForm(false, false, taskFormTitleID, "Create Task", taskFormID, "Create");
+        taskForm.reset();
     }
-
-    document.getElementById(cancleBtnID).addEventListener('click', () => {
-
-        closeTaskForm();
-    })
 }
 
-export function updateTaskForm(_id) {
+export function updateTaskForm(_id, data) {
 
     let taskForm = document.getElementById(taskFormID);
 
     if (!taskForm) {
 
         createForm(false, true, "Update Task", taskFormID, "Update", taskFormParentID, _id);
+
+        document.getElementById(taskCancelBtnID).addEventListener('click', () => {
+
+            closeTaskForm();
+        })
     }
     else {
 
-        changeForm(false, true, taskFormTitleID, "Update Task", taskFormID, "Update", _id)
+        changeForm(false, true, taskFormTitleID, "Update Task", taskFormID, "Update", _id);
     }
 
-    document.getElementById(cancleBtnID).addEventListener('click', () => {
-
-        closeTaskForm();
-    })
+    preloadFormData(taskFormID, data);
 }
 
 export function createEmpForm() {
@@ -64,44 +67,48 @@ export function createEmpForm() {
     if (!empForm) {
 
         createForm(true, false, "Create Employee", empFormID, "Create", empFormParentID);
+
+        document.getElementById(EmpCancelBtnID).addEventListener('click', () => {
+
+            closeEmpForm();
+        })
     }
     else {
 
-        changeForm(true, false, empFormTitleID, "Create Employee", empFormID, "Create")
+        changeForm(true, false, empFormTitleID, "Create Employee", empFormID, "Create");
+        empForm.reset();
+        empForm.getElementsByTagName('img')[0].src = "";
     }
-
-    document.getElementById(cancleBtnID).addEventListener('click', () => {
-
-        closeEmpForm();
-    })
 }
 
-export function updateEmpForm(_id) {
+export function updateEmpForm(_id, data) {
 
     let empForm = document.getElementById(empFormID);
 
     if (!empForm) {
 
         createForm(true, true, "Update Employee", empFormID, "Update", empFormParentID, _id);
+
+        document.getElementById(EmpCancelBtnID).addEventListener('click', () => {
+
+            closeEmpForm();
+        })
     }
     else {
 
-        changeForm(true, true, empFormTitleID, "Update Employee", empFormID, "Update", _id)
+        changeForm(true, true, empFormTitleID, "Update Employee", empFormID, "Update", _id);
     }
 
-    document.getElementById(cancleBtnID).addEventListener('click', () => {
-
-        closeTaskForm();
-    })
+    preloadFormData(empFormID, data);
 }
 
-function closeTaskForm() {
+export function closeTaskForm() {
 
     clearElement("#submit-task");
     dataRefresh("tableBody");
 }
 
-function closeEmpForm() {
+export function closeEmpForm() {
 
     clearElement("#submit-emp");
     dataRefresh("tableBody");
@@ -111,14 +118,15 @@ function createForm(isEmpForm, isUpdate, title, formID, btnName, parentID, updat
 
     if (isEmpForm) {
 
-        renderEmployeeForm(title, formID, btnName, parentID);
+        renderEmployeeForm(title, formID, EmpCancelBtnID, btnName, parentID);
     }
     else {
 
-        renderTaskForm(title, formID, btnName, parentID);
+        renderTaskForm(title, formID, taskCancelBtnID, btnName, parentID);
     }
 
     let button = document.getElementById(formID).lastChild;
+
     setSubmitType(isEmpForm, isUpdate, button, formID, updateDataID);
 }
 
@@ -130,10 +138,10 @@ function changeForm(isEmpForm, isUpdate, titleID, titleChange, formID, btnName, 
 
         title.textContent = titleChange;
         let newButton = createButton("submit-btn", "", btnName, "submit");
+        let form = document.getElementById(formID);
 
         setSubmitType(isEmpForm, isUpdate, newButton, formID, updateDataID);
 
-        let form = document.getElementById(formID);
         form.replaceChild(newButton, form.lastChild);
     }
 }

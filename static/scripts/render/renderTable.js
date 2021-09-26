@@ -1,15 +1,6 @@
 import { createButton } from './renderInputs.js';
 import { updateEmpForm, updateTaskForm } from '../events.js';
-import { deleteEmployee, deleteTask } from '../requests.js';
-
-export function clearTable(tableId) {
-
-    if (document.getElementById(tableId)) {
-
-        document.getElementById(tableId).childNodes[2].textContent = "";
-        document.getElementById(tableId).childNodes[4].textContent = "";
-    }
-}
+import { deleteEmployee, deleteTask } from '../dataManager.js';
 
 export function createTableHeader(headerList, parentId) {
 
@@ -23,8 +14,6 @@ export function createTableHeader(headerList, parentId) {
         th.className = index === last ? "th-action" : "th-style";
         tHead.appendChild(th);
     })
-
-    document.querySelector("#renderTable").appendChild(tHead);
 }
 
 export function renderRow(data, index, parentId) {
@@ -61,7 +50,7 @@ export function renderRow(data, index, parentId) {
 
             updateBtn.addEventListener('click', () => {
 
-                updateEmpForm(_id);
+                updateEmpForm(_id, data);
             })
 
             deleteBtn.addEventListener('click', () => {
@@ -79,7 +68,7 @@ export function renderRow(data, index, parentId) {
 
             updateBtn.addEventListener('click', () => {
 
-                updateTaskForm(_id);
+                updateTaskForm(_id, data);
             })
 
             deleteBtn.addEventListener('click', () => {

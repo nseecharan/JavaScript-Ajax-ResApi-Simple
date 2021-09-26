@@ -10,9 +10,8 @@ const passport = require("passport");
 passport.use(pAuth.getStrategy());
 app.use(passport.initialize());
 
-
 app.use(cors());
-app.use(express.json());//this is needed since bodyParser is depreciated
+app.use(express.json({ limit: '1mb' }));//this is needed since bodyParser is depreciated
 app.use('/static', express.static('static'));
 app.use(express.urlencoded({ extended: false }));//this is necessary for my form submissions
 
@@ -28,12 +27,27 @@ const task_add = task_route + "/add";
 const task_update = task_route + "/update";//id as param
 const task_delete = task_route + "/delete";//id as param
 
+let dbImages;
+let defaultImage;
 
 const HTTP_PORT = process.env.PORT || 8080;
 
 function onHttpStart() {
 
-    dataService.connect();
+    dataService.connect()
+        .then(() => {
+
+            dataService.getDefaultImages()
+                .then((images) => {
+
+                    dbImages = images;
+                    defaultImage = images[2].image;
+                })
+                .catch((err) => {
+                    console.log("default images could not be retrieved from database");
+                });
+        });
+
     console.log("Express http server listening on: " + HTTP_PORT);
 }
 
@@ -89,7 +103,13 @@ app.post(emp_register, (req, res, next) => {
         if (err) { return next(err); }
         if (!success) { return res.status(401).json({ "message": "Please log in" }); }
 
-        dataService.createEmployee(req.body)
+        let newEmployee = req.body;
+        if (newEmployee.image === "" || newEmployee.image === undefined) {
+
+            newEmployee.image = defaultImage;
+        }
+
+        dataService.createEmployee(newEmployee)
             .then((msg) => {
 
                 res.json({ "message": msg });
@@ -206,6 +226,12 @@ app.put(emp_update, (req, res, next) => {
         if (!success) { return res.status(401).json({ "message": "Please log in" }); }
 
         let id = req.query.empID + "";
+
+        let newEmployee = req.body;
+        if (newEmployee.image === "" || newEmployee.image === undefined) {
+
+            newEmployee.image = defaultImage;
+        }
 
         dataService.updateEmployee(id, req.body)
             .then((msg) => {

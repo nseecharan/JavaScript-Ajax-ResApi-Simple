@@ -1,7 +1,6 @@
+import { closeEmpForm, closeTaskForm } from './events.js';
 import { renderData } from './render/renderData.js';
-import { clearTable } from './render/renderTable.js';
-import { elementDisplay, readImage } from './render/renderTools.js';
-
+import { elementDisplay, readImage, clearElement } from './render/renderTools.js';
 
 let emp_route = "/api/employees";//optional name as param
 //let emp_find = emp_route + "/search"
@@ -64,7 +63,8 @@ export function searchData(e) {
 
     if (query.length !== 0 || query !== undefined) {
 
-        clearTable("renderTable");
+        clearElement("#tableHdr");
+        clearElement("#tableBody");
 
         searchResults = [];
         dbData.map((data) => {
@@ -89,7 +89,7 @@ export function searchData(e) {
     }
 }
 
-export function dataRefresh(tableId){
+export function dataRefresh(tableId) {
 
     renderData(dbData, tableId, token);
 }
@@ -110,7 +110,8 @@ export function login() {
 
     makeAjaxRequest("POST", "/api/login", formdata);
     form.reset();
-    clearTable("renderTable");
+    clearElement("#tableHdr");
+    clearElement("#tableBody");
 }
 
 //CREATE
@@ -135,6 +136,9 @@ export async function createEmployee(formId) {
     if (imageSrc) {
 
         formdata.image = await readImage(imageSrc);
+    }
+    else {
+
     }
 
     makeAjaxRequest("POST", emp_register, formdata);
@@ -199,9 +203,14 @@ export async function updateEmployee(id, formId) {
 
         formdata.image = await readImage(imageSrc);
     }
+    else {
+
+        formdata.image = form.getElementsByTagName('img')[0].src;
+    }
 
     makeAjaxRequest("PUT", emp_update + "?empID=" + id + "", formdata);
-    form.reset();
+    closeEmpForm();
+
 }
 
 export function updateTask(id, formId) {
@@ -215,7 +224,7 @@ export function updateTask(id, formId) {
     }
 
     makeAjaxRequest("PUT", task_update + "?taskID=" + id + "", formdata);
-    form.reset();
+    closeTaskForm();
 }
 
 //DELETE

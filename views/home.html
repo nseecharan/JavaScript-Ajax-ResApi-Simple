@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -12,41 +13,41 @@
 </head>
 
 <body>
-    <div id="Title-div" class="titles">
+    <div id="title-div" class="titles">
         <div id="title-heading">
-            <h3 class="left-indent">Welcome to Nigel Seecharan's Simple Api</h3>
+            <h3>Welcome to Nigel Seecharan's Simple Api</h3>
+        </div>
+        <div class="small-margin">
+            <p>Log in in to create, or delete newly created employees or tasks. Please note that default entries do not
+                have
+                the option to be modified.</p>
+            <form id="login-form" onsubmit="event.preventDefault()">
+                <div>
+                    <label for="username">User Name</label>
+                    <input id="username" name="username" type="text" autocomplete="username">
+                </div>
+                <div>
+                    <label for="password">Password</label>
+                    <input id="password" name="password" type="password" autocomplete="current-password">
+                </div>
+                <button>Login</button>
+            </form>
+        </div>
+        <div id="api-info" class="small-margin">
+            <p>This api is for demo purposes, and has routes that access small lists of data related to employees and
+                tasks.
+            </p>
+            <p>Route structure goes as follows: [website url]/api/[emoloyees or tasks]
+            </p>
+            <p>For more information on the routes, please refer to the project
+                <a href='https://github.com/nseecharan/JavaScript-Ajax-ResApi-Simple'>readme</a>.
+            </p>
+            <a href='https://nigelcodes.wordpress.com/'>Click here to learn more about me</a>
         </div>
     </div>
-    <div id="api-info" class="left-indent">
-        <p>This api is for demo purposes, and has routes that access small lists of data related to employees and tasks.
-        </p>
-        <p>Route structure goes as follows: [website url]/api/[emoloyees or tasks]
-        </p>
-        <p>For more information on the routes, please refer to the project
-            <a href='https://github.com/nseecharan/JavaScript-Ajax-ResApi-Simple'>readme</a>.
-        </p>
-        <a href='https://nigelcodes.wordpress.com/'>Click here to learn more about me</a>
-    </div>
-    <br />
-    <div class="left-indent login">
-        <h3>Admin Login</h3>
-        <p>Loggin in to create, or delete newly created employees or tasks. Please note that default entries do not have
-            the option to be modified.</p>
-        <p>Currently the update interface has not been implemented yet.</p>
-        <form id="login-form" onsubmit="event.preventDefault()">
-            <div>
-                <label for="username">User Name</label>
-                <input id="username" name="username" type="text">
-            </div>
-            <div>
-                <label for="password">Password</label>
-                <input id="password" name="password" type="password">
-            </div>
-            <button>Login</button>
-        </form>
-    </div>
-    <h3 class="left-indent underline">Display Data</h3>
+
     <div class="api-features">
+        <h3 class="small-margin underline">Display Data</h3>
         <div id="load-data" class="option-border api-option-display">
             <span class="api-option-title">Api Options</span>
             <div class="api-option-inputs">
@@ -83,13 +84,13 @@
             <pre id="raw-data"></pre>
         </div>
     </div>
-</body>
-<footer>
-    <div id="Title-div" class="titles">
-        <div id="title-heading">
-            <h3 class="left-indent">Created by Nigel Seecharan 2021</h3>
+    <footer>
+        <div>
+            <div>
+                <h3 class="small-margin">Created by Nigel Seecharan 2021</h3>
+            </div>
         </div>
-    </div>
-</footer>
+    </footer>
+</body>
 
 </html>
