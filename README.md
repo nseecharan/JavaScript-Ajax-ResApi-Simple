@@ -5,7 +5,7 @@ If you wish to see my Front-End design skills, please look at these examples:
 <a href="https://boring-hamilton-295e9a.netlify.app/">Angular Demo</a>
 Also, this documentation is written with non technical people in mind, therefore it may be a bit more verbose than what programmers may expect.
 <div>
-      <img width="1037" alt="rest-api-frontend09222021" src="https://user-images.githubusercontent.com/44081182/134374482-efcc918b-345e-433d-a571-b0abfbf1aaa1.PNG">
+      <img width="1056" alt="api-preview-image" src="https://user-images.githubusercontent.com/44081182/134815218-14229e33-d52f-4d90-8a8b-5459fb047a6c.PNG">
 </div>
 <a href="https://employee-task-api.herokuapp.com/">https://employee-task-api.herokuapp.com/</a>
 
