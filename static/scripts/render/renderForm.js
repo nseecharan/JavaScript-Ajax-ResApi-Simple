@@ -1,5 +1,6 @@
+import { deleteEmployee, deleteTask } from '../dataManager.js';
+import { confirmDeleteEmp, confirmDeleteTask } from '../events.js';
 import { createButton, createSelect, createInput } from './renderInputs.js';
-import { readImage } from './renderTools.js';
 
 export function preloadFormData(formID, data) {
 
@@ -14,20 +15,47 @@ export function preloadFormData(formID, data) {
     let form = document.getElementById(formID);
     let inputs = form.getElementsByTagName('input');
     let image = form.getElementsByTagName('img')[0];
+    let deleteBtn = createButton("delete-btn", "btn-sizing btn-red", "Delete", "button");
+    let dangerZone = document.createElement('div');
+    dangerZone.className = "danger-zone";
+    let warning = document.createElement('span');
+    warning.innerText = "Danger Zone";
 
     if (data.first_name) {
 
-        inputs[0].value = data.first_name;
-        inputs[1].value = data.last_name;
-        inputs[2].value = data.email;
+        inputs[1].value = data.first_name;
+        inputs[2].value = data.last_name;
+        inputs[3].value = data.email;
 
         let select = form.getElementsByTagName('select');
         select[0].value = data.sex;
         image.src = data.image;
+
+        deleteBtn.addEventListener('click', () => {
+
+            confirmDeleteEmp(data);
+        })
     }
     else {
 
         inputs[0].value = data.task;
+
+        deleteBtn.addEventListener('click', () => {
+
+            confirmDeleteTask(data);
+        })
+    }
+
+    dangerZone.append(warning, deleteBtn);
+
+    //append delete button if it does not exist
+    //else relpace the button with a new one that has the updated function
+    if (form.lastChild.className !== "danger-zone") {
+
+        form.append(dangerZone);
+    }
+    else {
+        form.replaceChild(dangerZone, form.lastChild)
     }
 }
 
@@ -39,9 +67,9 @@ export function renderTaskForm(formTitle, formId, cancelBtnID, submintBtnName, e
 
     let labelTask = document.createElement('label');
     let taskInput = createInput("", "", "text", "Task Name");
-    let submitButton = createButton("submit-btn", "", submintBtnName, "submit");
+    let submitButton = createButton("submit-btn", "btn-sizing", submintBtnName, "submit");
 
-    labelTask.innerHTML = "Task Name";
+    labelTask.innerText = "Task Name";
 
     form.append(labelTask, taskInput, submitButton);
 }
@@ -57,18 +85,21 @@ export function renderEmployeeForm(formTitle, formId, cancelBtnID, submintBtnNam
     let labelEmail = document.createElement('label');
     let labelSex = document.createElement('label');
     let labelImage = document.createElement('label');
-    let submitButton = createButton("submit-btn", "", submintBtnName, "submit");
+    let submitButton = createButton("submit-btn", "btn-sizing", submintBtnName, "submit");
 
-    labelFname.innerHTML = "First Name";
-    labelLname.innerHTML = "Last Name";
-    labelEmail.innerHTML = "Email";
-    labelSex.innerHTML = "Sex";
-    labelImage.innerHTML = "Image"
+    labelFname.innerText = "First Name";
+    labelLname.innerText = "Last Name";
+    labelEmail.innerText = "Email";
+    labelSex.innerText = "Sex";
+    labelImage.innerText = "Image"
 
     let fnameInput = createInput("", "", "text", "First Name");
     let lnameInput = createInput("", "", "text", "Last Name");
     let emailInput = createInput("", "", "text", "Email");
     let imageInput = createInput("", "", "file", "");
+    fnameInput.required = true;
+    lnameInput.required = true;
+    emailInput.required = true;
 
     let optionsArray = [
         { value: "", text: "Add Sex" },
@@ -91,10 +122,10 @@ export function renderEmployeeForm(formTitle, formId, cancelBtnID, submintBtnNam
     previewArea.appendChild(image);
 
     form.append(
+        labelImage, previewArea, imageInput,
         labelFname, fnameInput, labelLname,
         lnameInput, labelEmail, emailInput,
-        labelSex, sexSelect, labelImage,
-        previewArea, imageInput, submitButton);
+        labelSex, sexSelect, submitButton);
 }
 
 function renderFormStructure(formTitle, formId, cancelBtnID, elementIdentifier) {
@@ -106,7 +137,7 @@ function renderFormStructure(formTitle, formId, cancelBtnID, elementIdentifier) 
     let form = document.createElement('form');
 
     customHeader.className = "form-heading";
-    title.innerHTML = formTitle;
+    title.innerText = formTitle;
     title.id = formId + "-title";
 
     customHeader.append(title, cancelButton);

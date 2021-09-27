@@ -1,12 +1,11 @@
 import { createButton } from './render/renderInputs.js';
-import { clearElement, elementDisplay, readImage } from './render/renderTools.js';
+import { clearElement} from './render/renderTools.js';
 import { renderTaskForm, renderEmployeeForm, preloadFormData } from './render/renderForm.js';
 import {
     createEmployee, createTask,
     getAllEmployees, getAllTasks,
     updateEmployee, updateTask,
     deleteEmployee, deleteTask,
-    dataRefresh
 } from './dataManager.js';
 
 const taskFormParentID = "submit-task";
@@ -19,7 +18,7 @@ const empFormTitleID = "emp-form-title";
 const empFormID = "emp-form";
 const EmpCancelBtnID = "emp-cancel-btn";
 
-export function createTaskForm() {
+export function openTaskForm() {
 
     let taskForm = document.getElementById(taskFormID);
 
@@ -39,13 +38,13 @@ export function createTaskForm() {
     }
 }
 
-export function updateTaskForm(_id, data) {
+export function openTaskUpdateForm(_id, data) {
 
     let taskForm = document.getElementById(taskFormID);
 
     if (!taskForm) {
 
-        createForm(false, true, "Update Task", taskFormID, "Update", taskFormParentID, _id);
+        createForm(false, true, "View Task", taskFormID, "Update", taskFormParentID, _id);
 
         document.getElementById(taskCancelBtnID).addEventListener('click', () => {
 
@@ -54,13 +53,23 @@ export function updateTaskForm(_id, data) {
     }
     else {
 
-        changeForm(false, true, taskFormTitleID, "Update Task", taskFormID, "Update", _id);
+        changeForm(false, true, taskFormTitleID, "View Task", taskFormID, "Update", _id);
     }
 
     preloadFormData(taskFormID, data);
 }
 
-export function createEmpForm() {
+export function confirmDeleteTask(data) {
+
+    let confirmDel = confirm("Delete this " + data.task + "? This action can not be undone.");
+
+    if (confirmDel == true) {
+
+        deleteTask(data._id);
+    }
+}
+
+export function openEmpForm() {
 
     let empForm = document.getElementById(empFormID);
 
@@ -81,13 +90,13 @@ export function createEmpForm() {
     }
 }
 
-export function updateEmpForm(_id, data) {
+export function openEmpUpdateForm(_id, data) {
 
     let empForm = document.getElementById(empFormID);
 
     if (!empForm) {
 
-        createForm(true, true, "Update Employee", empFormID, "Update", empFormParentID, _id);
+        createForm(true, true, "View Employee", empFormID, "Update", empFormParentID, _id);
 
         document.getElementById(EmpCancelBtnID).addEventListener('click', () => {
 
@@ -96,23 +105,34 @@ export function updateEmpForm(_id, data) {
     }
     else {
 
-        changeForm(true, true, empFormTitleID, "Update Employee", empFormID, "Update", _id);
+        changeForm(true, true, empFormTitleID, "View Employee", empFormID, "Update", _id);
     }
 
     preloadFormData(empFormID, data);
 }
 
+export function confirmDeleteEmp(data) {
+
+    let confirmDel = confirm("Delete this " + data.first_name + " " + data.last_name + "? This action can not be undone.");
+
+    if (confirmDel == true) {
+
+        deleteEmployee(data._id);
+    }
+}
+
 export function closeTaskForm() {
 
     clearElement("#submit-task");
-    dataRefresh("tableBody");
 }
 
 export function closeEmpForm() {
 
     clearElement("#submit-emp");
-    dataRefresh("tableBody");
 }
+
+//FORM METHODS
+//******************************************/
 
 function createForm(isEmpForm, isUpdate, title, formID, btnName, parentID, updateDataID = "") {
 

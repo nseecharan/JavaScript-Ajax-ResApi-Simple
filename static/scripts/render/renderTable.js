@@ -1,5 +1,5 @@
 import { createButton } from './renderInputs.js';
-import { updateEmpForm, updateTaskForm } from '../events.js';
+import { openEmpUpdateForm, openTaskUpdateForm } from '../events.js';
 import { deleteEmployee, deleteTask } from '../dataManager.js';
 
 export function createTableHeader(headerList, parentId) {
@@ -10,7 +10,7 @@ export function createTableHeader(headerList, parentId) {
 
     headerList.map((header, index) => {
         let th = document.createElement('th');
-        th.innerHTML = header;
+        th.innerText = header;
         th.className = index === last ? "th-action" : "th-style";
         tHead.appendChild(th);
     })
@@ -32,9 +32,9 @@ export function renderRow(data, index, parentId) {
     let row;
     let td1 = document.createElement('td');
     let td2 = document.createElement('td');
-    td2.innerHTML = name;
+    td2.innerText = name;
     let td3 = document.createElement('td');
-    td3.innerHTML = email;
+    td3.innerText = email;
     let td4 = document.createElement('td');
 
     //row buttons
@@ -45,38 +45,27 @@ export function renderRow(data, index, parentId) {
 
         if (data.first_name) {
 
-            let updateBtn = createButton("emp-update-btn", "btn-sizing", "Update", "button");
-            let deleteBtn = createButton("emp-delete-btn", "btn-sizing btn-red", "Delete", "button");
+            let updateBtn = createButton("emp-update-btn", "btn-sizing", "View Employee", "button");
+
 
             updateBtn.addEventListener('click', () => {
 
-                updateEmpForm(_id, data);
+                openEmpUpdateForm(_id, data);
             })
 
-            deleteBtn.addEventListener('click', () => {
-
-                deleteEmployee(_id);
-            })
-
-            buttonDiv.append(updateBtn, deleteBtn);
+            buttonDiv.append(updateBtn);
 
         }
         else {
 
-            let updateBtn = createButton("task-update-btn", "btn-sizing", "Update", "button");
-            let deleteBtn = createButton("task-delete-btn", "btn-sizing btn-red", "Delete", "button");
+            let updateBtn = createButton("task-update-btn", "btn-sizing", "View Task", "button");
 
             updateBtn.addEventListener('click', () => {
 
-                updateTaskForm(_id, data);
+                openTaskUpdateForm(_id, data);
             })
 
-            deleteBtn.addEventListener('click', () => {
-
-                deleteTask(_id);
-            })
-
-            buttonDiv.append(updateBtn, deleteBtn);
+            buttonDiv.append(updateBtn);
         }
     }
 
@@ -93,7 +82,7 @@ export function renderRow(data, index, parentId) {
     }
     else {
 
-        td1.innerHTML = data.task;
+        td1.innerText = data.task;
         row = addRowDetails([td1, td4], index, _id)
     }
 

@@ -18,10 +18,10 @@
             <h3>Welcome to Nigel Seecharan's Simple Api</h3>
         </div>
         <div class="small-margin">
-            <p>Log in in to create, or delete newly created employees or tasks. Please note that default entries do not
-                have
-                the option to be modified.</p>
+            <p>This api is for demo purposes, and has routes that access small lists of data related to employees and
+                tasks. Log in in to use all api features.</p>
             <form id="login-form" onsubmit="event.preventDefault()">
+                <span id="login-error-msg"></span>
                 <div>
                     <label for="username">User Name</label>
                     <input id="username" name="username" type="text" autocomplete="username">
@@ -34,15 +34,9 @@
             </form>
         </div>
         <div id="api-info" class="small-margin">
-            <p>This api is for demo purposes, and has routes that access small lists of data related to employees and
-                tasks.
-            </p>
-            <p>Route structure goes as follows: [website url]/api/[emoloyees or tasks]
-            </p>
-            <p>For more information on the routes, please refer to the project
+            <p>For information on the routes, please refer to the project
                 <a href='https://github.com/nseecharan/JavaScript-Ajax-ResApi-Simple'>readme</a>.
             </p>
-            <a href='https://nigelcodes.wordpress.com/'>Click here to learn more about me</a>
         </div>
     </div>
 
@@ -66,6 +60,7 @@
                 <div id="create-options">
                     <button class="btn-sizing">New Employee</button>
                     <button class="btn-sizing">New Task</button>
+                    <span id="error-msg"></span>
                 </div>
                 <div id="create-forms">
                     <div id="submit-emp"></div>
@@ -83,14 +78,13 @@
             <pre>Raw Data Display</pre>
             <pre id="raw-data"></pre>
         </div>
-    </div>
-    <footer>
-        <div>
+        <footer>
             <div>
-                <h3 class="small-margin">Created by Nigel Seecharan 2021</h3>
+                API demo created by <a href="https://nigelcodes.wordpress.com/">Nigel Seecharan</a>
+                <span id="tested">Tested in Brave V1.29.81</span>
             </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
 </body>
 
 </html>

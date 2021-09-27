@@ -1,6 +1,19 @@
+:root {
+    --white80: rgba(255, 255, 255, 0.8);
+    --white20: rgba(255, 255, 255, 0.2);
+    --bgRadialGrad: radial-gradient(circle at 85% 88%, palegreen -10%, lightseagreen 75%);
+    --barRadialGrad: radial-gradient(at 150% 150%, #000, #006666);
+    --black50: rgba(0, 0, 0, 0.5);
+    --black30: rgba(0, 0, 0, 0.3);
+    --black20: rgba(0, 0, 0, 0.2);
+    --darkGrey50: rgba(50, 50, 50, 0.5);
+    --solidGrey: rgb(100, 100, 100);
+}
+
 html {
-    background: radial-gradient(circle at 85% 88%, palegreen -10%, lightseagreen 75%);
+    background: var(--bgRadialGrad);
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+    background-attachment: fixed;
 }
 body {
     margin: 0px;
@@ -18,31 +31,29 @@ img {
 footer {
     bottom: 0;
     position: fixed;
-    width: 100%;
+    width: 80.1%;
     background: black;
     color: white;
+    padding: 0.4em 0;
 }
-.small-margin {
-    margin: 0.4em;
+footer a {
+    color: white;
 }
-.underline {
-    color: rgba(255, 255, 255, 0.8);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.8);
+footer div {
+    padding: 1em;
 }
-.titles {
-    color: rgba(255, 255, 255, 0.8);
-    display: flow-root;
-    background-image: radial-gradient(at 150% 150%, #000, #006666);
-    border-right: 1px solid rgba(255, 255, 255, 0.8);
-}
+
 #title-div {
     float: left;
     width: 19.9%;
     height: 100%;
 }
 #title-heading {
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--black30);
     padding: 0.4em;
+}
+#title-heading h3 {
+    margin: 0px;
 }
 #login {
     float: right;
@@ -55,7 +66,7 @@ footer {
     margin-bottom: 0.4em;
 }
 #api-info {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--white20);
     border-radius: 4px;
     padding: 0.4em;
 }
@@ -87,7 +98,7 @@ footer {
 #json-dsp,
 #styled-dsp {
     border-radius: 8px;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: var(--black20);
     padding: 1em;
     margin: 0.4em;
 }
@@ -111,18 +122,22 @@ footer {
 #search input {
     width: 100%;
 }
-.float-right {
+#tested {
     float: right;
 }
-.float-left {
-    float: left;
+
+.titles {
+    color: var(--white80);
+    display: flow-root;
+    background-image: var(--barRadialGrad);
+    border-right: 1px solid black;
 }
 .api-option-inputs {
     width: 200px;
     margin: 0.4em;
 }
 .option-border {
-    border: 2px solid rgba(255, 255, 255, 0.8);
+    border: 2px solid var(--white80);
     border-radius: 4px;
     height: max-content;
     color: black;
@@ -138,20 +153,19 @@ footer {
     margin: 0.4em;
 }
 .options {
-    /* width: 33.33%;*/
     max-width: 200px;
     min-height: 6em;
     margin: 4px;
 }
 .api-option-title {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: var(--white80);
     display: block;
 }
 .center-content {
     text-align: center;
 }
 .form-heading {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: var(--white80);
     height: 2em;
 }
 .create-form {
@@ -171,12 +185,11 @@ select {
     display: block;
     margin: 0.4em auto;
     border-radius: 4px;
-    background: rgba(50, 50, 50, 0.5);
+    background: var(--darkGrey50);
     padding: 10px;
     height: 50px;
     width: 50px;
 }
-/*render data*/
 .table-styling {
     border-spacing: 0;
     width: inherit;
@@ -192,29 +205,81 @@ select {
     border-left: 1px solid;
 }
 .thead-style {
-    background-color: rgb(100, 100, 100);
+    background-color: var(--solidGrey);
     text-align: left;
 }
 .td-style {
     padding: 0.4em;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+    border-bottom: 1px solid var(--black50);
 }
 .td-action {
     padding: 0.4em;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
-    border-left: 1px solid rgba(0, 0, 0, 0.5);
+    border-bottom: 1px solid var(--black50);
+    border-left: 1px solid var(--black50);
+}
+.danger-zone {
+    border-radius: 4px;
+    background: var(--white80);
+    margin-top: 1em;
+}
+.danger-zone span {
+    display: block;
+    background: crimson;
+    color: white;
+    border-radius: 4px 4px 0px 0px;
+}
+
+.small-margin {
+    margin: 0.4em;
+}
+.underline {
+    color: var(--white80);
+    border-bottom: 2px solid var(--white80);
+}
+.float-right {
+    float: right;
+}
+.float-left {
+    float: left;
 }
 
 @media (max-width: 900px) {
     .api-features {
         width: 100%;
+        overflow: inherit;
     }
     #title-div {
         width: 100%;
         height: max-content;
     }
     .titles {
-        border-radius: 0px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+        border-bottom: 1px solid black;
+        border-right: 0px;
+    }
+    footer {
+        width: 100%;
+    }
+}
+@media (max-height: 510px) {
+    .api-features {
+        width: 100%;
+        overflow: inherit;
+    }
+    #title-div {
+        width: 100%;
+        height: max-content;
+    }
+    .titles {
+        border-bottom: 1px solid black;
+        border-right: 0px;
+    }
+    footer {
+        width: 100%;
+    }
+}
+@media (max-height: 910px) {
+    footer {
+        position: sticky;
+        width: 100%;
     }
 }

@@ -4,7 +4,7 @@ export function createButton(id, classes, name, type) {
     newButton.id = id;
     newButton.className = classes;
     newButton.type = type;
-    newButton.innerHTML = name;
+    newButton.innerText = name;
 
     return newButton;
 }

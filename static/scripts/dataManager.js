@@ -1,6 +1,6 @@
 import { closeEmpForm, closeTaskForm } from './events.js';
 import { renderData } from './render/renderData.js';
-import { elementDisplay, readImage, clearElement } from './render/renderTools.js';
+import { elementDisplay, readImage, clearElement, renderError } from './render/renderTools.js';
 
 let emp_route = "/api/employees";//optional name as param
 //let emp_find = emp_route + "/search"
@@ -31,8 +31,6 @@ function makeAjaxRequest(method, url, data) {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'jwt ' + token
-
-            //this will need to authorize for all routes except login
         }
     })
         .then((response) => response.json())
@@ -45,10 +43,20 @@ function makeAjaxRequest(method, url, data) {
 
             dbData = json;
             renderData(dbData, "tableBody", token);
+
+            if (dbData.message) {
+
+                //renderError(dbData.message, "error-msg");
+            }
+            else {
+
+                //renderError(dbData.loginMessage, "login-error-msg");
+            }
         })
         .catch((err) => {
 
             renderData(err, "tableBody", token);
+            console.log(err);
         });
 }
 
@@ -89,9 +97,32 @@ export function searchData(e) {
     }
 }
 
-export function dataRefresh(tableId) {
+function refreshEmpData(delay, close = false) {
 
-    renderData(dbData, tableId, token);
+    if (dbData.message !== "Please log in") {
+
+        if (close) {
+            closeEmpForm();
+        }
+
+        setTimeout(() => {
+            getAllEmployees();
+        }, delay)
+    }
+}
+
+function refreshTaskData(delay, close = false) {
+
+    if (dbData.message !== "Please log in") {
+
+        if (close) {
+            closeTaskForm();
+        }
+
+        setTimeout(() => {
+            getAllTasks();
+        }, delay)
+    }
 }
 
 //LOGIN
@@ -100,8 +131,7 @@ export function login() {
 
     let form = document.forms[0];
 
-    //code sanitization here
-
+    //TODO:code sanitization here
     let formdata = {
 
         username: form.elements[0].value,
@@ -120,44 +150,50 @@ export async function createEmployee(formId) {
 
     let form = document.getElementById(formId);
 
-    //code sanitization here
+    //TODO:code sanitization here
 
     let formdata = {
 
-        first_name: form.elements[0].value,
-        last_name: form.elements[1].value,
-        email: form.elements[2].value,
-        sex: form.elements[3].value,
+        first_name: form.elements[1].value,
+        last_name: form.elements[2].value,
+        email: form.elements[3].value,
+        sex: form.elements[4].value,
         image: ""
     }
 
-    let imageSrc = form.elements[4].files[0];
+    let imageSrc = form.elements[0].files[0];
 
     if (imageSrc) {
 
         formdata.image = await readImage(imageSrc);
     }
-    else {
-
-    }
 
     makeAjaxRequest("POST", emp_register, formdata);
-
-    form.reset();
+    //form.reset();
+    //Make it so that the create button gets disabled until the table refreshes again.
+    //This will avoid too many asynchronous calls to db/race conditions, while still
+    //allowing the user to create data over and over without needing to keep clicking
+    //the new task or employee button.
+    refreshEmpData(500, true);
 }
 
 export function createTask(formId) {
 
     let form = document.getElementById(formId);
 
-    //code sanitization here
+    //TODO:code sanitization here
     let formdata = {
 
         task: form.elements[0].value,
     }
 
     makeAjaxRequest("POST", task_add, formdata);
-    form.reset();
+    //form.reset();
+    //Make it so that the create button gets disabled until the table refreshes again.
+    //This will avoid too many asynchronous calls to db/race conditions, while still
+    //allowing the user to create data over and over without needing to keep clicking
+    //the new task or employee button.
+    refreshTaskData(500, true);
 }
 
 //READ
@@ -186,18 +222,18 @@ export async function updateEmployee(id, formId) {
 
     let form = document.getElementById(formId);
 
-    //code sanitization here
+    //TODO:code sanitization here
 
     let formdata = {
 
-        first_name: form.elements[0].value,
-        last_name: form.elements[1].value,
-        email: form.elements[2].value,
-        sex: form.elements[3].value,
+        first_name: form.elements[1].value,
+        last_name: form.elements[2].value,
+        email: form.elements[3].value,
+        sex: form.elements[4].value,
         image: ""
     }
 
-    let imageSrc = form.elements[4].files[0];
+    let imageSrc = form.elements[0].files[0];
 
     if (imageSrc) {
 
@@ -209,32 +245,33 @@ export async function updateEmployee(id, formId) {
     }
 
     makeAjaxRequest("PUT", emp_update + "?empID=" + id + "", formdata);
-    closeEmpForm();
-
+    refreshEmpData(500, true);
 }
 
 export function updateTask(id, formId) {
 
     let form = document.getElementById(formId);
 
-    //code sanitization here
+    //TODO:code sanitization here
     let formdata = {
 
         task: form.elements[0].value,
     }
 
     makeAjaxRequest("PUT", task_update + "?taskID=" + id + "", formdata);
-    closeTaskForm();
+    refreshTaskData(500, true);
 }
 
 //DELETE
 /*******************************************************/
 export function deleteEmployee(id) {
 
-    makeAjaxRequest("DELETE", "/api/employees/delete?empID=" + id + "");
+    makeAjaxRequest("DELETE", emp_delete + "?empID=" + id + "");
+    refreshEmpData(500, true);
 }
 
 export function deleteTask(id) {
 
-    makeAjaxRequest("DELETE", "/api/tasks/delete?taskID=" + id + "");
+    makeAjaxRequest("DELETE", task_delete + "?taskID=" + id + "");
+    refreshTaskData(500, true);
 }

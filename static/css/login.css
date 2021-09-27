@@ -33,8 +33,15 @@
 .error-background{
 
     background-color: white;
+    color: black;
+    padding: 4px;
+    margin: 0.4em auto;
+    width: max-content;
+    display: block;
+    border-radius: 4px;
 }
 .no-background{
 
     background-color: none;
+    display: none;
 }
