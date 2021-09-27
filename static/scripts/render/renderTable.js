@@ -10,7 +10,7 @@ export function createTableHeader(headerList, parentId) {
 
     headerList.map((header, index) => {
         let th = document.createElement('th');
-        th.innerHTML = header;
+        th.innerText = header;
         th.className = index === last ? "th-action" : "th-style";
         tHead.appendChild(th);
     })
@@ -32,9 +32,9 @@ export function renderRow(data, index, parentId) {
     let row;
     let td1 = document.createElement('td');
     let td2 = document.createElement('td');
-    td2.innerHTML = name;
+    td2.innerText = name;
     let td3 = document.createElement('td');
-    td3.innerHTML = email;
+    td3.innerText = email;
     let td4 = document.createElement('td');
 
     //row buttons
@@ -82,7 +82,7 @@ export function renderRow(data, index, parentId) {
     }
     else {
 
-        td1.innerHTML = data.task;
+        td1.innerText = data.task;
         row = addRowDetails([td1, td4], index, _id)
     }
 

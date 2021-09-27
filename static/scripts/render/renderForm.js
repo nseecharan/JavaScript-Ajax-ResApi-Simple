@@ -69,7 +69,7 @@ export function renderTaskForm(formTitle, formId, cancelBtnID, submintBtnName, e
     let taskInput = createInput("", "", "text", "Task Name");
     let submitButton = createButton("submit-btn", "btn-sizing", submintBtnName, "submit");
 
-    labelTask.innerHTML = "Task Name";
+    labelTask.innerText = "Task Name";
 
     form.append(labelTask, taskInput, submitButton);
 }
@@ -87,16 +87,19 @@ export function renderEmployeeForm(formTitle, formId, cancelBtnID, submintBtnNam
     let labelImage = document.createElement('label');
     let submitButton = createButton("submit-btn", "btn-sizing", submintBtnName, "submit");
 
-    labelFname.innerHTML = "First Name";
-    labelLname.innerHTML = "Last Name";
-    labelEmail.innerHTML = "Email";
-    labelSex.innerHTML = "Sex";
-    labelImage.innerHTML = "Image"
+    labelFname.innerText = "First Name";
+    labelLname.innerText = "Last Name";
+    labelEmail.innerText = "Email";
+    labelSex.innerText = "Sex";
+    labelImage.innerText = "Image"
 
     let fnameInput = createInput("", "", "text", "First Name");
     let lnameInput = createInput("", "", "text", "Last Name");
     let emailInput = createInput("", "", "text", "Email");
     let imageInput = createInput("", "", "file", "");
+    fnameInput.required = true;
+    lnameInput.required = true;
+    emailInput.required = true;
 
     let optionsArray = [
         { value: "", text: "Add Sex" },
@@ -134,7 +137,7 @@ function renderFormStructure(formTitle, formId, cancelBtnID, elementIdentifier) 
     let form = document.createElement('form');
 
     customHeader.className = "form-heading";
-    title.innerHTML = formTitle;
+    title.innerText = formTitle;
     title.id = formId + "-title";
 
     customHeader.append(title, cancelButton);
