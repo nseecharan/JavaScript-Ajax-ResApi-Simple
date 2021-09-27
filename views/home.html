@@ -21,6 +21,7 @@
             <p>This api is for demo purposes, and has routes that access small lists of data related to employees and
                 tasks. Log in in to use all api features.</p>
             <form id="login-form" onsubmit="event.preventDefault()">
+                <span id="login-error-msg"></span>
                 <div>
                     <label for="username">User Name</label>
                     <input id="username" name="username" type="text" autocomplete="username">
@@ -59,6 +60,7 @@
                 <div id="create-options">
                     <button class="btn-sizing">New Employee</button>
                     <button class="btn-sizing">New Task</button>
+                    <span id="error-msg"></span>
                 </div>
                 <div id="create-forms">
                     <div id="submit-emp"></div>
@@ -80,7 +82,7 @@
             <div>
                 API demo created by <a href="https://nigelcodes.wordpress.com/">Nigel Seecharan</a>
                 <span id="tested">Tested in Brave V1.29.81</span>
-            </div>    
+            </div>
         </footer>
     </div>
 </body>

@@ -6,7 +6,6 @@ import {
     getAllEmployees, getAllTasks,
     updateEmployee, updateTask,
     deleteEmployee, deleteTask,
-    dataRefresh
 } from './dataManager.js';
 
 const taskFormParentID = "submit-task";

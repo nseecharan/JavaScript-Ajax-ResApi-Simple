@@ -65,12 +65,12 @@ app.post("/api/login", (req, res) => {
 
             var token = jwt.sign(data, pAuth.jwtOptions().secretOrKey);
 
-            res.json({ "message": "login sucessful", "token": token });
+            res.json({ "loginMessage": "login sucessful", "token": token });
 
         })
         .catch((err) => {
 
-            res.status(422).json({ "message": err });
+            res.status(422).json({ "loginMessage": err });
         })
 })
 

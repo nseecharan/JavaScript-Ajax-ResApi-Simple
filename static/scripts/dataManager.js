@@ -1,6 +1,6 @@
 import { closeEmpForm, closeTaskForm } from './events.js';
 import { renderData } from './render/renderData.js';
-import { elementDisplay, readImage, clearElement } from './render/renderTools.js';
+import { elementDisplay, readImage, clearElement, renderError } from './render/renderTools.js';
 
 let emp_route = "/api/employees";//optional name as param
 //let emp_find = emp_route + "/search"
@@ -43,10 +43,20 @@ function makeAjaxRequest(method, url, data) {
 
             dbData = json;
             renderData(dbData, "tableBody", token);
+
+            if (dbData.message) {
+
+                //renderError(dbData.message, "error-msg");
+            }
+            else {
+
+                //renderError(dbData.loginMessage, "login-error-msg");
+            }
         })
         .catch((err) => {
 
             renderData(err, "tableBody", token);
+            console.log(err);
         });
 }
 
@@ -87,9 +97,32 @@ export function searchData(e) {
     }
 }
 
-export function dataRefresh(tableId) {
+function refreshEmpData(delay, close = false) {
 
-    renderData(dbData, tableId, token);
+    if (dbData.message !== "Please log in") {
+
+        if (close) {
+            closeEmpForm();
+        }
+
+        setTimeout(() => {
+            getAllEmployees();
+        }, delay)
+    }
+}
+
+function refreshTaskData(delay, close = false) {
+
+    if (dbData.message !== "Please log in") {
+
+        if (close) {
+            closeTaskForm();
+        }
+
+        setTimeout(() => {
+            getAllTasks();
+        }, delay)
+    }
 }
 
 //LOGIN
@@ -134,13 +167,14 @@ export async function createEmployee(formId) {
 
         formdata.image = await readImage(imageSrc);
     }
-    else {
-
-    }
 
     makeAjaxRequest("POST", emp_register, formdata);
-
-    form.reset();
+    //form.reset();
+    //Make it so that the create button gets disabled until the table refreshes again.
+    //This will avoid too many asynchronous calls to db/race conditions, while still
+    //allowing the user to create data over and over without needing to keep clicking
+    //the new task or employee button.
+    refreshEmpData(500, true);
 }
 
 export function createTask(formId) {
@@ -154,7 +188,12 @@ export function createTask(formId) {
     }
 
     makeAjaxRequest("POST", task_add, formdata);
-    form.reset();
+    //form.reset();
+    //Make it so that the create button gets disabled until the table refreshes again.
+    //This will avoid too many asynchronous calls to db/race conditions, while still
+    //allowing the user to create data over and over without needing to keep clicking
+    //the new task or employee button.
+    refreshTaskData(500, true);
 }
 
 //READ
@@ -206,9 +245,7 @@ export async function updateEmployee(id, formId) {
     }
 
     makeAjaxRequest("PUT", emp_update + "?empID=" + id + "", formdata);
-    closeEmpForm();
-    dataRefresh("tableBody");
-
+    refreshEmpData(500, true);
 }
 
 export function updateTask(id, formId) {
@@ -222,8 +259,7 @@ export function updateTask(id, formId) {
     }
 
     makeAjaxRequest("PUT", task_update + "?taskID=" + id + "", formdata);
-    closeTaskForm();
-    dataRefresh("tableBody");
+    refreshTaskData(500, true);
 }
 
 //DELETE
@@ -231,15 +267,11 @@ export function updateTask(id, formId) {
 export function deleteEmployee(id) {
 
     makeAjaxRequest("DELETE", emp_delete + "?empID=" + id + "");
-    //makeAjaxRequest("DELETE", "/api/employees/delete?empID=" + id + "");
-    closeEmpForm();
-    dataRefresh("tableBody");
+    refreshEmpData(500, true);
 }
 
 export function deleteTask(id) {
 
     makeAjaxRequest("DELETE", task_delete + "?taskID=" + id + "");
-    //makeAjaxRequest("DELETE", "/api/tasks/delete?taskID=" + id + "");
-    closeTaskForm();
-    dataRefresh("tableBody");
+    refreshTaskData(500, true);
 }
