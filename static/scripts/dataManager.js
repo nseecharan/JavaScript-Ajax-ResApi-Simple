@@ -31,8 +31,6 @@ function makeAjaxRequest(method, url, data) {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'jwt ' + token
-
-            //this will need to authorize for all routes except login
         }
     })
         .then((response) => response.json())
@@ -100,8 +98,7 @@ export function login() {
 
     let form = document.forms[0];
 
-    //code sanitization here
-
+    //TODO:code sanitization here
     let formdata = {
 
         username: form.elements[0].value,
@@ -120,18 +117,18 @@ export async function createEmployee(formId) {
 
     let form = document.getElementById(formId);
 
-    //code sanitization here
+    //TODO:code sanitization here
 
     let formdata = {
 
-        first_name: form.elements[0].value,
-        last_name: form.elements[1].value,
-        email: form.elements[2].value,
-        sex: form.elements[3].value,
+        first_name: form.elements[1].value,
+        last_name: form.elements[2].value,
+        email: form.elements[3].value,
+        sex: form.elements[4].value,
         image: ""
     }
 
-    let imageSrc = form.elements[4].files[0];
+    let imageSrc = form.elements[0].files[0];
 
     if (imageSrc) {
 
@@ -150,7 +147,7 @@ export function createTask(formId) {
 
     let form = document.getElementById(formId);
 
-    //code sanitization here
+    //TODO:code sanitization here
     let formdata = {
 
         task: form.elements[0].value,
@@ -186,18 +183,18 @@ export async function updateEmployee(id, formId) {
 
     let form = document.getElementById(formId);
 
-    //code sanitization here
+    //TODO:code sanitization here
 
     let formdata = {
 
-        first_name: form.elements[0].value,
-        last_name: form.elements[1].value,
-        email: form.elements[2].value,
-        sex: form.elements[3].value,
+        first_name: form.elements[1].value,
+        last_name: form.elements[2].value,
+        email: form.elements[3].value,
+        sex: form.elements[4].value,
         image: ""
     }
 
-    let imageSrc = form.elements[4].files[0];
+    let imageSrc = form.elements[0].files[0];
 
     if (imageSrc) {
 
@@ -210,6 +207,7 @@ export async function updateEmployee(id, formId) {
 
     makeAjaxRequest("PUT", emp_update + "?empID=" + id + "", formdata);
     closeEmpForm();
+    dataRefresh("tableBody");
 
 }
 
@@ -217,7 +215,7 @@ export function updateTask(id, formId) {
 
     let form = document.getElementById(formId);
 
-    //code sanitization here
+    //TODO:code sanitization here
     let formdata = {
 
         task: form.elements[0].value,
@@ -225,16 +223,23 @@ export function updateTask(id, formId) {
 
     makeAjaxRequest("PUT", task_update + "?taskID=" + id + "", formdata);
     closeTaskForm();
+    dataRefresh("tableBody");
 }
 
 //DELETE
 /*******************************************************/
 export function deleteEmployee(id) {
 
-    makeAjaxRequest("DELETE", "/api/employees/delete?empID=" + id + "");
+    makeAjaxRequest("DELETE", emp_delete + "?empID=" + id + "");
+    //makeAjaxRequest("DELETE", "/api/employees/delete?empID=" + id + "");
+    closeEmpForm();
+    dataRefresh("tableBody");
 }
 
 export function deleteTask(id) {
 
-    makeAjaxRequest("DELETE", "/api/tasks/delete?taskID=" + id + "");
+    makeAjaxRequest("DELETE", task_delete + "?taskID=" + id + "");
+    //makeAjaxRequest("DELETE", "/api/tasks/delete?taskID=" + id + "");
+    closeTaskForm();
+    dataRefresh("tableBody");
 }

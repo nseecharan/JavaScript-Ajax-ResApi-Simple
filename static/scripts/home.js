@@ -1,4 +1,4 @@
-import { createEmpForm, createTaskForm } from './events.js';
+import { openEmpForm, openTaskForm } from './events.js';
 import { login, getAllEmployees, getAllTasks, searchData } from './dataManager.js';
 
 
@@ -25,11 +25,11 @@ getTaskBtn.addEventListener('click', () => {
 });
 newEmpBtn.addEventListener('click', () => {
 
-    createEmpForm();
+    openEmpForm();
 });
 newTaskBtn.addEventListener('click', () => {
 
-    createTaskForm();
+    openTaskForm();
 });
 searchInput.addEventListener('click', (e) => {
 
