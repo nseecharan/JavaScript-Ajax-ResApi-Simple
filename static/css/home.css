@@ -31,9 +31,16 @@ img {
 footer {
     bottom: 0;
     position: fixed;
-    width: 100%;
+    width: 80.1%;
     background: black;
     color: white;
+    padding: 0.4em 0;
+}
+footer a {
+    color: white;
+}
+footer div {
+    padding: 1em;
 }
 
 #title-div {
@@ -115,12 +122,15 @@ footer {
 #search input {
     width: 100%;
 }
+#tested {
+    float: right;
+}
 
 .titles {
     color: var(--white80);
     display: flow-root;
     background-image: var(--barRadialGrad);
-    border-right: 1px solid var(--white80);
+    border-right: 1px solid black;
 }
 .api-option-inputs {
     width: 200px;
@@ -207,12 +217,6 @@ select {
     border-bottom: 1px solid var(--black50);
     border-left: 1px solid var(--black50);
 }
-.footer-div {
-    padding: 0.4em;
-}
-.footer-div h4 {
-    margin: 0px;
-}
 .danger-zone {
     border-radius: 4px;
     background: var(--white80);
@@ -249,9 +253,11 @@ select {
         height: max-content;
     }
     .titles {
-        border-radius: 0px;
-        border-bottom: 1px solid var(--white80);
+        border-bottom: 1px solid black;
         border-right: 0px;
+    }
+    footer {
+        width: 100%;
     }
 }
 @media (max-height: 510px) {
@@ -264,13 +270,16 @@ select {
         height: max-content;
     }
     .titles {
-        border-radius: 0px;
-        border-bottom: 1px solid var(--white80);
+        border-bottom: 1px solid black;
         border-right: 0px;
+    }
+    footer {
+        width: 100%;
     }
 }
 @media (max-height: 910px) {
     footer {
         position: sticky;
+        width: 100%;
     }
 }
