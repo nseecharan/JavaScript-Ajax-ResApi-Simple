@@ -206,7 +206,7 @@ module.exports.createTask = function (taskData) {
 module.exports.getDefaultImages = function () {
 
     return new Promise(function (resolve, reject) {
-        
+
         dbImages.find({})
             .exec()
             .then((images) => {
@@ -388,7 +388,7 @@ module.exports.updateEmployee = function (id, employee) {
             .exec()
             .then(() => {
 
-                resolve("Employee updated sucessfully");
+                resolve("Employee " + employee.first_name + " " + employee.last_name + " updated sucessfully");
             })
             .catch((err) => {
 
@@ -405,7 +405,7 @@ module.exports.updateTask = function (id, task) {
             .exec()
             .then(() => {
 
-                resolve("Task updated successfully")
+                resolve("Task " + task.task + " updated successfully")
             })
             .catch((err) => {
 

@@ -74,7 +74,8 @@ footer div {
     display: none;
 }
 #create-forms {
-    float: left;
+    width: 100%;
+    max-width: 200px;
 }
 #form-title {
     float: left;
@@ -89,7 +90,7 @@ footer div {
     width: 100%;
 }
 #mock-data {
-    height: 26em;
+    height: 30em;
     overflow: auto;
     max-width: max-content;
     width: 100%;
@@ -153,9 +154,7 @@ footer div {
     margin: 0.4em;
 }
 .options {
-    max-width: 200px;
-    min-height: 6em;
-    margin: 4px;
+    margin: 0 4px 1em;
 }
 .api-option-title {
     background-color: var(--white80);
@@ -168,18 +167,19 @@ footer div {
     background-color: var(--white80);
     height: 2em;
 }
-.create-form {
+.option-form {
     display: block;
     margin: 0px;
     margin-block-end: 0px;
     padding: 4px;
     text-align: center;
 }
-.create-form input,
+.option-form input,
 select {
     padding: inherit;
     display: block;
     margin: auto;
+    width: 90%;
 }
 .form-image-preview {
     display: block;
@@ -217,18 +217,22 @@ select {
     border-bottom: 1px solid var(--black50);
     border-left: 1px solid var(--black50);
 }
-.danger-zone {
+.emp-form-danger-zone,
+.task-form-danger-zone {
     border-radius: 4px;
     background: var(--white80);
     margin-top: 1em;
 }
-.danger-zone span {
+.emp-form-danger-zone span,
+.task-form-danger-zone span {
     display: block;
     background: crimson;
     color: white;
     border-radius: 4px 4px 0px 0px;
 }
-
+.container {
+    display: flex;
+}
 .small-margin {
     margin: 0.4em;
 }
@@ -259,6 +263,26 @@ select {
     footer {
         width: 100%;
     }
+}
+@media (max-width: 795px) {
+    .container {
+        display: block;
+    }
+    #create-forms {
+        max-width: 100%;
+    }
+    /*
+    .option-form input,
+    select {
+        width: 75%;
+    }
+    .option-form {
+        display: flex;
+        padding: 0px;
+        margin: auto;
+        width: max-content;
+    }
+    */
 }
 @media (max-height: 510px) {
     .api-features {
