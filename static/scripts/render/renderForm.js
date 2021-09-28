@@ -16,12 +16,12 @@ export function preloadFormData(formID, data) {
     let image = form.getElementsByTagName('img')[0];
     let deleteBtn = createButton("delete-btn", "btn-sizing btn-red", "Delete", "button");
 
-    let oldDangerZone = document.querySelector('.' + formID + '-danger-zone');
+    //let oldDangerZone = document.querySelector('.' + formID + '-danger-zone');
 
-    if (oldDangerZone) {
+    //if (oldDangerZone) {
 
-        form.removeChild(oldDangerZone);
-    }
+    //    form.removeChild(oldDangerZone);
+    //}
 
     let dangerZone = document.createElement('div');
     dangerZone.className = formID + "-danger-zone";
@@ -57,7 +57,7 @@ export function preloadFormData(formID, data) {
 
     //append delete button if it does not exist
     //else relpace the button with a new one that has the updated function
-    if (form.lastChild.className !== "danger-zone") {
+    if (form.lastChild.className !== formID + "-danger-zone") {
 
         form.append(dangerZone);
     }
