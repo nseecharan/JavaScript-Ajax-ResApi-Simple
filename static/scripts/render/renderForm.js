@@ -16,13 +16,6 @@ export function preloadFormData(formID, data) {
     let image = form.getElementsByTagName('img')[0];
     let deleteBtn = createButton("delete-btn", "btn-sizing btn-red", "Delete", "button");
 
-    //let oldDangerZone = document.querySelector('.' + formID + '-danger-zone');
-
-    //if (oldDangerZone) {
-
-    //    form.removeChild(oldDangerZone);
-    //}
-
     let dangerZone = document.createElement('div');
     dangerZone.className = formID + "-danger-zone";
     let warning = document.createElement('span');
