@@ -1,6 +1,5 @@
 import { createButton } from './renderInputs.js';
 import { openEmpUpdateForm, openTaskUpdateForm } from '../events.js';
-import { deleteEmployee, deleteTask } from '../dataManager.js';
 
 export function createTableHeader(headerList, parentId) {
 

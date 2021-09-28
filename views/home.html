@@ -21,7 +21,6 @@
             <p>This api is for demo purposes, and has routes that access small lists of data related to employees and
                 tasks. Log in in to use all api features.</p>
             <form id="login-form" onsubmit="event.preventDefault()">
-                <span id="login-error-msg"></span>
                 <div>
                     <label for="username">User Name</label>
                     <input id="username" name="username" type="text" autocomplete="username">
@@ -30,7 +29,8 @@
                     <label for="password">Password</label>
                     <input id="password" name="password" type="password" autocomplete="current-password">
                 </div>
-                <button>Login</button>
+                <button class="btn-sizing">Login</button>
+                <span id="login-msg"></span>
             </form>
         </div>
         <div id="api-info" class="small-margin">
@@ -60,17 +60,19 @@
                 <div id="create-options">
                     <button class="btn-sizing">New Employee</button>
                     <button class="btn-sizing">New Task</button>
-                    <span id="error-msg"></span>
+                    <span id="general-msg"></span>
                 </div>
-                <div id="create-forms">
-                    <div id="submit-emp"></div>
-                    <div id="submit-task"></div>
-                </div>
-                <div id="mock-data">
-                    <table id="renderTable" class="table-styling">
-                        <thead id="tableHdr" class="thead-style"></thead>
-                        <tbody id="tableBody"></tbody>
-                    </table>
+                <div class="container">
+                    <div id="create-forms">
+                        <div id="submit-emp"></div>
+                        <div id="submit-task"></div>
+                    </div>
+                    <div id="mock-data">
+                        <table id="renderTable" class="table-styling">
+                            <thead id="tableHdr" class="thead-style"></thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

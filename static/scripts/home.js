@@ -41,3 +41,22 @@ searchInput.addEventListener('keyup', (e) => {
 
     searchData(e);
 });
+
+//testing out basic implementaion of ovserver to track changes in http elements
+
+/*
+const targetNode = document.getElementById('error-msg');
+
+const config = { attributes: true, childList: true, subtree: true };
+
+const callback = function (mutationsList, observer) {
+
+    console.log(mutationsList)
+}
+
+const observer = new MutationObserver(callback);
+
+observer.observe(targetNode, config);
+
+//observer.disconnect();
+*/

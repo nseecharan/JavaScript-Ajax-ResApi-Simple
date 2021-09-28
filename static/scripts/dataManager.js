@@ -1,6 +1,6 @@
 import { closeEmpForm, closeTaskForm } from './events.js';
 import { renderData } from './render/renderData.js';
-import { elementDisplay, readImage, clearElement, renderError } from './render/renderTools.js';
+import { elementDisplay, readImage, clearElement, renderMessage, clearMessages, scrollToElement } from './render/renderTools.js';
 
 let emp_route = "/api/employees";//optional name as param
 //let emp_find = emp_route + "/search"
@@ -46,11 +46,11 @@ function makeAjaxRequest(method, url, data) {
 
             if (dbData.message) {
 
-                //renderError(dbData.message, "error-msg");
+                renderMessage(dbData.message, "general-msg");
             }
             else {
 
-                //renderError(dbData.loginMessage, "login-error-msg");
+                renderMessage(dbData.loginMessage, "login-msg");
             }
         })
         .catch((err) => {
@@ -142,6 +142,7 @@ export function login() {
     form.reset();
     clearElement("#tableHdr");
     clearElement("#tableBody");
+    clearMessages(["general-msg", "login-msg"], 1000);
 }
 
 //CREATE
@@ -154,10 +155,10 @@ export async function createEmployee(formId) {
 
     let formdata = {
 
-        first_name: form.elements[1].value,
-        last_name: form.elements[2].value,
-        email: form.elements[3].value,
-        sex: form.elements[4].value,
+        first_name: form.elements[2].value,
+        last_name: form.elements[3].value,
+        email: form.elements[4].value,
+        sex: form.elements[5].value,
         image: ""
     }
 
@@ -168,13 +169,11 @@ export async function createEmployee(formId) {
         formdata.image = await readImage(imageSrc);
     }
 
+    console.log("CREATE", formdata)
+
     makeAjaxRequest("POST", emp_register, formdata);
-    //form.reset();
-    //Make it so that the create button gets disabled until the table refreshes again.
-    //This will avoid too many asynchronous calls to db/race conditions, while still
-    //allowing the user to create data over and over without needing to keep clicking
-    //the new task or employee button.
-    refreshEmpData(500, true);
+    refreshEmpData(100, true);
+    scrollToElement("tableBody", 500, true, true);
 }
 
 export function createTask(formId) {
@@ -188,12 +187,8 @@ export function createTask(formId) {
     }
 
     makeAjaxRequest("POST", task_add, formdata);
-    //form.reset();
-    //Make it so that the create button gets disabled until the table refreshes again.
-    //This will avoid too many asynchronous calls to db/race conditions, while still
-    //allowing the user to create data over and over without needing to keep clicking
-    //the new task or employee button.
-    refreshTaskData(500, true);
+    refreshTaskData(100, true);
+    scrollToElement("tableBody", 500, true, true);
 }
 
 //READ
@@ -226,10 +221,10 @@ export async function updateEmployee(id, formId) {
 
     let formdata = {
 
-        first_name: form.elements[1].value,
-        last_name: form.elements[2].value,
-        email: form.elements[3].value,
-        sex: form.elements[4].value,
+        first_name: form.elements[2].value,
+        last_name: form.elements[3].value,
+        email: form.elements[4].value,
+        sex: form.elements[5].value,
         image: ""
     }
 
@@ -244,8 +239,10 @@ export async function updateEmployee(id, formId) {
         formdata.image = form.getElementsByTagName('img')[0].src;
     }
 
+    console.log("UPDATE", formdata)
+
     makeAjaxRequest("PUT", emp_update + "?empID=" + id + "", formdata);
-    refreshEmpData(500, true);
+    refreshEmpData(100, true);
 }
 
 export function updateTask(id, formId) {
@@ -259,7 +256,7 @@ export function updateTask(id, formId) {
     }
 
     makeAjaxRequest("PUT", task_update + "?taskID=" + id + "", formdata);
-    refreshTaskData(500, true);
+    refreshTaskData(100, true);
 }
 
 //DELETE
@@ -267,11 +264,11 @@ export function updateTask(id, formId) {
 export function deleteEmployee(id) {
 
     makeAjaxRequest("DELETE", emp_delete + "?empID=" + id + "");
-    refreshEmpData(500, true);
+    refreshEmpData(100, true);
 }
 
 export function deleteTask(id) {
 
     makeAjaxRequest("DELETE", task_delete + "?taskID=" + id + "");
-    refreshTaskData(500, true);
+    refreshTaskData(100, true);
 }

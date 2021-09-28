@@ -18,8 +18,34 @@ export function elementDisplay(elementIdentifier) {
     }
 }
 
+//This function will scroll to the element with the ID specified.
+//You can state if you wish to scroll to the first, or last child
+//of a parent node using the last two optional boolean parameters.
+export function scrollToElement(elementID, delay, isParent = false, toLast = false) {
+
+    let elemID;
+
+    if (isParent) {
+
+        let parentElm = document.getElementById(elementID);
+
+        if (parentElm) {
+
+            elemID = toLast ? parentElm.lastChild.id : parentElm.firstChild.id;
+        }
+    }
+    else {
+
+        elemID = elementID;
+    }
+
+    setTimeout(() => {
+        document.getElementById(elemID).scrollIntoView();
+    }, delay)
+}
+
 //Renders an error message in any element that has "error-msg" as it's ID.
-export function renderError(message, elmID) {
+export function renderMessage(message, elmID) {
 
     let error_msg = document.getElementById(elmID);
     error_msg.innerText = "";
@@ -31,12 +57,23 @@ export function renderError(message, elmID) {
 
             error_msg.innerText = message;
 
-            if (message.length !== "") {
+            if (message !== "") {
 
                 error_msg.className = "error-background";
             }
         }
     }
+}
+
+export function clearMessages(elmIDs, delay) {
+
+    setTimeout(() => {
+
+        elmIDs.map((id) => {
+
+            renderMessage("", id);
+        })
+    }, delay)
 }
 
 //This function will attempt to load an image into memory for file upload.

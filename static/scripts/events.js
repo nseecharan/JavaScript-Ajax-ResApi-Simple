@@ -1,5 +1,5 @@
 import { createButton } from './render/renderInputs.js';
-import { clearElement} from './render/renderTools.js';
+import { clearElement } from './render/renderTools.js';
 import { renderTaskForm, renderEmployeeForm, preloadFormData } from './render/renderForm.js';
 import {
     createEmployee, createTask,
@@ -145,7 +145,9 @@ function createForm(isEmpForm, isUpdate, title, formID, btnName, parentID, updat
         renderTaskForm(title, formID, taskCancelBtnID, btnName, parentID);
     }
 
-    let button = document.getElementById(formID).lastChild;
+    let form = document.getElementById(formID);
+    let last = form.elements.length - 1;
+    let button = form.elements[last];
 
     setSubmitType(isEmpForm, isUpdate, button, formID, updateDataID);
 }
@@ -157,12 +159,21 @@ function changeForm(isEmpForm, isUpdate, titleID, titleChange, formID, btnName, 
     if (title.textContent !== titleChange) {
 
         title.textContent = titleChange;
-        let newButton = createButton("submit-btn", "", btnName, "submit");
+        let newButton = createButton("submit-btn", "btn-sizing", btnName, "submit");
         let form = document.getElementById(formID);
+        let dangerZone = document.querySelector('.' + formID + '-danger-zone');
 
         setSubmitType(isEmpForm, isUpdate, newButton, formID, updateDataID);
 
-        form.replaceChild(newButton, form.lastChild);
+        if (dangerZone) {
+
+            dangerZone.remove();
+        }
+
+        let last = form.elements.length - 1;
+        let oldButton = form.elements[last];
+
+        oldButton.replaceWith(newButton);
     }
 }
 

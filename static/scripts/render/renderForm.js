@@ -1,4 +1,3 @@
-import { deleteEmployee, deleteTask } from '../dataManager.js';
 import { confirmDeleteEmp, confirmDeleteTask } from '../events.js';
 import { createButton, createSelect, createInput } from './renderInputs.js';
 
@@ -16,8 +15,16 @@ export function preloadFormData(formID, data) {
     let inputs = form.getElementsByTagName('input');
     let image = form.getElementsByTagName('img')[0];
     let deleteBtn = createButton("delete-btn", "btn-sizing btn-red", "Delete", "button");
+
+    let oldDangerZone = document.querySelector('.' + formID + '-danger-zone');
+
+    if (oldDangerZone) {
+
+        form.removeChild(oldDangerZone);
+    }
+
     let dangerZone = document.createElement('div');
-    dangerZone.className = "danger-zone";
+    dangerZone.className = formID + "-danger-zone";
     let warning = document.createElement('span');
     warning.innerText = "Danger Zone";
 
@@ -86,7 +93,6 @@ export function renderEmployeeForm(formTitle, formId, cancelBtnID, submintBtnNam
     let labelSex = document.createElement('label');
     let labelImage = document.createElement('label');
     let submitButton = createButton("submit-btn", "btn-sizing", submintBtnName, "submit");
-
     labelFname.innerText = "First Name";
     labelLname.innerText = "Last Name";
     labelEmail.innerText = "Email";
@@ -96,7 +102,7 @@ export function renderEmployeeForm(formTitle, formId, cancelBtnID, submintBtnNam
     let fnameInput = createInput("", "", "text", "First Name");
     let lnameInput = createInput("", "", "text", "Last Name");
     let emailInput = createInput("", "", "text", "Email");
-    let imageInput = createInput("", "", "file", "");
+    let imageInput = createInput("img-upload", "", "file", "");
     fnameInput.required = true;
     lnameInput.required = true;
     emailInput.required = true;
@@ -109,23 +115,50 @@ export function renderEmployeeForm(formTitle, formId, cancelBtnID, submintBtnNam
     let sexSelect = createSelect("", "", optionsArray);
     let image = document.createElement('img');
     let previewArea = document.createElement('div');
+    let imageUploadBtn = createButton("", "btn-sizing", "Upload Image", "button");;
+
+    imageUploadBtn.addEventListener("click", () => {
+
+        document.getElementById("img-upload").click();
+    })
 
     previewArea.className = "form-image-preview";
     image.width = "200";
     image.src = "";
+
     imageInput.addEventListener("change", () => {
 
         let file = imageInput.files[0];
         image.src = URL.createObjectURL(file);
     })
+    imageInput.style.display = "none";
 
     previewArea.appendChild(image);
 
+    //div sections
+
+    let imageDiv = document.createElement('div');
+    imageDiv.className = "form-image-div";
+    imageDiv.append(labelImage, previewArea, imageInput, imageUploadBtn);
+
+    let infoDiv = document.createElement('div');
+    infoDiv.className = "form-info-div";
+    infoDiv.append(
+        labelFname, fnameInput, labelLname,
+        lnameInput, labelEmail, emailInput,
+        labelSex, sexSelect, submitButton);
+
+    /*
     form.append(
         labelImage, previewArea, imageInput,
         labelFname, fnameInput, labelLname,
         lnameInput, labelEmail, emailInput,
         labelSex, sexSelect, submitButton);
+}
+*/
+
+    form.append(imageDiv, infoDiv);
+
 }
 
 function renderFormStructure(formTitle, formId, cancelBtnID, elementIdentifier) {
@@ -144,7 +177,7 @@ function renderFormStructure(formTitle, formId, cancelBtnID, elementIdentifier) 
 
     container.className = "option-border options";
     form.id = formId;
-    form.className = "create-form";
+    form.className = "option-form";
     form.addEventListener("submit", (e) => {
         e.preventDefault();
     })
