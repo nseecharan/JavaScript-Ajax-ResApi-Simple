@@ -4,17 +4,17 @@ export function clearElement(elementIdentifier) {
     document.querySelector(elementIdentifier).textContent = "";
 }
 
-export function elementDisplay(elementIdentifier) {
+export function elementDisplay(elementIdentifier, hideClass) {
 
     let elm = document.querySelector(elementIdentifier);
 
-    if (!elm.style.display || elm.style.display === "none") {
+    if (elm.className !== hideClass) {
 
-        elm.style.display = "block";
+        elm.className = hideClass;
     }
     else {
 
-        elm.style.display = "none";
+        elm.className = "display";
     }
 }
 
@@ -25,41 +25,43 @@ export function scrollToElement(elementID, delay, isParent = false, toLast = fal
 
     let elemID;
 
-    if (isParent) {
-
-        let parentElm = document.getElementById(elementID);
-
-        if (parentElm) {
-
-            elemID = toLast ? parentElm.lastChild.id : parentElm.firstChild.id;
-        }
-    }
-    else {
-
-        elemID = elementID;
-    }
-
     setTimeout(() => {
+
+        if (isParent) {
+
+            let parentElm = document.getElementById(elementID);
+
+            if (parentElm) {
+
+                elemID = toLast ? parentElm.lastChild.id : parentElm.firstChild.id;
+            }
+        }
+        else {
+
+            elemID = elementID;
+        }
+
         document.getElementById(elemID).scrollIntoView();
     }, delay)
 }
 
 //Renders an error message in any element that has "error-msg" as it's ID.
-export function renderMessage(message, elmID) {
+export function renderMessage(message, elmID, hideClass, displayClass) {
 
-    let error_msg = document.getElementById(elmID);
-    error_msg.innerText = "";
-    error_msg.className = "no-background";
+    let errorMsg = document.getElementById(elmID);
+    errorMsg.textContent = "";
+    errorMsg.className = hideClass;
 
-    if (error_msg) {
+    if (errorMsg) {
 
         if (message != undefined) {
 
-            error_msg.innerText = message;
+            errorMsg.textContent = message;
+            errorMsg.ariaLabel = message;
 
             if (message !== "") {
 
-                error_msg.className = "error-background";
+                errorMsg.className = displayClass;
             }
         }
     }
@@ -71,7 +73,7 @@ export function clearMessages(elmIDs, delay) {
 
         elmIDs.map((id) => {
 
-            renderMessage("", id);
+            renderMessage("", id, "no-display", "error-background");
         })
     }, delay)
 }

@@ -20,46 +20,56 @@
         <div class="small-margin">
             <p>This api is for demo purposes, and has routes that access small lists of data related to employees and
                 tasks. Log in in to use all api features.</p>
-            <form id="login-form" onsubmit="event.preventDefault()">
+            <form id="login-form" name="loginForm" onsubmit="event.preventDefault()">
                 <div>
                     <label for="username">User Name</label>
-                    <input id="username" name="username" type="text" autocomplete="username">
+                    <input id="username" name="username" type="text" autocomplete="username"
+                        aria-label="username login field"
+                        title="4 to 64 characters, must begin with a letter, and may also contain numbers as well as periods."
+                        minlength="4" maxlength="64" required>
                 </div>
                 <div>
                     <label for="password">Password</label>
-                    <input id="password" name="password" type="password" autocomplete="current-password">
+                    <input id="password" name="password" type="password" autocomplete="current-password"
+                        aria-label="password login field"
+                        title="8 to 64 characters, and should contain a mix of upper case letters, lower case letters, numbers, as well as special symbols"
+                        minlength="8" maxlength="64" required>
                 </div>
-                <button class="btn-sizing">Login</button>
-                <span id="login-msg"></span>
+                <div>
+                    <button id="login-button" name="loginButton" class="btn-sizing" aria-label="login button"
+                        disabled>Login</button>
+                </div>
             </form>
+            <span id="login-msg"></span>
         </div>
         <div id="api-info" class="small-margin">
             <p>For information on the routes, please refer to the project
-                <a href='https://github.com/nseecharan/JavaScript-Ajax-ResApi-Simple'>readme</a>.
+                <a href='https://github.com/nseecharan/JavaScript-Ajax-ResApi-Simple'
+                    aria-label="link to API read me on github">readme</a>.
             </p>
         </div>
     </div>
 
     <div class="api-features">
-        <h3 class="small-margin underline">Display Data</h3>
+        <!--h3 class="small-margin underline">Display Data</h3-->
         <div id="load-data" class="option-border api-option-display">
             <span class="api-option-title">Api Options</span>
             <div class="api-option-inputs">
                 <div id="option-inputs">
-                    <button class="btn-sizing">Get Employees</button>
-                    <button class="btn-sizing">Get Tasks</button>
+                    <button class="btn-sizing" aria-label="get list of employees, button">Get Employees</button>
+                    <button class="btn-sizing" aria-label="get list of tasks, button">Get Tasks</button>
                 </div>
-                <div id="search">
+                <div id="search" class="no-display">
                     <label>Search</label>
-                    <input id="search-input" type="text" />
+                    <input id="search-input" type="text" aria-label="search field" />
                 </div>
             </div>
         </div>
         <div id="data-display">
             <div id="styled-dsp">
-                <div id="create-options">
-                    <button class="btn-sizing">New Employee</button>
-                    <button class="btn-sizing">New Task</button>
+                <div id="create-options" class="no-display">
+                    <button class="btn-sizing" aria-label="create new employee button">New Employee</button>
+                    <button class="btn-sizing" aria-label="create new task button">New Task</button>
                     <span id="general-msg"></span>
                 </div>
                 <div class="container">
@@ -82,7 +92,8 @@
         </div>
         <footer>
             <div>
-                API demo created by <a href="https://nigelcodes.wordpress.com/">Nigel Seecharan</a>
+                API demo created by <a href="https://nigelcodes.wordpress.com/"
+                    aria-label="link to Nigel Seecharan's website">Nigel Seecharan</a>
                 <span id="tested">Tested in Brave V1.29.81</span>
             </div>
         </footer>

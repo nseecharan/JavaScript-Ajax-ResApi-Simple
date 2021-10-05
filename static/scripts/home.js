@@ -1,17 +1,36 @@
-import { openEmpForm, openTaskForm } from './events.js';
-import { login, getAllEmployees, getAllTasks, searchData } from './dataManager.js';
+import { openEmpForm, openTaskForm } from './menuEvents.js';
+import { getAllEmployees, getAllTasks, login, searchData } from './dataManager.js';
+import { validateLoginForm } from './form-validation/loginForm.js';
 
+const mainButtons = document.getElementsByTagName('button');
+const loginForm = document.getElementById('login-form').elements;
+const userNameInput = loginForm[0];
+const passwordInput = loginForm[1];
 
-let mainButtons = document.getElementsByTagName('button');
+const loginBtn = mainButtons[0];
+const getEmpBtn = mainButtons[1];
+const getTaskBtn = mainButtons[2];
+const newEmpBtn = mainButtons[3];
+const newTaskBtn = mainButtons[4];
+const searchInput = document.getElementById('search-input');
 
-let loginBtn = mainButtons[0];
-let getEmpBtn = mainButtons[1];
-let getTaskBtn = mainButtons[2];
-let newEmpBtn = mainButtons[3];
-let newTaskBtn = mainButtons[4];
-let searchInput = document.getElementById('search-input');
-//let loginError = document.getElementById('login-error-msg');
-//let generalError = document.getElementById('error-msg');
+['keyup', 'blur', 'focus'].forEach((action) => {
+
+    userNameInput.addEventListener(action, (e) => {
+
+        validateLoginForm(true, "login-msg");
+    });
+
+    passwordInput.addEventListener(action, (e) => {
+
+        validateLoginForm(false, "login-msg");
+    });
+
+    searchInput.addEventListener(action, (e) => {
+
+        searchData(e);
+    });
+})
 
 loginBtn.addEventListener('click', () => {
 
@@ -33,14 +52,7 @@ newTaskBtn.addEventListener('click', () => {
 
     openTaskForm();
 });
-searchInput.addEventListener('click', (e) => {
 
-    searchData(e);
-});
-searchInput.addEventListener('keyup', (e) => {
-
-    searchData(e);
-});
 
 //testing out basic implementaion of ovserver to track changes in http elements
 

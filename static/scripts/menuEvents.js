@@ -1,6 +1,5 @@
-import { createButton } from './render/renderInputs.js';
 import { clearElement } from './render/renderTools.js';
-import { renderTaskForm, renderEmployeeForm, preloadFormData } from './render/renderForm.js';
+import { preloadFormData, createForm, changeForm } from './render/renderForm.js';
 import {
     createEmployee, createTask,
     getAllEmployees, getAllTasks,
@@ -16,7 +15,11 @@ const taskCancelBtnID = "task-cancel-btn";
 const empFormParentID = "submit-emp";
 const empFormTitleID = "emp-form-title";
 const empFormID = "emp-form";
-const EmpCancelBtnID = "emp-cancel-btn";
+const empCancelBtnID = "emp-cancel-btn";
+
+
+//MENU CONTROL EVENTS
+//******************************************/
 
 export function openTaskForm() {
 
@@ -77,7 +80,7 @@ export function openEmpForm() {
 
         createForm(true, false, "Create Employee", empFormID, "Create", empFormParentID);
 
-        document.getElementById(EmpCancelBtnID).addEventListener('click', () => {
+        document.getElementById(empCancelBtnID).addEventListener('click', () => {
 
             closeEmpForm();
         })
@@ -98,7 +101,7 @@ export function openEmpUpdateForm(_id, data) {
 
         createForm(true, true, "View Employee", empFormID, "Update", empFormParentID, _id);
 
-        document.getElementById(EmpCancelBtnID).addEventListener('click', () => {
+        document.getElementById(empCancelBtnID).addEventListener('click', () => {
 
             closeEmpForm();
         })
@@ -131,86 +134,3 @@ export function closeEmpForm() {
     clearElement("#submit-emp");
 }
 
-//FORM METHODS
-//******************************************/
-
-function createForm(isEmpForm, isUpdate, title, formID, btnName, parentID, updateDataID = "") {
-
-    if (isEmpForm) {
-
-        renderEmployeeForm(title, formID, EmpCancelBtnID, btnName, parentID);
-    }
-    else {
-
-        renderTaskForm(title, formID, taskCancelBtnID, btnName, parentID);
-    }
-
-    let form = document.getElementById(formID);
-    let last = form.elements.length - 1;
-    let button = form.elements[last];
-
-    setSubmitType(isEmpForm, isUpdate, button, formID, updateDataID);
-}
-
-function changeForm(isEmpForm, isUpdate, titleID, titleChange, formID, btnName, updateDataID = "") {
-
-    let title = document.getElementById(titleID);
-
-    if (title.textContent !== titleChange) {
-
-        title.textContent = titleChange;
-        let newButton = createButton("submit-btn", "btn-sizing", btnName, "submit");
-        let form = document.getElementById(formID);
-        let dangerZone = document.querySelector('.' + formID + '-danger-zone');
-
-        setSubmitType(isEmpForm, isUpdate, newButton, formID, updateDataID);
-
-        if (dangerZone) {
-
-            dangerZone.remove();
-        }
-
-        let last = form.elements.length - 1;
-        let oldButton = form.elements[last];
-
-        oldButton.replaceWith(newButton);
-    }
-}
-
-function setSubmitType(isEmpForm, isUpdate, button, formID, updateDataID = "") {
-
-    if (isEmpForm) {
-
-        if (isUpdate) {
-
-            button.addEventListener('click', () => {
-
-                updateEmployee(updateDataID, formID);
-            })
-        }
-        else {
-
-            button.addEventListener('click', () => {
-
-                createEmployee(formID);
-            })
-        }
-    }
-    else {
-
-        if (isUpdate) {
-
-            button.addEventListener('click', () => {
-
-                updateTask(updateDataID, formID);
-            })
-        }
-        else {
-
-            button.addEventListener('click', () => {
-
-                createTask(formID);
-            })
-        }
-    }
-}

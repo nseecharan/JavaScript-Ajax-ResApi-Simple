@@ -65,12 +65,12 @@ app.post("/api/login", (req, res) => {
 
             var token = jwt.sign(data, pAuth.jwtOptions().secretOrKey);
 
-            res.json({ "loginMessage": "login sucessful", "token": token });
+            res.json({ "message": "You are signed in", "token": token });
 
         })
         .catch((err) => {
 
-            res.status(422).json({ "loginMessage": err });
+            res.status(422).json({ "message": err });
         })
 })
 
@@ -318,6 +318,12 @@ app.delete(task_delete, (req, res, next) => {
 /***************************************************************
                        END OF ROUTES                         
 ***************************************************************/
+
+
+
+//server side validation
+
+
 
 app.use((req, res) => {
     res.status(404).end();
