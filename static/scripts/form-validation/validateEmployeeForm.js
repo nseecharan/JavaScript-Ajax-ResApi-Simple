@@ -1,25 +1,5 @@
-import { createEmployee } from "../dataManager.js";
 import { validateText, validateEmail } from './validation.js';
-import { renderMessage } from '../render/renderTools.js';
-
-export function submitEmployeeData() {
-
-    createEmployee();
-}
-
-export function resetEmployeeForm(disable) {
-
-    const form = document.getElementById("emp-form");
-    form.reset();
-
-    if (disable) {
-
-        for (let i = 0; i < form.elements.length; i++) {
-
-            form.elements[i].disabled = disable;
-        }
-    }
-}
+import { highlightField } from '../render/renderTools.js';
 
 /*
 0: input#img-upload
@@ -32,9 +12,9 @@ export function resetEmployeeForm(disable) {
 7: button#delete-btn.btn-sizing.btn-red
 */
 
-export function validateEmployeeForm(field) {
+export function validateEmployeeForm(formID, field) {
 
-    const form = document.getElementById("emp-form");
+    const form = document.getElementById(formID);
     const messageElements = form.getElementsByTagName('p');
 
     const fname = form.elements[2];
@@ -45,7 +25,6 @@ export function validateEmployeeForm(field) {
     const lnameMessage = messageElements[1].id;
     const emailMessage = messageElements[2].id;
     const sexMessage = messageElements[3].id;
-
     const fnameValid = validateText(
         fname.value,
         fname.attributes.minlength.value,
@@ -100,24 +79,4 @@ export function validateEmployeeForm(field) {
         default:
             return;
     }
-
-}
-
-function highlightField(element, validationMsg) {
-
-    renderMessage("", validationMsg.elementId, "no-display", "error-background");
-
-    element.style.border = "none";
-
-    if (validationMsg.status === "error") {
-
-        renderMessage(validationMsg.message, validationMsg.elementId, "no-display", "error-background");
-
-        if (element.value !== "") {
-
-            element.style.border = "2px solid red";
-            element.style.outline = "none";
-        }
-    }
-
 }

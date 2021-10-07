@@ -1,7 +1,7 @@
-import { resetLoginForm } from './form-validation/loginForm.js';
+import { disableForm } from './form-validation/disableForm.js';
 import { closeEmpForm, closeTaskForm } from './menuEvents.js';
 import { renderData } from './render/renderData.js';
-import { elementDisplay, readImage, clearElement, renderMessage, clearMessages, scrollToElement } from './render/renderTools.js';
+import { elementDisplay, readImage, clearElement, renderMessage, scrollToElement } from './render/renderTools.js';
 
 let emp_route = "/api/employees";//optional name as param
 //let emp_find = emp_route + "/search"
@@ -143,7 +143,8 @@ export async function login() {
 
     if (token && form.className !== "no-display") {
 
-        resetLoginForm(true);
+        form.reset();
+        disableForm(form);
         elementDisplay("#login-form", "no-display");
         renderMessage(dbData.message, "login-msg", "no-display", "error-background");
     }

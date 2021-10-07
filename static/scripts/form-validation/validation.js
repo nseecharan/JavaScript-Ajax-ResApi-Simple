@@ -1,8 +1,8 @@
-//RegEx based on the ones found 
-//https://docs.microsoft.com/en-us/previous-versions/msp-n-p/ff650303(v=pandp.10)?redirectedfrom=MSDN
+//password reg based on one found here
 //https://techearl.com/regular-expressions/regex-password-strength-validation
-//https://www.regular-expressions.info/email.html
+
 const textPattern = /^[a-zA-Z][a-zA-Z'\s]{0,}$/g;
+const textNumbersPattern = /^[a-zA-Z0-9][a-zA-Z0-9'\s]{0,}$/g;
 const usernamePattern = /^[a-zA-Z][a-zA-Z0-9.]{0,}$/g;
 const passwordPattern = /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!"#\$%&'\(\)\*\+,-\.\/:;<=>\?@[\]\^_`\{\|}~])[a-zA-Z0-9!"#\$%&'\(\)\*\+,-\.\/:;<=>\?@[\]\^_`\{\|}~]{0,}$/g;
 const emailPattern = /^[A-Z][A-Z0-9.]+@[A-Z0-9.]+\.[A-Z]{0,}$/gi; //roughly based on google email rules
@@ -15,6 +15,18 @@ export function validateText(str, min, max, fieldName, elementId) {
   if (res.status == "error" && res.message == "") {
 
     res.message = "The " + fieldName + " must begin with a letter, and may also contain single quotes, as well as spaces";
+  }
+
+  return res;
+}
+
+export function validateTextAndNumbers(str, min, max, fieldName, elementId) {
+
+  let res = testInput(str, textNumbersPattern, min, max, fieldName, elementId);
+
+  if (res.status == "error" && res.message == "") {
+
+    res.message = "The " + fieldName + " must begin with a letter or number, and may also contain single quotes, as well as spaces";
   }
 
   return res;

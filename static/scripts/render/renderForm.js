@@ -1,11 +1,11 @@
 import { confirmDeleteEmp, confirmDeleteTask } from '../menuEvents.js';
 import { createButton, createSelect, createInput, createField } from './renderInputs.js';
-import {
-    createEmployee, createTask,
-    updateEmployee, updateTask,
-} from '../dataManager.js';
-import { resetEmployeeForm, submitEmployeeData, validateEmployeeForm } from '../form-validation/employeeForm.js';
+import { createEmployee, createTask, updateEmployee, updateTask } from '../dataManager.js';
+import { validateEmployeeForm } from '../form-validation/validateEmployeeForm.js';
+import { validateTaskForm } from '../form-validation/validateTaskForm.js';
 
+const taskFormID = "task-form";
+const empFormID = "emp-form";
 const buttonClass = "btn-sizing";
 const deleteBtnClass = buttonClass + " btn-red";
 const cancelBtnClass = "btn-red float-right";
@@ -43,37 +43,6 @@ lnameInput.required = true;
 emailInput.required = true;
 sexSelect.required = true;
 
-
-['keyup', 'blur', 'focus'].forEach((action) => {
-
-    taskInput.addEventListener(action, () => {
-
-        //TODO: complete task validation 
-        //also make submit and delete button
-        //unavailable unless loggein
-    })
-
-    fnameInput.addEventListener(action, () => {
-
-        validateEmployeeForm(2);
-    });
-
-    lnameInput.addEventListener(action, () => {
-
-        validateEmployeeForm(3);
-    });
-
-    emailInput.addEventListener(action, () => {
-
-        validateEmployeeForm(4);
-    });
-})
-
-sexSelect.addEventListener('change', () => {
-
-    validateEmployeeForm(5);
-})
-
 //id names for the form error/success message elements for each field
 const taskMsg = "task-message";
 const fnameMsg = "fname-message";
@@ -82,11 +51,41 @@ const emailMsg = "email-message";
 const sexMsg = "sex-message";
 const msgClass = "no-display";
 
+//create fields that include the inputs above, with a label, and status message element
 const taskField = createField("Task Name", taskInput, taskMsg, msgClass)
 const fnameField = createField("First Name", fnameInput, fnameMsg, msgClass);
 const lnameField = createField("Last Name", lnameInput, lnameMsg, msgClass);
 const emailField = createField("Email", emailInput, emailMsg, msgClass);
 const sexField = createField("Sex", sexSelect, sexMsg, msgClass);
+
+
+['keyup', 'blur', 'focus'].forEach((action) => {
+
+    fnameInput.addEventListener(action, () => {
+
+        validateEmployeeForm(empFormID, 2);
+    });
+
+    lnameInput.addEventListener(action, () => {
+
+        validateEmployeeForm(empFormID, 3);
+    });
+
+    emailInput.addEventListener(action, () => {
+
+        validateEmployeeForm(empFormID, 4);
+    });
+
+    taskInput.addEventListener(action, () => {
+
+        validateTaskForm(taskFormID);
+    })
+})
+
+sexSelect.addEventListener('change', () => {
+
+    validateEmployeeForm(empFormID, 5);
+})
 
 //This function manages which form to generate between tasks and employees, and allows
 //you to indicate if the generated form should be configured to update or create data.
