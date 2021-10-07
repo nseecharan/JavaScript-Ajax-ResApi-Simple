@@ -1,65 +1,45 @@
+const noDisplayClass = "no-display";
+const errorClass = "error-background";
+
 //This function will clear out all the child nodes for the specified element.
 export function clearElement(elementIdentifier) {
 
     document.querySelector(elementIdentifier).textContent = "";
 }
 
-export function elementDisplay(elementIdentifier) {
+export function elementDisplay(elementIdentifier, hideClass) {
 
     let elm = document.querySelector(elementIdentifier);
 
-    if (!elm.style.display || elm.style.display === "none") {
+    if (elm.className !== hideClass) {
 
-        elm.style.display = "block";
+        elm.className = hideClass;
     }
     else {
 
-        elm.style.display = "none";
+        //switch element class to anything other than the no-display class
+        //coult even be an empty string
+        elm.className = "display";
     }
-}
-
-//This function will scroll to the element with the ID specified.
-//You can state if you wish to scroll to the first, or last child
-//of a parent node using the last two optional boolean parameters.
-export function scrollToElement(elementID, delay, isParent = false, toLast = false) {
-
-    let elemID;
-
-    if (isParent) {
-
-        let parentElm = document.getElementById(elementID);
-
-        if (parentElm) {
-
-            elemID = toLast ? parentElm.lastChild.id : parentElm.firstChild.id;
-        }
-    }
-    else {
-
-        elemID = elementID;
-    }
-
-    setTimeout(() => {
-        document.getElementById(elemID).scrollIntoView();
-    }, delay)
 }
 
 //Renders an error message in any element that has "error-msg" as it's ID.
-export function renderMessage(message, elmID) {
+export function renderMessage(message, elmID, hideClass, displayClass) {
 
-    let error_msg = document.getElementById(elmID);
-    error_msg.innerText = "";
-    error_msg.className = "no-background";
+    let errorMsg = document.getElementById(elmID);
+    errorMsg.textContent = "";
+    errorMsg.className = hideClass;
 
-    if (error_msg) {
+    if (errorMsg) {
 
         if (message != undefined) {
 
-            error_msg.innerText = message;
+            errorMsg.textContent = message;
+            errorMsg.ariaLabel = message;
 
             if (message !== "") {
 
-                error_msg.className = "error-background";
+                errorMsg.className = displayClass;
             }
         }
     }
@@ -71,8 +51,53 @@ export function clearMessages(elmIDs, delay) {
 
         elmIDs.map((id) => {
 
-            renderMessage("", id);
+            renderMessage("", id, noDisplayClass, errorClass);
         })
+    }, delay)
+}
+
+export function highlightField(element, validationMsg) {
+
+    renderMessage("", validationMsg.elementId, noDisplayClass, errorClass);
+
+    element.style.border = "none";
+
+    if (validationMsg.status === "error") {
+
+        renderMessage(validationMsg.message, validationMsg.elementId, noDisplayClass, errorClass);
+
+        if (element.value !== "") {
+
+            element.style.border = "2px solid red";
+            element.style.outline = "none";
+        }
+    }
+}
+
+//This function will scroll to the element with the ID specified.
+//You can state if you wish to scroll to the first, or last child
+//of a parent node using the last two optional boolean parameters.
+export function scrollToElement(elementID, delay, isParent = false, toLast = false) {
+
+    let elemID;
+
+    setTimeout(() => {
+
+        if (isParent) {
+
+            let parentElm = document.getElementById(elementID);
+
+            if (parentElm) {
+
+                elemID = toLast ? parentElm.lastChild.id : parentElm.firstChild.id;
+            }
+        }
+        else {
+
+            elemID = elementID;
+        }
+
+        document.getElementById(elemID).scrollIntoView();
     }, delay)
 }
 

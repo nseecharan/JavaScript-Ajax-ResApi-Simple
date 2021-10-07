@@ -1,19 +1,60 @@
-export function createButton(id, classes, name, type) {
-    
+export function createButton(id, classes, buttonText, type, ariaLabel = "", name = "", title = "") {
+
     let newButton = document.createElement('button');
-    newButton.id = id;
-    newButton.className = classes;
+
     newButton.type = type;
-    newButton.innerText = name;
+    newButton.textContent = buttonText;
+
+    if (id) {
+
+        newButton.id = id;
+    }
+    if (classes) {
+
+        newButton.className = classes;
+    }
+    if (ariaLabel) {
+
+        newButton.ariaLabel = ariaLabel;
+    }
+    if (name) {
+
+        newButton.name = name;
+    }
+    if (title) {
+
+        newButton.title = title;
+    }
 
     return newButton;
 }
 
-export function createSelect(selectId, selClass, optionsObject) {
+export function createSelect(selectId, selClass, optionsObject, ariaLabel = "", name = "", title = "", required = false) {
 
     let selectElement = document.createElement('select');
-    selectElement.id = selectId;
-    selectElement.className = selClass;
+
+    selectElement.required = required;
+
+    if (selectId) {
+
+        selectElement.id = selectId;
+    }
+    if (selClass) {
+
+        selectElement.className = selClass;
+    }
+    if (ariaLabel) {
+
+        selectElement.ariaLabel = ariaLabel;
+    }
+    if (name) {
+
+        selectElement.name = selClass;
+    }
+    if (title) {
+
+        selectElement.title = ariaLabel;
+    }
 
     optionsObject.map((option, index) => {
 
@@ -30,13 +71,61 @@ export function createSelect(selectId, selClass, optionsObject) {
     return selectElement;
 }
 
-export function createInput(inputId, inputClass, inputType, placeholder) {
+//returns a single input field
+export function createInput(inputId, inputClass, inputType, placeholder, min, max, ariaLabel = "", name = "", title = "", required = false) {
 
     let newInput = document.createElement('input');
-    newInput.id = inputId;
-    newInput.className = inputClass;
+
     newInput.type = inputType;
-    newInput.placeholder = placeholder;
+    newInput.required = required;
+
+    if (inputId) {
+
+        newInput.id = inputId;
+    }
+    if (inputClass) {
+
+        newInput.className = inputClass;
+    }
+    if (placeholder) {
+
+        newInput.placeholder = placeholder;
+    }
+    if (min) {
+
+        newInput.minLength = min;
+    }
+    if (max) {
+
+        newInput.maxLength = max;
+    }
+    if (ariaLabel) {
+
+        newInput.ariaLabel = ariaLabel;
+    }
+    if (name) {
+
+        newInput.name = name;
+    }
+    if (title) {
+
+        newInput.title = title;
+    }
 
     return newInput;
+}
+
+//returns a div with both a label, input, and a contained paragraph element for messages
+export function createField(labelName, element, messageID, messageClass = "") {
+
+    let label = document.createElement('label');
+    let message = document.createElement('p');
+    let container = document.createElement('div');
+    label.textContent = labelName;
+    message.id = messageID;
+    message.className = messageClass;
+    container.append(label, element, message);
+
+    return container;
+
 }

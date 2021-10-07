@@ -1,5 +1,5 @@
 import { createButton } from './renderInputs.js';
-import { openEmpUpdateForm, openTaskUpdateForm } from '../events.js';
+import { openEmpUpdateForm, openTaskUpdateForm } from '../menuEvents.js';
 
 export function createTableHeader(headerList, parentId) {
 
@@ -44,7 +44,7 @@ export function renderRow(data, index, parentId) {
 
         if (data.first_name) {
 
-            let updateBtn = createButton("emp-update-btn", "btn-sizing", "View Employee", "button");
+            let updateBtn = createButton("emp-update-btn", "btn-sizing", "View Employee", "button", "submit button for the employee update form", "employeeUpdateBtn");
 
 
             updateBtn.addEventListener('click', () => {
@@ -57,7 +57,7 @@ export function renderRow(data, index, parentId) {
         }
         else {
 
-            let updateBtn = createButton("task-update-btn", "btn-sizing", "View Task", "button");
+            let updateBtn = createButton("task-update-btn", "btn-sizing", "View Task", "button", "submit button for the task update form", "taskUpdateBtn");
 
             updateBtn.addEventListener('click', () => {
 

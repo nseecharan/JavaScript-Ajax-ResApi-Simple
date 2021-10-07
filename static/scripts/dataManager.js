@@ -1,6 +1,7 @@
-import { closeEmpForm, closeTaskForm } from './events.js';
+import { disableForm } from './form-validation/disableForm.js';
+import { closeEmpForm, closeTaskForm } from './menuEvents.js';
 import { renderData } from './render/renderData.js';
-import { elementDisplay, readImage, clearElement, renderMessage, clearMessages, scrollToElement } from './render/renderTools.js';
+import { elementDisplay, readImage, clearElement, renderMessage, scrollToElement } from './render/renderTools.js';
 
 let emp_route = "/api/employees";//optional name as param
 //let emp_find = emp_route + "/search"
@@ -23,9 +24,9 @@ let searchResults = [];//contains only the results fron the search
                         AJAX FUNCTIONS                           
 ***************************************************************/
 
-function makeAjaxRequest(method, url, data) {
+async function makeAjaxRequest(method, url, data) {
 
-    fetch(url, {
+    return fetch(url, {
         method: method,
         body: JSON.stringify(data),
         headers: {
@@ -34,30 +35,30 @@ function makeAjaxRequest(method, url, data) {
         }
     })
         .then((response) => response.json())
-        .then((json) => {
+}
 
-            //consider making a cookie session instead
-            if (json.token) {
-                token = json.token;
-            }
+function parseJsonData(json) {
 
-            dbData = json;
-            renderData(dbData, "tableBody", token);
+    //consider making a cookie session instead
+    if (json.token) {
 
-            if (dbData.message) {
+        token = json.token;
 
-                renderMessage(dbData.message, "general-msg");
-            }
-            else {
+        if (document.getElementById("create-options").className == "no-display") {
 
-                renderMessage(dbData.loginMessage, "login-msg");
-            }
-        })
-        .catch((err) => {
+            elementDisplay("#create-options", "no-display");
+        }
+    }
 
-            renderData(err, "tableBody", token);
-            console.log(err);
-        });
+    dbData = json;
+    renderData(dbData, "tableBody");
+
+
+    //add this to create update, delete
+    //if (dbData.message) {
+
+    //    renderMessage(dbData.message, "general-msg");
+    //}
 }
 
 /***************************************************************
@@ -127,33 +128,35 @@ function refreshTaskData(delay, close = false) {
 
 //LOGIN
 /*******************************************************/
-export function login() {
+export async function login() {
 
     let form = document.forms[0];
 
-    //TODO:code sanitization here
     let formdata = {
 
         username: form.elements[0].value,
         password: form.elements[1].value
     }
 
-    makeAjaxRequest("POST", "/api/login", formdata);
-    form.reset();
-    clearElement("#tableHdr");
-    clearElement("#tableBody");
-    clearMessages(["general-msg", "login-msg"], 1000);
+    const makeReq = await makeAjaxRequest("POST", "/api/login", formdata);
+    parseJsonData(makeReq);
+
+    if (token && form.className !== "no-display") {
+
+        form.reset();
+        disableForm(form);
+        elementDisplay("#login-form", "no-display");
+        renderMessage(dbData.message, "login-msg", "no-display", "error-background");
+    }
 }
 
 //CREATE
 /*******************************************************/
 export async function createEmployee(formId) {
 
-    let form = document.getElementById(formId);
+    const form = document.getElementById(formId);
 
-    //TODO:code sanitization here
-
-    let formdata = {
+    const formdata = {
 
         first_name: form.elements[2].value,
         last_name: form.elements[3].value,
@@ -162,52 +165,61 @@ export async function createEmployee(formId) {
         image: ""
     }
 
-    let imageSrc = form.elements[0].files[0];
+    const imageSrc = form.elements[0].files[0];
 
     if (imageSrc) {
 
         formdata.image = await readImage(imageSrc);
     }
 
-    console.log("CREATE", formdata)
+    const makeReq = await makeAjaxRequest("POST", emp_register, formdata);
+    parseJsonData(makeReq);
 
-    makeAjaxRequest("POST", emp_register, formdata);
-    refreshEmpData(100, true);
-    scrollToElement("tableBody", 500, true, true);
+    if (makeReq) {
+
+        refreshEmpData(100, true);
+        scrollToElement("tableBody", 500, true, true);
+    }
 }
 
-export function createTask(formId) {
+export async function createTask(formId) {
 
-    let form = document.getElementById(formId);
+    const form = document.getElementById(formId);
 
-    //TODO:code sanitization here
-    let formdata = {
+    const formdata = {
 
         task: form.elements[0].value,
     }
 
-    makeAjaxRequest("POST", task_add, formdata);
-    refreshTaskData(100, true);
-    scrollToElement("tableBody", 500, true, true);
+    const makeReq = await makeAjaxRequest("POST", task_add, formdata);
+    parseJsonData(makeReq);
+
+    if (makeReq) {
+
+        refreshTaskData(100, true);
+        scrollToElement("tableBody", 500, true, true);
+    }
 }
 
 //READ
 /*******************************************************/
-export function getAllEmployees() {
+export async function getAllEmployees() {
 
-    makeAjaxRequest("GET", emp_route);
+    const makeReq = await makeAjaxRequest("GET", emp_route);
+    parseJsonData(makeReq);
 
     if (!document.querySelector("#search").style.display) {
-        elementDisplay("#search");
+        elementDisplay("#search", "no-display");
     }
 }
 
-export function getAllTasks() {
+export async function getAllTasks() {
 
-    makeAjaxRequest("GET", task_route);
+    const makeReq = await makeAjaxRequest("GET", task_route);
+    parseJsonData(makeReq);
 
     if (!document.querySelector("#search").style.display) {
-        elementDisplay("#search");
+        elementDisplay("#search", "no-display");
     }
 }
 
@@ -215,11 +227,9 @@ export function getAllTasks() {
 /*******************************************************/
 export async function updateEmployee(id, formId) {
 
-    let form = document.getElementById(formId);
+    const form = document.getElementById(formId);
 
-    //TODO:code sanitization here
-
-    let formdata = {
+    const formdata = {
 
         first_name: form.elements[2].value,
         last_name: form.elements[3].value,
@@ -228,7 +238,7 @@ export async function updateEmployee(id, formId) {
         image: ""
     }
 
-    let imageSrc = form.elements[0].files[0];
+    const imageSrc = form.elements[0].files[0];
 
     if (imageSrc) {
 
@@ -239,36 +249,37 @@ export async function updateEmployee(id, formId) {
         formdata.image = form.getElementsByTagName('img')[0].src;
     }
 
-    console.log("UPDATE", formdata)
-
-    makeAjaxRequest("PUT", emp_update + "?empID=" + id + "", formdata);
+    const makeReq = await makeAjaxRequest("PUT", emp_update + "?empID=" + id + "", formdata);
+    parseJsonData(makeReq);
     refreshEmpData(100, true);
 }
 
-export function updateTask(id, formId) {
+export async function updateTask(id, formId) {
 
-    let form = document.getElementById(formId);
+    const form = document.getElementById(formId);
 
-    //TODO:code sanitization here
-    let formdata = {
+    const formdata = {
 
         task: form.elements[0].value,
     }
 
-    makeAjaxRequest("PUT", task_update + "?taskID=" + id + "", formdata);
+    const makeReq = await makeAjaxRequest("PUT", task_update + "?taskID=" + id + "", formdata);
+    parseJsonData(makeReq);
     refreshTaskData(100, true);
 }
 
 //DELETE
 /*******************************************************/
-export function deleteEmployee(id) {
+export async function deleteEmployee(id) {
 
-    makeAjaxRequest("DELETE", emp_delete + "?empID=" + id + "");
+    const makeReq = await makeAjaxRequest("DELETE", emp_delete + "?empID=" + id + "");
+    parseJsonData(makeReq);
     refreshEmpData(100, true);
 }
 
-export function deleteTask(id) {
+export async function deleteTask(id) {
 
-    makeAjaxRequest("DELETE", task_delete + "?taskID=" + id + "");
+    const makeReq = await makeAjaxRequest("DELETE", task_delete + "?taskID=" + id + "");
+    parseJsonData(makeReq);
     refreshTaskData(100, true);
 }

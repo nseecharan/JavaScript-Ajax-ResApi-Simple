@@ -1,17 +1,36 @@
-import { openEmpForm, openTaskForm } from './events.js';
-import { login, getAllEmployees, getAllTasks, searchData } from './dataManager.js';
+import { openEmpForm, openTaskForm } from './menuEvents.js';
+import { getAllEmployees, getAllTasks, login, searchData } from './dataManager.js';
+import { validateLoginForm } from './form-validation/validateLoginForm.js';
 
+const mainButtons = document.getElementsByTagName('button');
+const loginForm = document.getElementById('login-form');
+const userNameInput = loginForm.elements[0];
+const passwordInput = loginForm.elements[1];
+const loginBtn = mainButtons[0];
+const getEmpBtn = mainButtons[1];
+const getTaskBtn = mainButtons[2];
+const newEmpBtn = mainButtons[3];
+const newTaskBtn = mainButtons[4];
+const loginMessageID = "login-msg";
+const searchInput = document.getElementById('search-input');
 
-let mainButtons = document.getElementsByTagName('button');
+['keyup', 'blur', 'focus'].forEach((action) => {
 
-let loginBtn = mainButtons[0];
-let getEmpBtn = mainButtons[1];
-let getTaskBtn = mainButtons[2];
-let newEmpBtn = mainButtons[3];
-let newTaskBtn = mainButtons[4];
-let searchInput = document.getElementById('search-input');
-//let loginError = document.getElementById('login-error-msg');
-//let generalError = document.getElementById('error-msg');
+    userNameInput.addEventListener(action, (e) => {
+
+        validateLoginForm(loginForm, true, loginMessageID);
+    });
+
+    passwordInput.addEventListener(action, (e) => {
+
+        validateLoginForm(loginForm, false, loginMessageID);
+    });
+
+    searchInput.addEventListener(action, (e) => {
+
+        searchData(e);
+    });
+})
 
 loginBtn.addEventListener('click', () => {
 
@@ -33,14 +52,7 @@ newTaskBtn.addEventListener('click', () => {
 
     openTaskForm();
 });
-searchInput.addEventListener('click', (e) => {
 
-    searchData(e);
-});
-searchInput.addEventListener('keyup', (e) => {
-
-    searchData(e);
-});
 
 //testing out basic implementaion of ovserver to track changes in http elements
 

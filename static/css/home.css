@@ -64,14 +64,12 @@ footer div {
 }
 #login-form div {
     margin-bottom: 0.4em;
+    display: grid;
 }
 #api-info {
     background: var(--white20);
     border-radius: 4px;
     padding: 0.4em;
-}
-#search {
-    display: none;
 }
 #create-forms {
     width: 100%;
@@ -126,7 +124,6 @@ footer div {
 #tested {
     float: right;
 }
-
 .titles {
     color: var(--white80);
     display: flow-root;
@@ -230,6 +227,16 @@ select {
     color: white;
     border-radius: 4px 4px 0px 0px;
 }
+.error-background {
+    background-color: white;
+    color: black;
+    padding: 4px;
+    margin: 0.4em auto;
+    display: block;
+    border-radius: 4px;
+    text-align: center;
+    border: 2px solid darkseagreen;
+}
 .container {
     display: flex;
 }
@@ -245,6 +252,10 @@ select {
 }
 .float-left {
     float: left;
+}
+.no-display {
+    display: none;
+    background-color: none;
 }
 
 @media (max-width: 900px) {
