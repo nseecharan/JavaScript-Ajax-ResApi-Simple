@@ -1,4 +1,4 @@
-export function createButton(id, classes, buttonText, type, ariaLabel = "", name = "", title = "") {
+export const createButton = (id, classes, buttonText, type, ariaLabel = "", name = "", title = "") => {
 
     let newButton = document.createElement('button');
 
@@ -29,7 +29,7 @@ export function createButton(id, classes, buttonText, type, ariaLabel = "", name
     return newButton;
 }
 
-export function createSelect(selectId, selClass, optionsObject, ariaLabel = "", name = "", title = "", required = false) {
+export const createSelect = (selectId, selClass, optionsObject, ariaLabel = "", name = "", title = "", required = false) => {
 
     let selectElement = document.createElement('select');
 
@@ -72,7 +72,7 @@ export function createSelect(selectId, selClass, optionsObject, ariaLabel = "", 
 }
 
 //returns a single input field
-export function createInput(inputId, inputClass, inputType, placeholder, min, max, ariaLabel = "", name = "", title = "", required = false) {
+export const createInput = (inputId, inputClass, inputType, placeholder, min, max, ariaLabel = "", name = "", title = "", required = false) => {
 
     let newInput = document.createElement('input');
 
@@ -116,7 +116,7 @@ export function createInput(inputId, inputClass, inputType, placeholder, min, ma
 }
 
 //returns a div with both a label, input, and a contained paragraph element for messages
-export function createField(labelName, element, messageID, messageClass = "") {
+export const createField = (labelName, element, messageID, messageClass = "") => {
 
     let label = document.createElement('label');
     let message = document.createElement('p');

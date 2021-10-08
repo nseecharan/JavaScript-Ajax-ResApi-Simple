@@ -20,26 +20,28 @@
         <div class="small-margin">
             <p>This api is for demo purposes, and has routes that access small lists of data related to employees and
                 tasks. Log in in to use all api features.</p>
-            <form id="login-form" name="loginForm" onsubmit="event.preventDefault()">
-                <div>
-                    <label for="username">User Name</label>
-                    <input id="username" name="username" type="text" autocomplete="username"
-                        aria-label="username login field"
-                        title="4 to 64 characters, must begin with a letter, and may also contain numbers as well as periods."
-                        minlength="4" maxlength="64" required>
-                </div>
-                <div>
-                    <label for="password">Password</label>
-                    <input id="password" name="password" type="password" autocomplete="current-password"
-                        aria-label="password login field"
-                        title="8 to 64 characters, and should contain a mix of upper case letters, lower case letters, numbers, as well as special symbols"
-                        minlength="8" maxlength="64" required>
-                </div>
-                <div>
-                    <button id="login-button" name="loginButton" class="btn-sizing" aria-label="login button"
-                        disabled>Login</button>
-                </div>
-            </form>
+            <div id="login-area">
+                <form id="login-form" name="loginForm" onsubmit="event.preventDefault()">
+                    <div>
+                        <label for="username">User Name</label>
+                        <input id="username" name="username" type="text" autocomplete="username"
+                            aria-label="username login field"
+                            title="4 to 64 characters, must begin with a letter, and may also contain numbers as well as periods."
+                            minlength="4" maxlength="64" required>
+                    </div>
+                    <div>
+                        <label for="password">Password</label>
+                        <input id="password" name="password" type="password" autocomplete="current-password"
+                            aria-label="password login field"
+                            title="8 to 64 characters, and should contain a mix of upper case letters, lower case letters, numbers, as well as special symbols"
+                            minlength="8" maxlength="64" required>
+                    </div>
+                    <div>
+                        <button id="login-button" name="loginButton" class="btn-sizing" aria-label="login button"
+                            disabled>Login</button>
+                    </div>
+                </form>
+            </div>
             <p id="login-msg"></p>
         </div>
         <div id="api-info" class="small-margin">
@@ -77,12 +79,7 @@
                         <div id="submit-emp"></div>
                         <div id="submit-task"></div>
                     </div>
-                    <div id="mock-data">
-                        <table id="renderTable" class="table-styling">
-                            <thead id="tableHdr" class="thead-style"></thead>
-                            <tbody id="tableBody"></tbody>
-                        </table>
-                    </div>
+                    <div id="mock-data"></div>
                 </div>
             </div>
         </div>

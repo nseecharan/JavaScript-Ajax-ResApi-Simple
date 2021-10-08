@@ -1,5 +1,6 @@
 :root {
     --white80: rgba(255, 255, 255, 0.8);
+    --white40: rgba(255, 255, 255, 0.4);
     --white20: rgba(255, 255, 255, 0.2);
     --bgRadialGrad: radial-gradient(circle at 85% 88%, palegreen -10%, lightseagreen 75%);
     --barRadialGrad: radial-gradient(at 150% 150%, #000, #006666);
@@ -27,6 +28,7 @@ pre {
 }
 img {
     width: 50px;
+    border-radius: 0.4em;
 }
 footer {
     bottom: 0;
@@ -72,7 +74,6 @@ footer div {
     padding: 0.4em;
 }
 #create-forms {
-    width: 100%;
     max-width: 200px;
 }
 #form-title {
@@ -187,6 +188,14 @@ select {
     height: 50px;
     width: 50px;
 }
+.data-display-background {
+    border-radius: 0.4em;
+    background: linear-gradient(135deg, transparent, var(--black50));
+    border-left: 1px solid var(--white40);
+    border-top: 1px solid var(--white40);
+    border-bottom: 1px solid var(--black20);
+    border-right: 1px solid var(--black20);
+}
 .table-styling {
     border-spacing: 0;
     width: inherit;
@@ -194,20 +203,22 @@ select {
 .th-style {
     width: 10em;
     padding: 0.4em;
+    border-bottom: 1px solid var(--black50);
 }
 .th-action {
     width: 10em;
     padding: 0.4em;
     text-align: center;
     border-left: 1px solid;
+    border-bottom: 1px solid var(--black50);
 }
 .thead-style {
-    background-color: var(--solidGrey);
     text-align: left;
 }
 .td-style {
     padding: 0.4em;
     border-bottom: 1px solid var(--black50);
+    color: white;
 }
 .td-action {
     padding: 0.4em;

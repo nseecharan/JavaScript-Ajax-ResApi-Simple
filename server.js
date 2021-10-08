@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const app = express();
-const dataService = require("./data-service.js");
+const db = require("./dataBase.js");
 const pAuth = require("./pass-authenticator.js");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
@@ -34,10 +34,10 @@ const HTTP_PORT = process.env.PORT || 8080;
 
 function onHttpStart() {
 
-    dataService.connect()
+    db.connect()
         .then(() => {
 
-            dataService.getDefaultImages()
+            db.getDefaultImages()
                 .then((images) => {
 
                     dbImages = images;
@@ -60,7 +60,7 @@ function onHttpStart() {
 
 app.post("/api/login", (req, res) => {
 
-    dataService.login(req.body)
+    db.login(req.body)
         .then((data) => {
 
             var token = jwt.sign(data, pAuth.jwtOptions().secretOrKey);
@@ -109,7 +109,7 @@ app.post(emp_register, (req, res, next) => {
             newEmployee.image = defaultImage;
         }
 
-        dataService.createEmployee(newEmployee)
+        db.createEmployee(newEmployee)
             .then((msg) => {
 
                 res.json({ "message": msg });
@@ -129,7 +129,7 @@ app.post(task_add, (req, res, next) => {
         if (err) { return next(err); }
         if (!success) { return res.status(401).json({ "message": "Please log in" }); }
 
-        dataService.createTask(req.body)
+        db.createTask(req.body)
             .then((msg) => {
 
                 res.json({ "message": msg });
@@ -148,7 +148,7 @@ app.post(task_add, (req, res, next) => {
 //Find all items
 app.get(emp_route, (req, res, next) => {
 
-    dataService.getAllEmployees().then((data) => {
+    db.getAllEmployees().then((data) => {
 
         res.json(data);
     })
@@ -160,7 +160,7 @@ app.get(emp_route, (req, res, next) => {
 
 app.get(task_route, (req, res, next) => {
 
-    dataService.getAllTask().then((data) => {
+    db.getAllTask().then((data) => {
 
         res.json(data);
     })
@@ -180,7 +180,7 @@ app.get(emp_find + "/:empID", (req, res, next) => {
 
         let id = req.query.empID + "";
 
-        dataService.findEmployee(id).then((data) => {
+        db.findEmployee(id).then((data) => {
 
             res.json(data);
         })
@@ -202,7 +202,7 @@ app.get(task_find + "/:taskID", (req, res, next) => {
 
         let id = req.query.taskID + "";
 
-        dataService.findTask(id).then((data) => {
+        db.findTask(id).then((data) => {
 
             res.json(data);
         })
@@ -233,7 +233,7 @@ app.put(emp_update, (req, res, next) => {
             newEmployee.image = defaultImage;
         }
 
-        dataService.updateEmployee(id, req.body)
+        db.updateEmployee(id, req.body)
             .then((msg) => {
 
                 res.status(200).json({ "message": msg });
@@ -255,7 +255,7 @@ app.put(task_update, (req, res, next) => {
 
         let id = req.query.taskID + "";
 
-        dataService.updateTask(id, req.body)
+        db.updateTask(id, req.body)
             .then((msg) => {
 
                 res.status(200).json({ "message": msg });
@@ -280,7 +280,7 @@ app.delete(emp_delete, (req, res, next) => {
 
         let id = req.query.empID + "";
 
-        dataService.deleteEmployee(id)
+        db.deleteEmployee(id)
             .then((msg) => {
 
                 res.status(200).json({ "message": msg });
@@ -302,7 +302,7 @@ app.delete(task_delete, (req, res, next) => {
 
         let id = req.query.taskID + "";
 
-        dataService.deleteTask(id)
+        db.deleteTask(id)
             .then((msg) => {
 
                 res.status(200).json({ "message": msg });

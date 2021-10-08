@@ -1,30 +1,39 @@
-const noDisplayClass = "no-display";
-const errorClass = "error-background";
+import * as s from '../elementAttributes.js';
 
-//This function will clear out all the child nodes for the specified element.
-export function clearElement(elementIdentifier) {
+//Will clear out all the child nodes for the specified element.
+export const clearElement = (elementIdentifier) => {
 
     document.querySelector(elementIdentifier).textContent = "";
 }
 
-export function elementDisplay(elementIdentifier, hideClass) {
+//Each time this function is called, it will swap one class for another
+//for a specified element, or do so only once.
+export const classToggle = (elementIdentifier, toggleOnce, initialClass = "no-class", newClass = "no-class") => {
 
-    let elm = document.querySelector(elementIdentifier);
+    let elm = document.getElementById(elementIdentifier);
 
-    if (elm.className !== hideClass) {
+    if (toggleOnce) {
 
-        elm.className = hideClass;
+        elm.className = initialClass;
     }
     else {
 
-        //switch element class to anything other than the no-display class
-        //coult even be an empty string
-        elm.className = "display";
+        if (elm.className !== initialClass) {
+
+            elm.className = initialClass;
+        }
+        else {
+
+            elm.className = newClass;
+        }
     }
 }
 
-//Renders an error message in any element that has "error-msg" as it's ID.
-export function renderMessage(message, elmID, hideClass, displayClass) {
+//Renders the message data from the first argument, into the element with 
+//the id indicated by the second argument.
+//The classes stored in the last two arguments, will be applied depending 
+//on if the message has any data or not.
+export const renderMessage = (message, elmID, hideClass, displayClass) => {
 
     let errorMsg = document.getElementById(elmID);
     errorMsg.textContent = "";
@@ -45,26 +54,29 @@ export function renderMessage(message, elmID, hideClass, displayClass) {
     }
 }
 
-export function clearMessages(elmIDs, delay) {
+//Clears error messages for a series of element IDs, after a delay.
+export const clearMessages = (elmIDs, delay) => {
 
     setTimeout(() => {
 
         elmIDs.map((id) => {
 
-            renderMessage("", id, noDisplayClass, errorClass);
+            renderMessage("", id, s.noDisplayClass, s.errorClass);
         })
     }, delay)
 }
 
-export function highlightField(element, validationMsg) {
+//Will highlight the element passed in the first argument, if 
+//the if the second argument equals < error >.
+export const highlightField = (element, validationMsg) => {
 
-    renderMessage("", validationMsg.elementId, noDisplayClass, errorClass);
+    renderMessage("", validationMsg.elementId, s.noDisplayClass, s.errorClass);
 
     element.style.border = "none";
 
     if (validationMsg.status === "error") {
 
-        renderMessage(validationMsg.message, validationMsg.elementId, noDisplayClass, errorClass);
+        renderMessage(validationMsg.message, validationMsg.elementId, s.noDisplayClass, s.errorClass);
 
         if (element.value !== "") {
 
@@ -77,7 +89,7 @@ export function highlightField(element, validationMsg) {
 //This function will scroll to the element with the ID specified.
 //You can state if you wish to scroll to the first, or last child
 //of a parent node using the last two optional boolean parameters.
-export function scrollToElement(elementID, delay, isParent = false, toLast = false) {
+export const scrollToElement = (elementID, delay, isParent = false, toLast = false) => {
 
     let elemID;
 
@@ -102,7 +114,7 @@ export function scrollToElement(elementID, delay, isParent = false, toLast = fal
 }
 
 //This function will attempt to load an image into memory for file upload.
-export function readImage(image) {
+export const readImage = (image) => {
 
     let reader = new FileReader();
 

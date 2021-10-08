@@ -3,32 +3,14 @@ import { createButton, createSelect, createInput, createField } from './renderIn
 import { createEmployee, createTask, updateEmployee, updateTask } from '../dataManager.js';
 import { validateEmployeeForm } from '../form-validation/validateEmployeeForm.js';
 import { validateTaskForm } from '../form-validation/validateTaskForm.js';
+import * as s from '../elementAttributes.js';//import styles
 
-const taskFormID = "task-form";
-const empFormID = "emp-form";
-const buttonClass = "btn-sizing";
-const deleteBtnClass = buttonClass + " btn-red";
-const cancelBtnClass = "btn-red float-right";
-const taskCancelBtnID = "task-cancel-btn";
-const empCancelBtnID = "emp-cancel-btn";
-const deleteBtnID = "delete-btn";
-const dangerZoneClass = "-danger-zone";//this class is used in conbination with the element ID that is passed by the functions
-const submitBtnID = "submit-btn";
-const formContainerClass = "option-border options";//class for the div container that the form resids in
-const formHeading = "form-heading";
-const formClass = "option-form";
-const formInfoAreaClass = "form-info-div";
-const imageAreaClass = "form-image-div";
-const imagePreviewClass = "form-image-preview";
-const textInputTitle = "2 to 64 characters, must begin with a letter, and may also contain single quotes, as well as spaces";
-const emailInputTitle = "8 to 128 characters, and must begin with a letter, and may also contain numbers, as well as periods";
-
-const taskInput = createInput("task-id", "", "text", "Task Name", 2, 128, "enter task name", "taskNameField", textInputTitle, true);
-const fnameInput = createInput("fname-id", "", "text", "First Name", 2, 64, "enter employee's first name", "firstNameField", textInputTitle, true);
-const lnameInput = createInput("lname-id", "", "text", "Last Name", 2, 64, "enter employee's last name", "lastNameField", textInputTitle, true);
-const emailInput = createInput("email-id", "", "text", "Email", 8, 128, "enter employee's email", "emailField", emailInputTitle);
+const taskInput = createInput("task-id", "", "text", "Task Name", 2, 128, "enter task name", "taskNameField", s.textInputTitle, true);
+const fnameInput = createInput("fname-id", "", "text", "First Name", 2, 64, "enter employee's first name", "firstNameField", s.textInputTitle, true);
+const lnameInput = createInput("lname-id", "", "text", "Last Name", 2, 64, "enter employee's last name", "lastNameField", s.textInputTitle, true);
+const emailInput = createInput("email-id", "", "text", "Email", 8, 128, "enter employee's email", "emailField", s.emailInputTitle);
 const imageInput = createInput("img-upload", "", "file", "");
-const imageUploadBtn = createButton("", buttonClass, "Upload Image", "button", "add an optional employee image", "imageUploadBtn");
+const imageUploadBtn = createButton("", s.buttonClass, "Upload Image", "button", "add an optional employee image", "imageUploadBtn");
 
 const optionsArray = [
     { value: "", text: "No Selection" },
@@ -43,68 +25,60 @@ lnameInput.required = true;
 emailInput.required = true;
 sexSelect.required = true;
 
-//id names for the form error/success message elements for each field
-const taskMsg = "task-message";
-const fnameMsg = "fname-message";
-const lnameMsg = "lname-message";
-const emailMsg = "email-message";
-const sexMsg = "sex-message";
-const msgClass = "no-display";
-
 //create fields that include the inputs above, with a label, and status message element
-const taskField = createField("Task Name", taskInput, taskMsg, msgClass)
-const fnameField = createField("First Name", fnameInput, fnameMsg, msgClass);
-const lnameField = createField("Last Name", lnameInput, lnameMsg, msgClass);
-const emailField = createField("Email", emailInput, emailMsg, msgClass);
-const sexField = createField("Sex", sexSelect, sexMsg, msgClass);
+const taskField = createField("Task Name", taskInput, s.taskMsgID, s.noDisplayClass)
+const fnameField = createField("First Name", fnameInput, s.fnameMsgID, s.noDisplayClass);
+const lnameField = createField("Last Name", lnameInput, s.lnameMsgID, s.noDisplayClass);
+const emailField = createField("Email", emailInput, s.emailMsgID, s.noDisplayClass);
+const sexField = createField("Sex", sexSelect, s.sexMsgID, s.noDisplayClass);
 
 
 ['keyup', 'blur', 'focus'].forEach((action) => {
 
     fnameInput.addEventListener(action, () => {
 
-        validateEmployeeForm(empFormID, 2);
+        validateEmployeeForm(s.empFormID, 2);
     });
 
     lnameInput.addEventListener(action, () => {
 
-        validateEmployeeForm(empFormID, 3);
+        validateEmployeeForm(s.empFormID, 3);
     });
 
     emailInput.addEventListener(action, () => {
 
-        validateEmployeeForm(empFormID, 4);
+        validateEmployeeForm(s.empFormID, 4);
     });
 
     taskInput.addEventListener(action, () => {
 
-        validateTaskForm(taskFormID);
+        validateTaskForm(s.taskFormID);
     })
 })
 
 sexSelect.addEventListener('change', () => {
 
-    validateEmployeeForm(empFormID, 5);
+    validateEmployeeForm(s.empFormID, 5);
 })
 
 //This function manages which form to generate between tasks and employees, and allows
 //you to indicate if the generated form should be configured to update or create data.
 //The first argument dictates if the form sould be for tasks or employees, and the 
 //second argument dictates if the configuration should be set to update or create.
-export function createForm(isEmpForm, isUpdate, title, formID, btnName, parentID, updateDataID = "") {
+export const createForm = (isEmpForm, isUpdate, title, formID, btnName, parentID, updateDataID = "") => {
 
     if (isEmpForm) {
 
-        renderEmployeeForm(title, formID, empCancelBtnID, btnName, parentID);
+        renderEmployeeForm(title, formID, s.empCancelBtnID, btnName, parentID);
     }
     else {
 
-        renderTaskForm(title, formID, taskCancelBtnID, btnName, parentID);
+        renderTaskForm(title, formID, s.taskCancelBtnID, btnName, parentID);
     }
 
-    let form = document.getElementById(formID);
-    let last = form.elements.length - 1;
-    let button = form.elements[last];
+    const form = document.getElementById(formID);
+    const last = form.elements.length - 1;
+    const button = form.elements[last];
 
     setSubmitType(isEmpForm, isUpdate, button, formID, updateDataID);
 }
@@ -113,17 +87,17 @@ export function createForm(isEmpForm, isUpdate, title, formID, btnName, parentID
 //create configuration. The first two arguments work just like the "createForm," function,
 //but all the other arguments are used to locate the title, and button elements, so that 
 //their attributes can be changed.
-export function changeForm(isEmpForm, isUpdate, titleID, titleChange, formID, btnName, updateDataID = "") {
+export const changeForm = (isEmpForm, isUpdate, titleID, titleChange, formID, btnName, updateDataID = "") => {
 
-    let title = document.getElementById(titleID);
+    const title = document.getElementById(titleID);
 
     if (title.textContent !== titleChange) {
 
         title.textContent = titleChange;
-        let newButton = createButton(submitBtnID, buttonClass, btnName, "submit");
+        const newButton = createButton(s.submitBtnID, s.buttonClass, btnName, "submit");
         newButton.disabled = true;
-        let form = document.getElementById(formID);
-        let dangerZone = document.querySelector('.' + formID + dangerZoneClass);
+        const form = document.getElementById(formID);
+        const dangerZone = document.querySelector('.' + formID + s.dangerZoneClass);
 
         setSubmitType(isEmpForm, isUpdate, newButton, formID, updateDataID);
 
@@ -132,8 +106,8 @@ export function changeForm(isEmpForm, isUpdate, titleID, titleChange, formID, bt
             dangerZone.remove();
         }
 
-        let last = form.elements.length - 1;
-        let oldButton = form.elements[last];
+        const last = form.elements.length - 1;
+        const oldButton = form.elements[last];
 
         oldButton.replaceWith(newButton);
     }
@@ -141,16 +115,16 @@ export function changeForm(isEmpForm, isUpdate, titleID, titleChange, formID, bt
 
 //This function loads object data into a form that has been set to the update configuration,
 //and also adds a delete button exclusive to the form.
-export function preloadFormData(formID, data) {
+export const preloadFormData = (formID, data) => {
 
-    let form = document.getElementById(formID);
-    let inputs = form.getElementsByTagName('input');
-    let image = form.getElementsByTagName('img')[0];
-    let deleteBtn = createButton(deleteBtnID, deleteBtnClass, "Delete", "button");
+    const form = document.getElementById(formID);
+    const inputs = form.getElementsByTagName('input');
+    const image = form.getElementsByTagName('img')[0];
+    const deleteBtn = createButton(s.deleteBtnID, s.deleteBtnClass, "Delete", "button");
 
-    let dangerZone = document.createElement('div');
-    dangerZone.className = formID + dangerZoneClass;
-    let warning = document.createElement('span');
+    const dangerZone = document.createElement('div');
+    dangerZone.className = formID + s.dangerZoneClass;
+    const warning = document.createElement('span');
     warning.textContent = "Danger Zone";
 
     if (data.first_name) {
@@ -159,7 +133,7 @@ export function preloadFormData(formID, data) {
         inputs[2].value = data.last_name;
         inputs[3].value = data.email;
 
-        let select = form.getElementsByTagName('select');
+        const select = form.getElementsByTagName('select');
         select[0].value = data.sex;
         image.src = data.image;
 
@@ -186,7 +160,7 @@ export function preloadFormData(formID, data) {
 
     //append delete button if it does not exist
     //else relpace the button with a new one that has the updated function
-    if (form.lastChild.className !== formID + dangerZoneClass) {
+    if (form.lastChild.className !== formID + s.dangerZoneClass) {
 
         form.append(dangerZone);
     }
@@ -197,7 +171,7 @@ export function preloadFormData(formID, data) {
 
 //This function manages the what what the submit button will do depending on the 
 //configuration of the form.
-function setSubmitType(isEmpForm, isUpdate, button, formID, updateDataID = "") {
+const setSubmitType = (isEmpForm, isUpdate, button, formID, updateDataID = "") => {
 
     if (isEmpForm) {
 
@@ -236,12 +210,12 @@ function setSubmitType(isEmpForm, isUpdate, button, formID, updateDataID = "") {
 }
 
 //Generates the form for a task.
-function renderTaskForm(formTitle, formId, cancelBtnID, submintBtnName, elementIdentifier) {
+const renderTaskForm = (formTitle, formId, cancelBtnID, submintBtnName, elementIdentifier) => {
 
     renderFormStructure(formTitle, formId, cancelBtnID, elementIdentifier);
 
-    let form = document.getElementById(formId);
-    let submitButton = createButton(submitBtnID, buttonClass, submintBtnName, "submit", submintBtnName + " button");
+    const form = document.getElementById(formId);
+    const submitButton = createButton(s.submitBtnID, s.buttonClass, submintBtnName, "submit", submintBtnName + " button");
     submitButton.disabled = true;
 
     form.append(taskField, submitButton);
@@ -249,16 +223,16 @@ function renderTaskForm(formTitle, formId, cancelBtnID, submintBtnName, elementI
 }
 
 //Generates the form for an employee.
-function renderEmployeeForm(formTitle, formId, cancelBtnID, submintBtnName, elementIdentifier) {
+const renderEmployeeForm = (formTitle, formId, cancelBtnID, submintBtnName, elementIdentifier) => {
 
     renderFormStructure(formTitle, formId, cancelBtnID, elementIdentifier);
 
-    let form = document.getElementById(formId);
-    let submitButton = createButton(submitBtnID, buttonClass, submintBtnName, "submit", submintBtnName + " button");
+    const form = document.getElementById(formId);
+    const submitButton = createButton(s.submitBtnID, s.buttonClass, submintBtnName, "submit", submintBtnName + " button");
     submitButton.disabled = true;
-    let imageDiv = renderImageUpload();
-    let infoDiv = document.createElement('div');
-    infoDiv.className = formInfoAreaClass;
+    const imageDiv = renderImageUpload();
+    const infoDiv = document.createElement('div');
+    infoDiv.className = s.formInfoAreaClass;
     infoDiv.append(fnameField, lnameField, emailField, sexField, submitButton);
 
     form.append(imageDiv, infoDiv);
@@ -266,11 +240,11 @@ function renderEmployeeForm(formTitle, formId, cancelBtnID, submintBtnName, elem
 }
 
 //Creates the image preview, and uplaod section for for the employee form.
-function renderImageUpload() {
+const renderImageUpload = () => {
 
-    let labelImage = document.createElement('label');
-    let image = document.createElement('img');
-    let previewArea = document.createElement('div');
+    const labelImage = document.createElement('label');
+    const image = document.createElement('img');
+    const previewArea = document.createElement('div');
     labelImage.textContent = "Image";
 
     imageUploadBtn.addEventListener("click", () => {
@@ -278,45 +252,45 @@ function renderImageUpload() {
         document.getElementById("img-upload").click();
     })
 
-    previewArea.className = imagePreviewClass;
+    previewArea.className = s.imagePreviewClass;
     image.width = "200";
     image.src = "";
     image.ariaLabel = "current emloyee image";
 
     imageInput.addEventListener("change", () => {
 
-        let file = imageInput.files[0];
+        const file = imageInput.files[0];
         image.src = URL.createObjectURL(file);
     })
 
     imageInput.style.display = "none";
     previewArea.appendChild(image);
 
-    let imageDiv = document.createElement('div');
-    imageDiv.className = imageAreaClass;
+    const imageDiv = document.createElement('div');
+    imageDiv.className = s.imageAreaClass;
     imageDiv.append(labelImage, previewArea, imageInput, imageUploadBtn);
 
     return imageDiv;
 }
 
 //Generates the basic form elements that are shared between task and employee forms.
-function renderFormStructure(formTitle, formId, cancelBtnID, elementIdentifier) {
+const renderFormStructure = (formTitle, formId, cancelBtnID, elementIdentifier) => {
 
-    let container = document.createElement('div');
-    let customHeader = document.createElement('div');
-    let title = document.createElement('span');
-    let cancelButton = createButton(cancelBtnID, cancelBtnClass, "X", "button", "cancel button");
-    let form = document.createElement('form');
+    const container = document.createElement('div');
+    const customHeader = document.createElement('div');
+    const title = document.createElement('span');
+    const cancelButton = createButton(cancelBtnID, s.cancelBtnClass, "X", "button", "cancel button");
+    const form = document.createElement('form');
 
-    customHeader.className = formHeading;
+    customHeader.className = s.formHeadingClass;
     title.textContent = formTitle;
     title.id = formId + "-title";
 
     customHeader.append(title, cancelButton);
 
-    container.className = formContainerClass;
+    container.className = s.formContainerClass;
     form.id = formId;
-    form.className = formClass;
+    form.className = s.formClass;
     form.addEventListener("submit", (e) => {
         e.preventDefault();
     })

@@ -1,35 +1,32 @@
-import { createTableHeader, renderRow } from './renderTable.js';
-import { clearElement } from './renderTools.js';
+import { createTable, renderRow } from './renderTable.js';
 
 //This function passes data to relevant functions that will configure the table
 //and render data in the table body. You must pass the ID (or Class) of the table
 //body you want to add the data to.
-export function renderData(data, tableBodyId) {
-
-    if (!document.getElementById(tableBodyId)) {
-
-        return;
-    }
-
-    document.getElementById("raw-data").innerHTML = JSON.stringify(data, null, '\t');
+export const renderData = (data, parentID) => {
 
     if (data[0] != undefined) {
 
-        clearElement("#tableHdr");
-        clearElement("#tableBody");
-
         if (data[0].first_name) {
 
-            createTableHeader(["Image", "Name", "Email", "Action"], "tableHdr")
+            createTable(["Image", "Name", "Email", "Action"], parentID);
         }
         else {
 
-            createTableHeader(["Task", "Action"], "tableHdr")
+            createTable(["Task", "Action"], parentID);
         }
+
+        const tbodyID = document.getElementById(parentID).lastChild.lastChild.id;
 
         data.map((obj, index) => {
 
-            renderRow(obj, index, tableBodyId);
+            renderRow(obj, tbodyID);
         })
     }
+}
+
+//This renders the raw json data properly.
+export const renderRawData = (data) => {
+
+    document.getElementById("raw-data").textContent = JSON.stringify(data, null, '\t');
 }

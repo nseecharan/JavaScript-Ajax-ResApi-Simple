@@ -1,51 +1,65 @@
 import { createButton } from './renderInputs.js';
 import { openEmpUpdateForm, openTaskUpdateForm } from '../menuEvents.js';
+import { clearElement } from './renderTools.js';
+import * as s from '../elementAttributes.js';//import styles
 
-export function createTableHeader(headerList, parentId) {
+//Create the inital table structure to render data.
+export const createTable = (headerList, parentId) => {
 
-    let tHead = document.getElementById(parentId);
-    tHead.textContent = "";
-    let last = headerList.length - 1;
+    clearElement("#" + parentId);
+    const newTable = document.createElement('table');
+    const newTblHeader = document.createElement('thead');
+    const newTblBody = document.createElement('tbody');
+    newTable.id = s.tableID;
+    newTable.className = s.tableClass;
+    newTblHeader.id = s.tableHeaderID;
+    newTblHeader.className = s.tableHeaderClass;
+    newTblBody.id = s.tableBodyID;
 
+    const last = headerList.length - 1;
     headerList.map((header, index) => {
-        let th = document.createElement('th');
-        th.innerText = header;
-        th.className = index === last ? "th-action" : "th-style";
-        tHead.appendChild(th);
+        const th = document.createElement('th');
+        th.textContent = header;
+        th.className = index === last ? s.thActionClass : s.thClass;
+        newTblHeader.appendChild(th);
     })
+
+    newTable.append(newTblHeader, newTblBody);
+    document.getElementById(parentId).appendChild(newTable);
 }
 
-export function renderRow(data, index, parentId) {
+//Renders a table row based on the type of data passed.
+//This function will be broken up into smaller functions in future iterations.
+export const renderRow = (data, parentId) => {
 
     if (!data) {
 
         return;
     }
 
-    let name = data.first_name + " " + data.last_name;
-    let email = data.email;
-    let _id = data._id;
-    //let sex = data.sex;
+    const name = data.first_name + " " + data.last_name;
+    const email = data.email;
+    const _id = data._id;
+    //const sex = data.sex;
 
     //row elements
     let row;
-    let td1 = document.createElement('td');
-    let td2 = document.createElement('td');
+    const td1 = document.createElement('td');
+    const td2 = document.createElement('td');
     td2.innerText = name;
-    let td3 = document.createElement('td');
+    const td3 = document.createElement('td');
     td3.innerText = email;
-    let td4 = document.createElement('td');
+    const td4 = document.createElement('td');
 
     //row buttons
-    let buttonDiv = document.createElement('div');
+    const buttonDiv = document.createElement('div');
     buttonDiv.style = "margin:auto;width:max-content;";
 
     if (data.status == "editable") {
 
         if (data.first_name) {
 
-            let updateBtn = createButton("emp-update-btn", "btn-sizing", "View Employee", "button", "submit button for the employee update form", "employeeUpdateBtn");
-
+            const updateBtn = createButton(s.empUpdateBtnID, s.buttonClass, "View Employee", "button", s.empUpdateBtnAria, "employeeUpdateBtn");
 
             updateBtn.addEventListener('click', () => {
 
@@ -57,7 +71,7 @@ export function renderRow(data, index, parentId) {
         }
         else {
 
-            let updateBtn = createButton("task-update-btn", "btn-sizing", "View Task", "button", "submit button for the task update form", "taskUpdateBtn");
+            const updateBtn = createButton(s.taskUpdateBtnID, s.buttonClass, "View Task", "button", s.taskUpdateBtnAria, "taskUpdateBtn");
 
             updateBtn.addEventListener('click', () => {
 
@@ -73,31 +87,30 @@ export function renderRow(data, index, parentId) {
     //create cloumns
     if (data.first_name) {
 
-        let img = new Image();
+        const img = new Image();
         img.src = data.image;
         img.alt = "Image of employee";
         td1.appendChild(img);
-        row = addRowDetails([td1, td2, td3, td4], index, _id)
+        row = addRowDetails([td1, td2, td3, td4], _id)
     }
     else {
 
         td1.innerText = data.task;
-        row = addRowDetails([td1, td4], index, _id)
+        row = addRowDetails([td1, td4], _id)
     }
 
     document.getElementById(parentId).appendChild(row);
 }
 
-function addRowDetails(detailList, index, _id) {
+//This will add details to a row from an array of row details.
+const addRowDetails = (detailList, _id) => {
 
-    let row_color = (index % 2 == 0) ? "background-color:white;" : "background-color:lightgrey;";
-    let row = document.createElement('tr');
-    row.style = row_color;
+    const row = document.createElement('tr');
     row.id = _id;
-    let last = detailList.length - 1;
+    const last = detailList.length - 1;
     detailList.map((td, index) => {
 
-        td.className = index === last ? "td-action" : "td-style";
+        td.className = index === last ? s.tdActionClass : s.tdClass;
         row.appendChild(td);
     })
 

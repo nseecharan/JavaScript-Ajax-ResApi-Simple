@@ -25,12 +25,13 @@ const searchInput = document.getElementById('search-input');
 
         validateLoginForm(loginForm, false, loginMessageID);
     });
-
-    searchInput.addEventListener(action, (e) => {
-
-        searchData(e);
-    });
 })
+
+searchInput.addEventListener('keyup', (e) => {
+
+    console.log("SEARCH!")
+    searchData(e);
+});
 
 loginBtn.addEventListener('click', () => {
 

@@ -1,30 +1,31 @@
-import { disableForm } from './form-validation/disableForm.js';
 import { closeEmpForm, closeTaskForm } from './menuEvents.js';
-import { renderData } from './render/renderData.js';
-import { elementDisplay, readImage, clearElement, renderMessage, scrollToElement } from './render/renderTools.js';
+import { renderData, renderRawData } from './render/renderData.js';
+import { classToggle, readImage, clearElement, renderMessage, scrollToElement } from './render/renderTools.js';
+import * as s from './elementAttributes.js';
 
-let emp_route = "/api/employees";//optional name as param
-//let emp_find = emp_route + "/search"
-let emp_register = emp_route + "/register";
-let emp_update = emp_route + "/update";//id as param
-let emp_delete = emp_route + "/delete";//id as param
+const emp_route = "/api/employees";//optional name as param
+const emp_find = emp_route + "/search";
+const emp_register = emp_route + "/register";
+const emp_update = emp_route + "/update";//id as param
+const emp_delete = emp_route + "/delete";//id as param
 
-let task_route = "/api/tasks";//optional name as param
-//let task_find = task_route + "/search";
-let task_add = task_route + "/add";
-let task_update = task_route + "/update";//id as param
-let task_delete = task_route + "/delete";//id as param
+const task_route = "/api/tasks";//optional name as param
+const task_find = task_route + "/search";
+const task_add = task_route + "/add";
+const task_update = task_route + "/update";//id as param
+const task_delete = task_route + "/delete";//id as param
 
 let token;//consider storing in cookie so that you can make this a multi page application
 
-let dbData = [];//contains the array of objects returned from database
+let dbData = [];//and empty array that will contain the json data
 let searchResults = [];//contains only the results fron the search
 
 /***************************************************************
                         AJAX FUNCTIONS                           
 ***************************************************************/
 
-async function makeAjaxRequest(method, url, data) {
+//Method that manages ajax request to server.
+const makeAjaxRequest = async (method, url, data) => {
 
     return fetch(url, {
         method: method,
@@ -37,21 +38,29 @@ async function makeAjaxRequest(method, url, data) {
         .then((response) => response.json())
 }
 
-function parseJsonData(json) {
+//Extracts relevant information from the json data, and then renderes it.
+//What gets rendered depends on what is contained in the json data.
+//In some cases it can be a status message, or an array of data to be rendered
+//in the table.
+const parseJsonData = (json) => {
 
     //consider making a cookie session instead
     if (json.token) {
 
         token = json.token;
 
-        if (document.getElementById("create-options").className == "no-display") {
-
-            elementDisplay("#create-options", "no-display");
-        }
+        classToggle(s.createBtnOptionsID, true);
     }
 
     dbData = json;
-    renderData(dbData, "tableBody");
+    renderData(dbData, s.renderDataClass);
+    renderRawData(dbData);
+
+    if (!dbData.message) {
+
+        document.getElementById(s.renderDataClass).className = s.dataDisplayBGClass;
+    }
+
 
 
     //add this to create update, delete
@@ -65,15 +74,14 @@ function parseJsonData(json) {
                         MAIN FUNCTIONS                          
 ***************************************************************/
 
-//consider creating an event that tracks the length of the dbData
-export function searchData(e) {
+//Will check to see if the characters entered in the search exist in the loaded table, 
+//and will re-render the table to show the matching results. It checks the data in the
+//name, and task columns respectively.
+export const searchData = (e) => {
 
     let query = e.target.value;
 
     if (query.length !== 0 || query !== undefined) {
-
-        clearElement("#tableHdr");
-        clearElement("#tableBody");
 
         searchResults = [];
         dbData.map((data) => {
@@ -94,11 +102,14 @@ export function searchData(e) {
             }
         });
 
-        renderData(searchResults, "tableBody");
+        renderData(searchResults, s.renderDataClass);
+        renderRawData(searchResults);
     }
 }
 
-function refreshEmpData(delay, close = false) {
+//Will reload the employee data. This may be used to reflect updates if the data has changed, and
+//requires re-rendering.
+const refreshEmpData = (delay, close = false) => {
 
     if (dbData.message !== "Please log in") {
 
@@ -112,7 +123,9 @@ function refreshEmpData(delay, close = false) {
     }
 }
 
-function refreshTaskData(delay, close = false) {
+//Will reload the task data. This may be used to reflect updates if the data has changed, and
+//requires re-rendering.
+const refreshTaskData = (delay, close = false) => {
 
     if (dbData.message !== "Please log in") {
 
@@ -128,7 +141,8 @@ function refreshTaskData(delay, close = false) {
 
 //LOGIN
 /*******************************************************/
-export async function login() {
+
+export const login = async () => {
 
     let form = document.forms[0];
 
@@ -141,18 +155,19 @@ export async function login() {
     const makeReq = await makeAjaxRequest("POST", "/api/login", formdata);
     parseJsonData(makeReq);
 
-    if (token && form.className !== "no-display") {
+    if (token) {
 
         form.reset();
-        disableForm(form);
-        elementDisplay("#login-form", "no-display");
-        renderMessage(dbData.message, "login-msg", "no-display", "error-background");
+        clearElement("#" + s.loginAreaID)
+        renderMessage(dbData.message, s.loginMsgID, s.noDisplayClass, s.errorClass);
     }
 }
 
 //CREATE
 /*******************************************************/
-export async function createEmployee(formId) {
+//The create functions will add new data, and then scroll to the new entry once the table has been re-rendered.
+
+export const createEmployee = async (formId) => {
 
     const form = document.getElementById(formId);
 
@@ -178,11 +193,11 @@ export async function createEmployee(formId) {
     if (makeReq) {
 
         refreshEmpData(100, true);
-        scrollToElement("tableBody", 500, true, true);
+        scrollToElement(s.tableBodyID, 500, true, true);
     }
 }
 
-export async function createTask(formId) {
+export const createTask = async (formId) => {
 
     const form = document.getElementById(formId);
 
@@ -197,35 +212,35 @@ export async function createTask(formId) {
     if (makeReq) {
 
         refreshTaskData(100, true);
-        scrollToElement("tableBody", 500, true, true);
+        scrollToElement(s.tableBodyID, 500, true, true);
     }
 }
 
 //READ
 /*******************************************************/
-export async function getAllEmployees() {
+//The read functions will load the data, and display the search field.
+
+export const getAllEmployees = async () => {
 
     const makeReq = await makeAjaxRequest("GET", emp_route);
     parseJsonData(makeReq);
+    classToggle(s.searchID, true);
 
-    if (!document.querySelector("#search").style.display) {
-        elementDisplay("#search", "no-display");
-    }
 }
 
-export async function getAllTasks() {
+export const getAllTasks = async () => {
 
     const makeReq = await makeAjaxRequest("GET", task_route);
     parseJsonData(makeReq);
+    classToggle(s.searchID, true);
 
-    if (!document.querySelector("#search").style.display) {
-        elementDisplay("#search", "no-display");
-    }
 }
 
 //UPDATE
 /*******************************************************/
-export async function updateEmployee(id, formId) {
+//The update functions will modify existing data, and re-render the table.
+
+export const updateEmployee = async (id, formId) => {
 
     const form = document.getElementById(formId);
 
@@ -254,7 +269,7 @@ export async function updateEmployee(id, formId) {
     refreshEmpData(100, true);
 }
 
-export async function updateTask(id, formId) {
+export const updateTask = async (id, formId) => {
 
     const form = document.getElementById(formId);
 
@@ -270,14 +285,21 @@ export async function updateTask(id, formId) {
 
 //DELETE
 /*******************************************************/
-export async function deleteEmployee(id) {
+//The delete functions work just like update, but removes the data instead.
+//For the purposes of this demo, this is a true delete operation, and will
+//permanently remove the data from the database. Normally this would just
+//set a "do not display flag," to make it appear as though it was removed.
+
+//Permanently delete an employee.
+export const deleteEmployee = async (id) => {
 
     const makeReq = await makeAjaxRequest("DELETE", emp_delete + "?empID=" + id + "");
     parseJsonData(makeReq);
     refreshEmpData(100, true);
 }
 
-export async function deleteTask(id) {
+//Permanently delete a task.
+export const deleteTask = async (id) => {
 
     const makeReq = await makeAjaxRequest("DELETE", task_delete + "?taskID=" + id + "");
     parseJsonData(makeReq);
