@@ -15,6 +15,7 @@ html {
     background: var(--bgRadialGrad);
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
     background-attachment: fixed;
+    scroll-behavior: smooth;
 }
 body {
     margin: 0px;
@@ -94,6 +95,7 @@ footer div {
     max-width: max-content;
     width: 100%;
     margin: auto;
+    scroll-behavior: smooth;
 }
 #json-dsp,
 #styled-dsp {
@@ -191,10 +193,8 @@ select {
 .data-display-background {
     border-radius: 0.4em;
     background: linear-gradient(135deg, transparent, var(--black50));
-    border-left: 1px solid var(--white40);
-    border-top: 1px solid var(--white40);
-    border-bottom: 1px solid var(--black20);
-    border-right: 1px solid var(--black20);
+    box-shadow: inset 1px 1px 2px -1px var(--white80), inset -1px -1px 2px -1px var(--black50),
+        0px 0px 2px 0px var(--black50);
 }
 .table-styling {
     border-spacing: 0;
