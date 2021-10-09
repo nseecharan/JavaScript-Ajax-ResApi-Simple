@@ -56,5 +56,6 @@ export const tableHeaderClass = "thead-style";
 export const tableBodyID = "tableBody";
 export const thClass = "th-style";
 export const thActionClass = "th-action";
+export const trClass = "tr-style";
 export const tdClass = "td-style";
 export const tdActionClass = "td-action";

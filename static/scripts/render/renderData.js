@@ -9,11 +9,11 @@ export const renderData = (data, parentID) => {
 
         if (data[0].first_name) {
 
-            createTable(["Image", "Name", "Email", "Action"], parentID);
+            createTable([], parentID);
         }
         else {
 
-            createTable(["Task", "Action"], parentID);
+            createTable([], parentID);
         }
 
         const tbodyID = document.getElementById(parentID).lastChild.lastChild.id;

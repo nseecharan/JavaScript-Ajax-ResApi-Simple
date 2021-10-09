@@ -31,6 +31,9 @@ img {
     width: 50px;
     border-radius: 0.4em;
 }
+td p {
+    margin: 0 auto;
+}
 footer {
     bottom: 0;
     position: fixed;
@@ -54,6 +57,7 @@ footer div {
 #title-heading {
     background: var(--black30);
     padding: 0.4em;
+    display: flex;
 }
 #title-heading h3 {
     margin: 0px;
@@ -92,9 +96,8 @@ footer div {
 #mock-data {
     height: 30em;
     overflow: auto;
-    max-width: max-content;
     width: 100%;
-    margin: auto;
+    margin: 0 auto auto auto;
     scroll-behavior: smooth;
 }
 #json-dsp,
@@ -178,7 +181,7 @@ footer div {
 select {
     padding: inherit;
     display: block;
-    margin: auto;
+    margin: auto !important;
     width: 90%;
 }
 .form-image-preview {
@@ -214,6 +217,9 @@ select {
 }
 .thead-style {
     text-align: left;
+}
+.tr-style {
+    display: table-row;
 }
 .td-style {
     padding: 0.4em;
@@ -276,7 +282,7 @@ select {
     }
     #title-div {
         width: 100%;
-        height: max-content;
+        height: 40px;
     }
     .titles {
         border-bottom: 1px solid black;
@@ -293,18 +299,34 @@ select {
     #create-forms {
         max-width: 100%;
     }
-    /*
-    .option-form input,
-    select {
-        width: 75%;
+}
+@media (max-width: 550px) {
+    .tr-style {
+        display: grid;
+        border-bottom: 1px solid var(--black50);
     }
-    .option-form {
-        display: flex;
-        padding: 0px;
+    .td-action {
+        border: none;
+    }
+    .td-style {
         margin: auto;
-        width: max-content;
+        border: none;
     }
-    */
+}
+@media (max-width: 400px) {
+    #title-heading h3 {
+        font-size: 17px;
+    }
+}
+@media (max-width: 320px) {
+    #title-heading h3 {
+        font-size: 15px;
+    }
+}
+@media (max-width: 280px) {
+    #title-heading h3 {
+        font-size: 13px;
+    }
 }
 @media (max-height: 510px) {
     .api-features {
@@ -313,7 +335,7 @@ select {
     }
     #title-div {
         width: 100%;
-        height: max-content;
+        height: 40px;
     }
     .titles {
         border-bottom: 1px solid black;
@@ -327,5 +349,49 @@ select {
     footer {
         position: sticky;
         width: 100%;
+    }
+}
+.title-slim {
+    color: var(--white80);
+    display: flow-root;
+    background-image: var(--barRadialGrad);
+    border-right: 1px solid black;
+    overflow: hidden;
+}
+.title-reveal {
+    overflow: hidden;
+    animation-name: expandVertically;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+.title-collapse {
+    overflow: hidden;
+    animation-name: shrinkVertically;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes expandVertically {
+    0% {
+        height: 40px;
+    }
+    100% {
+        height: 400px;
+    }
+}
+@keyframes shrinkVertically {
+    0% {
+        height: 400px;
+    }
+    100% {
+        height: 40px;
+    }
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: inset 0px 0px 100px 50px rgb(255 255 255);
+    }
+    100% {
     }
 }

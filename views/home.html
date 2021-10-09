@@ -16,9 +16,12 @@
 <body>
     <div id="title-div" class="titles">
         <div id="title-heading">
-            <h3>Welcome to Nigel Seecharan's Simple Api</h3>
+            <div id="dropdown"></div>
+            <div>
+                <h3>Welcome to Nigel Seecharan's Simple Api</h3>
+            </div>
         </div>
-        <div class="small-margin">
+        <div id="menu-bar" class="small-margin">
             <p>This api is for demo purposes, and has routes that access small lists of data related to employees and
                 tasks. Log in in to use all api features.</p>
             <div id="login-area">
@@ -44,15 +47,14 @@
                 </form>
             </div>
             <p id="login-msg"></p>
-        </div>
-        <div id="api-info" class="small-margin">
-            <p>For information on the routes, please refer to the project
-                <a href='https://github.com/nseecharan/JavaScript-Ajax-ResApi-Simple'
-                    aria-label="link to API read me on github">readme</a>.
-            </p>
+            <div id="api-info">
+                <p>For information on the routes, please refer to the project
+                    <a href='https://github.com/nseecharan/JavaScript-Ajax-ResApi-Simple'
+                        aria-label="link to API read me on github">readme</a>.
+                </p>
+            </div>
         </div>
     </div>
-
     <div class="api-features">
         <!--h3 class="small-margin underline">Display Data</h3-->
         <div id="load-data" class="option-border api-option-display">

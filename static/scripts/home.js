@@ -1,6 +1,8 @@
 import { openEmpForm, openTaskForm } from './menuEvents.js';
 import { getAllEmployees, getAllTasks, login, searchData } from './dataManager.js';
 import { validateLoginForm } from './form-validation/validateLoginForm.js';
+import { clearElement } from './render/renderTools.js';
+import { createHamburger } from './render/renderInputs.js';
 
 const mainButtons = document.getElementsByTagName('button');
 const loginForm = document.getElementById('login-form');
@@ -29,7 +31,6 @@ const searchInput = document.getElementById('search-input');
 
 searchInput.addEventListener('keyup', (e) => {
 
-    console.log("SEARCH!")
     searchData(e);
 });
 
@@ -54,22 +55,34 @@ newTaskBtn.addEventListener('click', () => {
     openTaskForm();
 });
 
+function showHamburger() {
 
-//testing out basic implementaion of ovserver to track changes in http elements
+    const parentElm = document.getElementById("dropdown");
 
-/*
-const targetNode = document.getElementById('error-msg');
+    if (parentElm.children.length === 0) {
 
-const config = { attributes: true, childList: true, subtree: true };
-
-const callback = function (mutationsList, observer) {
-
-    console.log(mutationsList)
+        createHamburger("dropdown", "title-div");
+    }
 }
 
-const observer = new MutationObserver(callback);
+['load', 'resize'].forEach((action) => {
 
-observer.observe(targetNode, config);
+    window.addEventListener(action, (e) => {
 
-//observer.disconnect();
-*/
+
+        const width = e.currentTarget.innerWidth;
+        const height = e.currentTarget.innerHeight;
+        const titleElm = document.getElementById("title-div");
+        if (width < 900) {
+
+            titleElm.className = "title-slim";
+            showHamburger();
+
+        }
+        else {
+
+            titleElm.className = "titles";
+            clearElement("#dropdown");
+        }
+    })
+})

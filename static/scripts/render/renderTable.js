@@ -16,15 +16,20 @@ export const createTable = (headerList, parentId) => {
     newTblHeader.className = s.tableHeaderClass;
     newTblBody.id = s.tableBodyID;
 
-    const last = headerList.length - 1;
-    headerList.map((header, index) => {
-        const th = document.createElement('th');
-        th.textContent = header;
-        th.className = index === last ? s.thActionClass : s.thClass;
-        newTblHeader.appendChild(th);
-    })
+    if (headerList.length) {
+        const last = headerList.length - 1;
+        headerList.map((header, index) => {
+            const th = document.createElement('th');
+            th.textContent = header;
+            th.className = index === last ? s.thActionClass : s.thClass;
+            newTblHeader.appendChild(th);
+        })
+        newTable.append(newTblHeader, newTblBody);
+    }
+    else {
+        newTable.append(newTblBody);
+    }
 
-    newTable.append(newTblHeader, newTblBody);
     document.getElementById(parentId).appendChild(newTable);
 }
 
@@ -45,10 +50,15 @@ export const renderRow = (data, parentId) => {
     //row elements
     let row;
     const td1 = document.createElement('td');
+    const p1 = document.createElement('p');
     const td2 = document.createElement('td');
-    td2.innerText = name;
+    const p2 = document.createElement('p');
+    p2.innerText = name;
+    td2.append(p2);
     const td3 = document.createElement('td');
-    td3.innerText = email;
+    const p3 = document.createElement('p');
+    p3.innerText = email;
+    td3.append(p3);
     const td4 = document.createElement('td');
 
     //row buttons
@@ -95,7 +105,8 @@ export const renderRow = (data, parentId) => {
     }
     else {
 
-        td1.innerText = data.task;
+        p1.innerText = data.task;
+        td1.append(p1);
         row = addRowDetails([td1, td4], _id)
     }
 
@@ -107,6 +118,7 @@ const addRowDetails = (detailList, _id) => {
 
     const row = document.createElement('tr');
     row.id = _id;
+    row.className = s.trClass;
     const last = detailList.length - 1;
     detailList.map((td, index) => {
 

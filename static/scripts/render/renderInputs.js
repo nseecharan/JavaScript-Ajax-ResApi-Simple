@@ -1,3 +1,5 @@
+import { classToggle } from "./renderTools.js";
+
 export const createButton = (id, classes, buttonText, type, ariaLabel = "", name = "", title = "") => {
 
     let newButton = document.createElement('button');
@@ -71,7 +73,6 @@ export const createSelect = (selectId, selClass, optionsObject, ariaLabel = "", 
     return selectElement;
 }
 
-//returns a single input field
 export const createInput = (inputId, inputClass, inputType, placeholder, min, max, ariaLabel = "", name = "", title = "", required = false) => {
 
     let newInput = document.createElement('input');
@@ -115,7 +116,7 @@ export const createInput = (inputId, inputClass, inputType, placeholder, min, ma
     return newInput;
 }
 
-//returns a div with both a label, input, and a contained paragraph element for messages
+//Returns a div with both a label, input, and a contained paragraph element for messages.
 export const createField = (labelName, element, messageID, messageClass = "") => {
 
     let label = document.createElement('label');
@@ -127,5 +128,41 @@ export const createField = (labelName, element, messageID, messageClass = "") =>
     container.append(label, element, message);
 
     return container;
+}
 
+//Creates a custom hamburger icon with all the necessary css styling and functionality.
+//The target element ID is for the element you would want this button to control.
+export const createHamburger = (parentID, targetElementID) => {
+
+    const parentElm = document.getElementById(parentID);
+    const button = document.createElement('button');
+    button.setAttribute("style", "background:none; border:none;margin-right:1vw;");
+    button.className = "hamburger-btn";
+    button.ariaLabel = "Click here to open the menu on mobile screens";
+    button.title = "Click here to open the menu on mobile screens";
+
+    button.addEventListener('click', () => {
+
+        classToggle(targetElementID, false, "title-slim title-reveal", "title-slim title-collapse")
+    })
+
+    const container = document.createElement('div');
+    container.setAttribute("style", "height: 20px;width: 20px;display: table;");
+
+    for (let i = 0; i < 3; i++) {
+        const bar = document.createElement('span');
+        bar.setAttribute("style",
+            ` width: inherit;
+                border: 1px solid white;
+                background: white;
+                display: block;
+                margin: 4px auto;
+            `);
+
+        container.append(bar);
+    }
+
+    button.append(container)
+
+    parentElm.appendChild(button);
 }
