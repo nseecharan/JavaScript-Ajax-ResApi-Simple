@@ -10,7 +10,7 @@ export const clearElement = (elementIdentifier) => {
 //for a specified element, or do so only once.
 export const classToggle = (elementIdentifier, toggleOnce, initialClass = "no-class", newClass = "no-class") => {
 
-    let elm = document.getElementById(elementIdentifier);
+    const elm = document.getElementById(elementIdentifier);
 
     if (toggleOnce) {
 
@@ -35,7 +35,7 @@ export const classToggle = (elementIdentifier, toggleOnce, initialClass = "no-cl
 //on if the message has any data or not.
 export const renderMessage = (message, elmID, hideClass, displayClass) => {
 
-    let errorMsg = document.getElementById(elmID);
+    const errorMsg = document.getElementById(elmID);
     errorMsg.textContent = "";
     errorMsg.className = hideClass;
 
@@ -61,22 +61,23 @@ export const clearMessages = (elmIDs, delay) => {
 
         elmIDs.map((id) => {
 
-            renderMessage("", id, s.noDisplayClass, s.errorClass);
+            renderMessage("", id, s.noDisplayClass, s.messageClass);
         })
     }, delay)
 }
 
 //Will highlight the element passed in the first argument, if 
-//the if the second argument equals < error >.
+//the if the second argument equals < error >, and also display
+//a status message.
 export const highlightField = (element, validationMsg) => {
 
-    renderMessage("", validationMsg.elementId, s.noDisplayClass, s.errorClass);
+    renderMessage("", validationMsg.elementId, s.noDisplayClass, s.messageClass);
 
     element.style.border = "none";
 
     if (validationMsg.status === "error") {
 
-        renderMessage(validationMsg.message, validationMsg.elementId, s.noDisplayClass, s.errorClass);
+        renderMessage(validationMsg.message, validationMsg.elementId, s.noDisplayClass, s.messageClass);
 
         if (element.value !== "") {
 
@@ -86,42 +87,62 @@ export const highlightField = (element, validationMsg) => {
     }
 }
 
-//This function will scroll to the element with the ID specified.
-//You can state if you wish to scroll to the first, or last child
-//of a parent node using the last two optional boolean parameters.
-export const scrollToElement = (elementID, delay, isParent = false, toLast = false) => {
-
-    let elemID;
-
-    setTimeout(() => {
-
-        if (isParent) {
-
-            let parentElm = document.getElementById(elementID);
-
-            if (parentElm) {
-
-                elemID = toLast ? parentElm.lastChild.id : parentElm.firstChild.id;
-            }
-        }
-        else {
-
-            elemID = elementID;
-        }
-
-        document.getElementById(elemID).scrollIntoView();
-    }, delay)
-}
-
 //This function will attempt to load an image into memory for file upload.
 export const readImage = (image) => {
 
-    let reader = new FileReader();
+    const reader = new FileReader();
 
     reader.readAsDataURL(image);
     return new Promise((resolve, reject) => {
         reader.onload = function (e) {
             resolve(e.target.result);
         }
+    })
+}
+
+//This will scroll to the last child of the element with the ID indicated in the 
+//first argument.
+export const scrollToElement = (listElmID, delay) => {
+
+    return new Promise((resolve, reject) => {
+
+        setTimeout(() => {
+
+            const listElm = document.getElementById(listElmID);
+            const scrollToElm = listElm.lastChild;
+            scrollToElm.scrollIntoView();
+            resolve();
+        }, delay)
+    })
+}
+
+//This is a unique function that will apply an animation to element being scrolled to, after
+//scrolling has finished.
+export const scrollEndAnimation = (scrollToElm, scrollWindowID, animationClass, originalClass) => {
+
+    const scrollWindow = document.getElementById(scrollWindowID);
+    scrollWindow.addEventListener('scroll', function scroll() {
+
+        const hOffset = scrollWindow.offsetHeight;
+        const top = scrollWindow.scrollTop;
+        const height = scrollWindow.scrollHeight;
+
+        if (hOffset + top >= height) {
+
+            applyTemporaryAnimation(scrollToElm, animationClass, originalClass)
+            scrollWindow.removeEventListener('scroll', scroll);
+        }
+    });
+}
+
+//This will temporarily add a css animation class to an elment, and then remove it
+//once the animation is done.
+export const applyTemporaryAnimation = (element, animationClass, currentClasses) => {
+
+    element.className = currentClasses + " " + animationClass;
+    element.addEventListener('animationend', function addAnimation() {
+
+        element.className = currentClasses;
+        element.removeEventListener('animationend', addAnimation);
     })
 }

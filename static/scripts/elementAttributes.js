@@ -5,7 +5,7 @@ export const searchID = "search";
 export const renderDataClass = "mock-data";
 
 export const noDisplayClass = "no-display";
-export const errorClass = "error-background";
+export const messageClass = "message-background";
 
 //element Titles
 export const textInputTitle = "2 to 64 characters, must begin with a letter, and may also contain single quotes, as well as spaces";
@@ -29,6 +29,7 @@ export const taskFormParentID = "submit-task";
 export const taskFormTitleID = "task-form-title";
 export const empFormParentID = "submit-emp";
 export const empFormTitleID = "emp-form-title";
+export const generalMsgID = "general-msg";
 export const loginMsgID = "login-msg";
 export const taskMsgID = "task-message";
 export const fnameMsgID = "fname-message";
@@ -59,3 +60,5 @@ export const thActionClass = "th-action";
 export const trClass = "tr-style";
 export const tdClass = "td-style";
 export const tdActionClass = "td-action";
+
+export const flash = "flash-indication";

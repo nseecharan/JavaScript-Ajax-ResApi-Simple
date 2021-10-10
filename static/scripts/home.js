@@ -69,15 +69,14 @@ function showHamburger() {
 
     window.addEventListener(action, (e) => {
 
-
         const width = e.currentTarget.innerWidth;
         const height = e.currentTarget.innerHeight;
         const titleElm = document.getElementById("title-div");
+
         if (width < 900) {
 
             titleElm.className = "title-slim";
             showHamburger();
-
         }
         else {
 

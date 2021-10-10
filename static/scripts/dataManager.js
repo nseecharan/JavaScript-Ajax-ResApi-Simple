@@ -1,6 +1,6 @@
 import { closeEmpForm, closeTaskForm } from './menuEvents.js';
 import { renderData, renderRawData } from './render/renderData.js';
-import { classToggle, readImage, clearElement, renderMessage, scrollToElement } from './render/renderTools.js';
+import { classToggle, readImage, clearElement, renderMessage, scrollToElement, scrollEndAnimation } from './render/renderTools.js';
 import * as s from './elementAttributes.js';
 
 const emp_route = "/api/employees";//optional name as param
@@ -15,10 +15,66 @@ const task_add = task_route + "/add";
 const task_update = task_route + "/update";//id as param
 const task_delete = task_route + "/delete";//id as param
 
-let token;//consider storing in cookie so that you can make this a multi page application
+const DataManager = () => {
 
-let dbData = [];//and empty array that will contain the json data
-let searchResults = [];//contains only the results fron the search
+    let dbResponse;
+    let searchResults = [];
+    let token;
+    let canScroll = false;
+
+    const setData = (newData) => {
+
+        dbResponse = newData;
+    }
+    const getData = () => {
+
+        return dbResponse;
+    }
+    const addSearchItem = (data) => {
+
+        searchResults.push(data);
+    }
+    const getSearchResults = () => {
+
+        return searchResults;
+    }
+    const clearSearchResults = () => {
+
+        searchResults = [];
+    }
+    const setToken = (data) => {
+
+        token = data;
+    }
+    const getToken = () => {
+
+        return token;
+    }
+    const toggleScroll = () => {
+
+        if (canScroll === false) {
+            canScroll = true;
+
+            return canScroll;
+        }
+
+        return canScroll;
+    }
+
+    return {
+
+        setData,
+        getData,
+        addSearchItem,
+        getSearchResults,
+        clearSearchResults,
+        setToken,
+        getToken,
+        toggleScroll
+    }
+}
+
+const dm = DataManager();
 
 /***************************************************************
                         AJAX FUNCTIONS                           
@@ -32,7 +88,7 @@ const makeAjaxRequest = async (method, url, data) => {
         body: JSON.stringify(data),
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'jwt ' + token
+            'Authorization': 'jwt ' + dm.getToken()
         }
     })
         .then((response) => response.json())
@@ -47,27 +103,18 @@ const parseJsonData = (json) => {
     //consider making a cookie session instead
     if (json.token) {
 
-        token = json.token;
-
+        dm.setToken(json.token);
         classToggle(s.createBtnOptionsID, true);
     }
 
-    dbData = json;
-    renderData(dbData, s.renderDataClass);
-    renderRawData(dbData);
+    dm.setData(json);
+    renderData(dm.getData(), s.renderDataClass);
+    renderRawData(dm.getData());
 
-    if (!dbData.message) {
+    if (!dm.getData().message) {
 
         document.getElementById(s.renderDataClass).className = s.dataDisplayBGClass;
     }
-
-
-
-    //add this to create update, delete
-    //if (dbData.message) {
-
-    //    renderMessage(dbData.message, "general-msg");
-    //}
 }
 
 /***************************************************************
@@ -79,31 +126,32 @@ const parseJsonData = (json) => {
 //name, and task columns respectively.
 export const searchData = (e) => {
 
-    let query = e.target.value;
+    const query = e.target.value;
 
     if (query.length !== 0 || query !== undefined) {
 
-        searchResults = [];
-        dbData.map((data) => {
+        dm.clearSearchResults();
+
+        dm.getData().map((data) => {
 
             if (data.first_name) {
 
                 if (String(data.first_name + " " + data.last_name).toLocaleLowerCase().includes(query.toLocaleLowerCase())) {
 
-                    searchResults.push(data);
+                    dm.addSearchItem(data);
                 }
             }
             else {
 
                 if (String(data.task).toLocaleLowerCase().includes(query.toLocaleLowerCase())) {
 
-                    searchResults.push(data);
+                    dm.addSearchItem(data);
                 }
             }
         });
 
-        renderData(searchResults, s.renderDataClass);
-        renderRawData(searchResults);
+        renderData(dm.getSearchResults(), s.renderDataClass);
+        renderRawData(dm.getSearchResults());
     }
 }
 
@@ -111,7 +159,7 @@ export const searchData = (e) => {
 //requires re-rendering.
 const refreshEmpData = (delay, close = false) => {
 
-    if (dbData.message !== "Please log in") {
+    if (dm.getData().message !== "Please log in") {
 
         if (close) {
             closeEmpForm();
@@ -127,7 +175,7 @@ const refreshEmpData = (delay, close = false) => {
 //requires re-rendering.
 const refreshTaskData = (delay, close = false) => {
 
-    if (dbData.message !== "Please log in") {
+    if (dm.getData().message !== "Please log in") {
 
         if (close) {
             closeTaskForm();
@@ -144,9 +192,9 @@ const refreshTaskData = (delay, close = false) => {
 
 export const login = async () => {
 
-    let form = document.forms[0];
+    const form = document.forms[0];
 
-    let formdata = {
+    const formdata = {
 
         username: form.elements[0].value,
         password: form.elements[1].value
@@ -155,12 +203,28 @@ export const login = async () => {
     const makeReq = await makeAjaxRequest("POST", "/api/login", formdata);
     parseJsonData(makeReq);
 
-    if (token) {
+    if (dm.getToken()) {
 
         form.reset();
         clearElement("#" + s.loginAreaID)
-        renderMessage(dbData.message, s.loginMsgID, s.noDisplayClass, s.errorClass);
+        renderMessage(dm.getData().message, s.loginMsgID, s.noDisplayClass, s.messageClass);
     }
+}
+
+const statusMessage = (messageElementID) => {
+
+    const message = dm.getData().message;
+    if (message) {
+
+        renderMessage(message, messageElementID, s.noDisplayClass, s.messageClass);
+    }
+}
+
+const scrollList = async () => {
+
+    await scrollToElement(s.tableBodyID, 500);
+    const lastElm = document.getElementById(s.tableBodyID).lastChild;
+    scrollEndAnimation(lastElm, s.renderDataClass, s.flash, s.trClass);
 }
 
 //CREATE
@@ -189,11 +253,15 @@ export const createEmployee = async (formId) => {
 
     const makeReq = await makeAjaxRequest("POST", emp_register, formdata);
     parseJsonData(makeReq);
+    statusMessage(s.generalMsgID);
 
     if (makeReq) {
 
         refreshEmpData(100, true);
-        scrollToElement(s.tableBodyID, 500, true, true);
+
+        setTimeout(() => {
+            scrollList();
+        }, 200)
     }
 }
 
@@ -208,11 +276,12 @@ export const createTask = async (formId) => {
 
     const makeReq = await makeAjaxRequest("POST", task_add, formdata);
     parseJsonData(makeReq);
+    statusMessage(s.generalMsgID);
 
     if (makeReq) {
 
         refreshTaskData(100, true);
-        scrollToElement(s.tableBodyID, 500, true, true);
+        scrollList();
     }
 }
 
@@ -224,16 +293,16 @@ export const getAllEmployees = async () => {
 
     const makeReq = await makeAjaxRequest("GET", emp_route);
     parseJsonData(makeReq);
+    statusMessage(s.generalMsgID);
     classToggle(s.searchID, true);
-
 }
 
 export const getAllTasks = async () => {
 
     const makeReq = await makeAjaxRequest("GET", task_route);
     parseJsonData(makeReq);
+    statusMessage(s.generalMsgID);
     classToggle(s.searchID, true);
-
 }
 
 //UPDATE
@@ -266,6 +335,7 @@ export const updateEmployee = async (id, formId) => {
 
     const makeReq = await makeAjaxRequest("PUT", emp_update + "?empID=" + id + "", formdata);
     parseJsonData(makeReq);
+    statusMessage(s.generalMsgID);
     refreshEmpData(100, true);
 }
 
@@ -280,6 +350,7 @@ export const updateTask = async (id, formId) => {
 
     const makeReq = await makeAjaxRequest("PUT", task_update + "?taskID=" + id + "", formdata);
     parseJsonData(makeReq);
+    statusMessage(s.generalMsgID);
     refreshTaskData(100, true);
 }
 
@@ -295,6 +366,7 @@ export const deleteEmployee = async (id) => {
 
     const makeReq = await makeAjaxRequest("DELETE", emp_delete + "?empID=" + id + "");
     parseJsonData(makeReq);
+    statusMessage(s.generalMsgID);
     refreshEmpData(100, true);
 }
 
@@ -303,5 +375,6 @@ export const deleteTask = async (id) => {
 
     const makeReq = await makeAjaxRequest("DELETE", task_delete + "?taskID=" + id + "");
     parseJsonData(makeReq);
+    statusMessage(s.generalMsgID);
     refreshTaskData(100, true);
 }

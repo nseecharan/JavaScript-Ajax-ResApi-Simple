@@ -244,7 +244,7 @@ select {
     color: white;
     border-radius: 4px 4px 0px 0px;
 }
-.error-background {
+.message-background {
     background-color: white;
     color: black;
     padding: 4px;
@@ -368,6 +368,12 @@ select {
     overflow: hidden;
     animation-name: shrinkVertically;
     animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+
+.flash-indication {
+    animation-name: glow;
+    animation-duration: 1s;
     animation-fill-mode: forwards;
 }
 
