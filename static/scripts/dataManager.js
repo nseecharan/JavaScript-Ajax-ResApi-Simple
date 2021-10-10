@@ -159,32 +159,60 @@ export const searchData = (e) => {
 //requires re-rendering.
 const refreshEmpData = (delay, close = false) => {
 
-    if (dm.getData().message !== "Please log in") {
+    return new Promise((resolve, reject) => {
 
-        if (close) {
-            closeEmpForm();
+        if (dm.getData().message !== "Please log in") {
+
+            if (close) {
+
+                closeEmpForm();
+            }
+
+            setTimeout(() => {
+
+                getAllEmployees();
+                resolve();
+            }, delay)
         }
-
-        setTimeout(() => {
-            getAllEmployees();
-        }, delay)
-    }
+    })
 }
 
 //Will reload the task data. This may be used to reflect updates if the data has changed, and
 //requires re-rendering.
 const refreshTaskData = (delay, close = false) => {
 
-    if (dm.getData().message !== "Please log in") {
+    return new Promise((resolve, reject) => {
 
-        if (close) {
-            closeTaskForm();
+        if (dm.getData().message !== "Please log in") {
+
+            if (close) {
+                
+                closeTaskForm();
+            }
+
+            setTimeout(() => {
+
+                getAllTasks();
+                resolve();
+            }, delay)
         }
+    })
+}
 
-        setTimeout(() => {
-            getAllTasks();
-        }, delay)
+const statusMessage = (messageElementID) => {
+
+    const message = dm.getData().message;
+    if (message) {
+
+        renderMessage(message, messageElementID, s.noDisplayClass, s.messageClass);
     }
+}
+
+const scrollList = async () => {
+
+    await scrollToElement(s.tableBodyID, 500);
+    const lastElm = document.getElementById(s.tableBodyID).lastChild;
+    scrollEndAnimation(lastElm, s.renderDataClass, s.flash, s.trClass);
 }
 
 //LOGIN
@@ -209,22 +237,6 @@ export const login = async () => {
         clearElement("#" + s.loginAreaID)
         renderMessage(dm.getData().message, s.loginMsgID, s.noDisplayClass, s.messageClass);
     }
-}
-
-const statusMessage = (messageElementID) => {
-
-    const message = dm.getData().message;
-    if (message) {
-
-        renderMessage(message, messageElementID, s.noDisplayClass, s.messageClass);
-    }
-}
-
-const scrollList = async () => {
-
-    await scrollToElement(s.tableBodyID, 500);
-    const lastElm = document.getElementById(s.tableBodyID).lastChild;
-    scrollEndAnimation(lastElm, s.renderDataClass, s.flash, s.trClass);
 }
 
 //CREATE
@@ -257,11 +269,8 @@ export const createEmployee = async (formId) => {
 
     if (makeReq) {
 
-        refreshEmpData(100, true);
-
-        setTimeout(() => {
-            scrollList();
-        }, 200)
+        await refreshEmpData(100, true);
+        scrollList();
     }
 }
 
@@ -280,7 +289,7 @@ export const createTask = async (formId) => {
 
     if (makeReq) {
 
-        refreshTaskData(100, true);
+        await refreshTaskData(100, true);
         scrollList();
     }
 }
