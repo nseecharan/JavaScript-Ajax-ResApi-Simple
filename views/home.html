@@ -21,67 +21,69 @@
                 <h3>Welcome to Nigel Seecharan's Simple Api</h3>
             </div>
         </div>
-        <div id="menu-bar" class="small-margin">
-            <p>This api is for demo purposes, and has routes that access small lists of data related to employees and
-                tasks. Log in in to use all api features.</p>
-            <div id="login-area">
-                <form id="login-form" name="loginForm" onsubmit="event.preventDefault()">
-                    <div>
-                        <label for="username">User Name</label>
-                        <input id="username" name="username" type="text" autocomplete="username"
-                            aria-label="username login field"
-                            title="4 to 64 characters, must begin with a letter, and may also contain numbers as well as periods."
-                            minlength="4" maxlength="64" required>
-                    </div>
-                    <div>
-                        <label for="password">Password</label>
-                        <input id="password" name="password" type="password" autocomplete="current-password"
-                            aria-label="password login field"
-                            title="8 to 64 characters, and should contain a mix of upper case letters, lower case letters, numbers, as well as special symbols"
-                            minlength="8" maxlength="64" required>
-                    </div>
-                    <div>
-                        <button id="login-button" name="loginButton" class="btn-sizing" aria-label="login button"
-                            disabled>Login</button>
-                    </div>
-                </form>
-            </div>
-            <p id="login-msg"></p>
-            <div id="api-info">
-                <p>For information on the routes, please refer to the project
-                    <a href='https://github.com/nseecharan/JavaScript-Ajax-ResApi-Simple'
-                        aria-label="link to API read me on github">readme</a>.
-                </p>
+        <div id="menu-bar">
+            <div class="small-margin">
+                <p>This api is for demo purposes, and has routes that access small lists of data related to employees
+                    and
+                    tasks. Log in in to use all api features.</p>
+                <div id="login-area">
+                    <form id="login-form" name="loginForm" onsubmit="event.preventDefault()">
+                        <div>
+                            <label for="username">User Name</label>
+                            <input id="username" name="username" type="text" autocomplete="username"
+                                aria-label="username login field"
+                                title="4 to 64 characters, must begin with a letter, and may also contain numbers as well as periods."
+                                minlength="4" maxlength="64" required>
+                        </div>
+                        <div>
+                            <label for="password">Password</label>
+                            <input id="password" name="password" type="password" autocomplete="current-password"
+                                aria-label="password login field"
+                                title="8 to 64 characters, and should contain a mix of upper case letters, lower case letters, numbers, as well as special symbols"
+                                minlength="8" maxlength="64" required>
+                        </div>
+                        <div>
+                            <button id="login-button" name="loginButton" class="btn-sizing" aria-label="login button"
+                                disabled>Login</button>
+                        </div>
+                    </form>
+                </div>
+                <p id="login-msg"></p>
+                <div id="api-info">
+                    <p>For information on the routes, please refer to the project
+                        <a href='https://github.com/nseecharan/JavaScript-Ajax-ResApi-Simple'
+                            aria-label="link to API read me on github">readme</a>.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
     <div class="api-features">
-        <!--h3 class="small-margin underline">Display Data</h3-->
         <div id="load-data" class="option-border api-option-display">
             <span class="api-option-title">Api Options</span>
             <div class="api-option-inputs">
                 <div id="option-inputs">
                     <button class="btn-sizing" aria-label="get list of employees, button">Get Employees</button>
                     <button class="btn-sizing" aria-label="get list of tasks, button">Get Tasks</button>
+                    <div id="search" class="no-display">
+                        <label>Search</label>
+                        <input id="search-input" type="text" aria-label="search field" />
+                    </div>
                 </div>
-                <div id="search" class="no-display">
-                    <label>Search</label>
-                    <input id="search-input" type="text" aria-label="search field" />
+                <div id="create-options" class="no-display">
+                    <button class="btn-sizing" aria-label="create new employee button">New Employee</button>
+                    <button class="btn-sizing" aria-label="create new task button">New Task</button>
+                    <div id="scroll-option">
+                        <input id="scroll-option-input" type="checkbox" value="scroll"
+                            aria-label="this is an option that when enabled, will scroll the list to the newly created item">
+                        <label for="scroll-option">Scroll on create</label>
+                    </div>
                 </div>
+                <span id="general-msg"></span>
             </div>
         </div>
         <div id="data-display">
             <div id="styled-dsp">
-                <div id="create-options" class="no-display">
-                    <button class="btn-sizing" aria-label="create new employee button">New Employee</button>
-                    <button class="btn-sizing" aria-label="create new task button">New Task</button>
-                    <div>
-                        <input id="scroll-option" type="radio" value="scroll"
-                            aria-label="this is an option that when enabled, will scroll the list to the newly created item">
-                        <label for="scroll-option">Scroll on create</label>
-                    </div>
-                    <span id="general-msg"></span>
-                </div>
                 <div class="container">
                     <div id="create-forms">
                         <div id="submit-emp"></div>
@@ -90,10 +92,10 @@
                     <div id="mock-data"></div>
                 </div>
             </div>
-        </div>
-        <div id="json-dsp">
-            <pre>Raw Data Display</pre>
-            <pre id="raw-data"></pre>
+            <div id="json-dsp">
+                <pre>Raw Data Display</pre>
+                <pre id="raw-data"></pre>
+            </div>
         </div>
         <footer>
             <div>

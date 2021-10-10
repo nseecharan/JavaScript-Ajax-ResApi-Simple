@@ -4,8 +4,9 @@ button {
     cursor: pointer;
 }
 .btn-sizing {
-    padding: 4px;
-    margin: 4px auto;
+    padding: 4px !important;
+    margin: 4px !important;
+    height: fit-content !important;
 }
 .btn-sizing:disabled {
     cursor: not-allowed;

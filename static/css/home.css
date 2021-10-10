@@ -37,10 +37,11 @@ td p {
 footer {
     bottom: 0;
     position: fixed;
-    width: 80.1%;
-    background: black;
+    width: 80%;
+    background: linear-gradient(0deg, black, rgb(30, 30, 30));
     color: white;
     padding: 0.4em 0;
+    box-shadow: inset 0px 0px 1px 0px white;
 }
 footer a {
     color: white;
@@ -51,7 +52,7 @@ footer div {
 
 #title-div {
     float: left;
-    width: 19.9%;
+    width: 20%;
     height: 100%;
 }
 #title-heading {
@@ -88,44 +89,52 @@ footer div {
     margin: auto;
 }
 #raw-data {
-    height: 180px;
+    height: 14vh;
     margin: 0.4em auto;
     overflow: auto;
     width: 100%;
 }
 #mock-data {
-    height: 30em;
+    height: 36vh;
     overflow: auto;
     width: 100%;
     margin: 0 auto auto auto;
     scroll-behavior: smooth;
+    border-radius: 0.4em;
 }
 #json-dsp,
 #styled-dsp {
-    border-radius: 8px;
+    border-radius: 4px;
     background-color: var(--black20);
     padding: 1em;
     margin: 0.4em;
+    box-shadow: inset 0px 0px 2px 0px white, 0px 0px 2px -1px black;
 }
 #styled-dsp {
     display: flow-root;
 }
 #json-dsp {
-    height: 200px;
     color: white;
 }
 #mock-display tr {
     border: 1px solid black;
 }
-#option-inputs {
-    margin: auto;
+#option-inputs,
+#create-options {
     width: max-content;
+    display: flex;
 }
 #search {
-    margin: 0.4em;
+    margin: auto 0.4em;
+    width: 34vw;
+    display: grid;
 }
 #search input {
-    width: 100%;
+    width: inherit;
+}
+#scroll-option {
+    margin: auto 0.4em;
+    width: max-content;
 }
 #tested {
     float: right;
@@ -134,10 +143,33 @@ footer div {
     color: var(--white80);
     display: flow-root;
     background-image: var(--barRadialGrad);
-    border-right: 1px solid black;
+    box-shadow: inset 0px 0px 1px 0px white;
+}
+.title-slim {
+    color: var(--white80);
+    display: flow-root;
+    background-image: var(--barRadialGrad);
+    overflow: hidden;
+    box-shadow: inset 0px 0px 1px 0px white;
+}
+.title-reveal {
+    overflow: hidden;
+    animation-name: expandVertically;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+.title-collapse {
+    overflow: hidden;
+    animation-name: shrinkVertically;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+.flash-indication {
+    animation-name: glow;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
 }
 .api-option-inputs {
-    width: 200px;
     margin: 0.4em;
 }
 .option-border {
@@ -148,12 +180,10 @@ footer div {
 }
 .api-features {
     float: left;
-    width: 79.9%;
-    overflow-y: auto;
-    height: 100%;
+    width: 80%;
 }
 .api-option-display {
-    min-height: 6em;
+    min-height: 8em;
     margin: 0.4em;
 }
 .options {
@@ -202,6 +232,7 @@ select {
 .table-styling {
     border-spacing: 0;
     width: inherit;
+    background: var(--black20);
 }
 .th-style {
     width: 10em;
@@ -271,22 +302,24 @@ select {
     float: left;
 }
 .no-display {
-    display: none;
-    background-color: none;
+    display: none !important;
+    background-color: none !important;
 }
+
+/*******************MEDIA BREAKPOINTS*****************/
 
 @media (max-width: 900px) {
     .api-features {
         width: 100%;
-        overflow: inherit;
     }
     #title-div {
+        height: auto;
         width: 100%;
-        height: 40px;
     }
-    .titles {
-        border-bottom: 1px solid black;
-        border-right: 0px;
+    #menu-bar {
+        height: 0%;
+        position: fixed;
+        overflow: hidden;
     }
     footer {
         width: 100%;
@@ -312,6 +345,9 @@ select {
         margin: auto;
         border: none;
     }
+    footer {
+        font-size: 10px;
+    }
 }
 @media (max-width: 400px) {
     #title-heading h3 {
@@ -328,69 +364,50 @@ select {
         font-size: 13px;
     }
 }
+
+@media (max-height: 910px) {
+}
+@media (max-height: 750px) {
+}
+@media (max-height: 700px) {
+    #mock-data {
+        height: 25vh;
+    }
+}
 @media (max-height: 510px) {
     .api-features {
         width: 100%;
-        overflow: inherit;
     }
     #title-div {
         width: 100%;
         height: 40px;
     }
-    .titles {
-        border-bottom: 1px solid black;
-        border-right: 0px;
+    #menu-bar {
+        height: 0%;
+        position: fixed;
+        overflow: hidden;
     }
     footer {
         width: 100%;
     }
-}
-@media (max-height: 910px) {
-    footer {
-        position: sticky;
-        width: 100%;
-    }
-}
-.title-slim {
-    color: var(--white80);
-    display: flow-root;
-    background-image: var(--barRadialGrad);
-    border-right: 1px solid black;
-    overflow: hidden;
-}
-.title-reveal {
-    overflow: hidden;
-    animation-name: expandVertically;
-    animation-duration: 0.5s;
-    animation-fill-mode: forwards;
-}
-.title-collapse {
-    overflow: hidden;
-    animation-name: shrinkVertically;
-    animation-duration: 0.5s;
-    animation-fill-mode: forwards;
 }
 
-.flash-indication {
-    animation-name: glow;
-    animation-duration: 1s;
-    animation-fill-mode: forwards;
-}
+/*******************ANIMATIONS*****************/
 
 @keyframes expandVertically {
     0% {
-        height: 40px;
+        height: 0%;
     }
     100% {
-        height: 400px;
+        height: 100%;
     }
 }
 @keyframes shrinkVertically {
     0% {
-        height: 400px;
+        height: 100%;
     }
     100% {
-        height: 40px;
+        height: 0%;
     }
 }
 

@@ -104,17 +104,11 @@ const parseJsonData = (json) => {
     if (json.token) {
 
         dm.setToken(json.token);
-        classToggle(s.createBtnOptionsID, true);
     }
 
     dm.setData(json);
     renderData(dm.getData(), s.renderDataClass);
     renderRawData(dm.getData());
-
-    if (!dm.getData().message) {
-
-        document.getElementById(s.renderDataClass).className = s.dataDisplayBGClass;
-    }
 }
 
 /***************************************************************
@@ -186,7 +180,7 @@ const refreshTaskData = (delay, close = false) => {
         if (dm.getData().message !== "Please log in") {
 
             if (close) {
-                
+
                 closeTaskForm();
             }
 
@@ -235,7 +229,11 @@ export const login = async () => {
 
         form.reset();
         clearElement("#" + s.loginAreaID)
+        classToggle(s.createBtnOptionsID, true);
         renderMessage(dm.getData().message, s.loginMsgID, s.noDisplayClass, s.messageClass);
+
+        clearElement("#" + s.renderDataClass);
+        classToggle(s.searchID, true, s.noDisplayClass);
     }
 }
 

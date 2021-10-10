@@ -61,7 +61,7 @@ function showHamburger() {
 
     if (parentElm.children.length === 0) {
 
-        createHamburger("dropdown", "title-div");
+        createHamburger("dropdown", "menu-bar");
     }
 }
 
@@ -71,9 +71,9 @@ function showHamburger() {
 
         const width = e.currentTarget.innerWidth;
         const height = e.currentTarget.innerHeight;
-        const titleElm = document.getElementById("title-div");
+        const titleElm = document.getElementById("menu-bar");
 
-        if (width < 900) {
+        if (width <= 900 || height <= 510) {
 
             titleElm.className = "title-slim";
             showHamburger();
