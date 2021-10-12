@@ -1,4 +1,3 @@
-import DataManager from './DataManager.js';
 import { renderData, renderRawData } from './render/renderData.js';
 import { openEmpForm, openTaskForm } from './menuEvents.js';
 import { classToggle, readImage, clearElement, renderMessage, scrollToElement, scrollEndAnimation, loading } from './render/renderTools.js';
@@ -16,6 +15,54 @@ const task_find = task_route + "/search";
 const task_add = task_route + "/add";
 const task_update = task_route + "/update";//id as param
 const task_delete = task_route + "/delete";//id as param
+
+//make this work in heroku
+const DataManager = () => {
+
+    let dbResponse;
+    let searchResults = [];
+    let token;
+
+    const setData = (newData) => {
+
+        dbResponse = newData;
+    }
+    const getData = () => {
+
+        return dbResponse;
+    }
+    const addSearchItem = (data) => {
+
+        searchResults.push(data);
+    }
+    const getSearchResults = () => {
+
+        return searchResults;
+    }
+    const clearSearchResults = () => {
+
+        searchResults = [];
+    }
+    const setToken = (data) => {
+
+        token = data;
+    }
+    const getToken = () => {
+
+        return token;
+    }
+
+    return {
+
+        setData,
+        getData,
+        addSearchItem,
+        getSearchResults,
+        clearSearchResults,
+        setToken,
+        getToken,
+    }
+}
 
 const dm = DataManager();
 

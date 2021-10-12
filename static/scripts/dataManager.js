@@ -1,3 +1,5 @@
+//current export causes issues in heroku -- not found
+
 const DataManager = () => {
 
     let dbResponse;
