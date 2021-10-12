@@ -69,7 +69,7 @@ function showHamburger() {
         }
         else {
 
-            titleElm.className = "titles";
+            titleElm.className = "";
             clearElement("#dropdown");
         }
     })
