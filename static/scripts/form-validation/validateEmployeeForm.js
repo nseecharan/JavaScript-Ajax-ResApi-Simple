@@ -12,7 +12,7 @@ import { highlightField } from '../render/renderTools.js';
 7: button#delete-btn.btn-sizing.btn-red
 */
 
-export function validateEmployeeForm(formID, field) {
+export const validateEmployeeForm = (formID, field) => {
 
     const form = document.getElementById(formID);
     const messageElements = form.getElementsByTagName('p');

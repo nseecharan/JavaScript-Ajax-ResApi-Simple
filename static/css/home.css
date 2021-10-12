@@ -1,6 +1,8 @@
 :root {
     --white80: rgba(255, 255, 255, 0.8);
+    --white40: rgba(255, 255, 255, 0.4);
     --white20: rgba(255, 255, 255, 0.2);
+    --whiteGoldGrad: linear-gradient(315deg, lightyellow, var(--solidGrey));
     --bgRadialGrad: radial-gradient(circle at 85% 88%, palegreen -10%, lightseagreen 75%);
     --barRadialGrad: radial-gradient(at 150% 150%, #000, #006666);
     --black50: rgba(0, 0, 0, 0.5);
@@ -8,12 +10,43 @@
     --black20: rgba(0, 0, 0, 0.2);
     --darkGrey50: rgba(50, 50, 50, 0.5);
     --solidGrey: rgb(100, 100, 100);
+    --solidDarkGrey: rgb(30, 30, 30);
+    /*for box shadow*/
+    --insetWhite: inset 0px 0px 1px 0px white;
+    --insetWhite80: inset 0px 0px 1px 0px var(--white80);
+    --insetWhite40: inset 0px 0px 1px 0px var(--white40);
+    --insetWhite20: inset 0px 0px 1px 0px var(--white20);
 }
 
+/*******************HTML ELEMENTS*****************/
+.container {
+    display: flex;
+}
+.center-content {
+    text-align: center;
+}
+.small-margin {
+    margin: 0.4em;
+}
+.underline {
+    color: var(--white80);
+    border-bottom: 2px solid var(--white80);
+}
+.float-right {
+    float: right;
+}
+.float-left {
+    float: left;
+}
+.no-display {
+    display: none !important;
+    background-color: none !important;
+}
 html {
     background: var(--bgRadialGrad);
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
     background-attachment: fixed;
+    scroll-behavior: smooth;
 }
 body {
     margin: 0px;
@@ -27,14 +60,19 @@ pre {
 }
 img {
     width: 50px;
+    border-radius: 0.4em;
+}
+td p {
+    margin: 0 auto;
 }
 footer {
     bottom: 0;
     position: fixed;
-    width: 80.1%;
-    background: black;
+    width: 80%;
+    background: linear-gradient(0deg, black, rgb(30, 30, 30));
     color: white;
     padding: 0.4em 0;
+    box-shadow: var(--insetWhite);
 }
 footer a {
     color: white;
@@ -43,14 +81,16 @@ footer div {
     padding: 1em;
 }
 
+/*******************ELEMENT IDS*****************/
 #title-div {
     float: left;
-    width: 19.9%;
+    width: 20%;
     height: 100%;
 }
 #title-heading {
     background: var(--black30);
     padding: 0.4em;
+    display: flex;
 }
 #title-heading h3 {
     margin: 0px;
@@ -72,7 +112,6 @@ footer div {
     padding: 0.4em;
 }
 #create-forms {
-    width: 100%;
     max-width: 200px;
 }
 #form-title {
@@ -82,163 +121,66 @@ footer div {
     margin: auto;
 }
 #raw-data {
-    height: 180px;
+    height: 14vh;
     margin: 0.4em auto;
-    overflow: auto;
-    width: 100%;
 }
 #mock-data {
-    height: 30em;
+    height: 36vh;
+    margin: 0 auto auto auto;
+    scroll-behavior: smooth;
+}
+#mock-data,
+#raw-data {
     overflow: auto;
-    max-width: max-content;
     width: 100%;
-    margin: auto;
+    scroll-behavior: smooth;
+    border: 1px solid var(--black50);
+    border-radius: 0.2em;
 }
 #json-dsp,
 #styled-dsp {
-    border-radius: 8px;
-    background-color: var(--black20);
+    border-radius: 4px;
     padding: 1em;
     margin: 0.4em;
+    box-shadow: inset 0px 0px 100px 0px var(--black50);
 }
 #styled-dsp {
     display: flow-root;
 }
 #json-dsp {
-    height: 200px;
     color: white;
 }
 #mock-display tr {
     border: 1px solid black;
 }
-#option-inputs {
-    margin: auto;
+#create-options {
+    float: right;
+}
+#option-inputs,
+#create-options {
     width: max-content;
 }
 #search {
-    margin: 0.4em;
+    margin: auto 0.4em;
+    display: grid;
 }
 #search input {
-    width: 100%;
+    width: inherit;
+}
+#scroll-option {
+    margin: auto 0.4em;
+    width: max-content;
 }
 #tested {
     float: right;
 }
-.titles {
-    color: var(--white80);
-    display: flow-root;
-    background-image: var(--barRadialGrad);
-    border-right: 1px solid black;
-}
-.api-option-inputs {
-    width: 200px;
-    margin: 0.4em;
-}
-.option-border {
-    border: 2px solid var(--white80);
-    border-radius: 4px;
-    height: max-content;
-    color: black;
-}
-.api-features {
-    float: left;
-    width: 79.9%;
-    overflow-y: auto;
-    height: 100%;
-}
-.api-option-display {
-    min-height: 6em;
-    margin: 0.4em;
-}
-.options {
-    margin: 0 4px 1em;
-}
-.api-option-title {
-    background-color: var(--white80);
-    display: block;
+
+/*******************UTILITY CLASSES*****************/
+.container {
+    display: flex;
 }
 .center-content {
     text-align: center;
-}
-.form-heading {
-    background-color: var(--white80);
-    height: 2em;
-}
-.option-form {
-    display: block;
-    margin: 0px;
-    margin-block-end: 0px;
-    padding: 4px;
-    text-align: center;
-}
-.option-form input,
-select {
-    padding: inherit;
-    display: block;
-    margin: auto;
-    width: 90%;
-}
-.form-image-preview {
-    display: block;
-    margin: 0.4em auto;
-    border-radius: 4px;
-    background: var(--darkGrey50);
-    padding: 10px;
-    height: 50px;
-    width: 50px;
-}
-.table-styling {
-    border-spacing: 0;
-    width: inherit;
-}
-.th-style {
-    width: 10em;
-    padding: 0.4em;
-}
-.th-action {
-    width: 10em;
-    padding: 0.4em;
-    text-align: center;
-    border-left: 1px solid;
-}
-.thead-style {
-    background-color: var(--solidGrey);
-    text-align: left;
-}
-.td-style {
-    padding: 0.4em;
-    border-bottom: 1px solid var(--black50);
-}
-.td-action {
-    padding: 0.4em;
-    border-bottom: 1px solid var(--black50);
-    border-left: 1px solid var(--black50);
-}
-.emp-form-danger-zone,
-.task-form-danger-zone {
-    border-radius: 4px;
-    background: var(--white80);
-    margin-top: 1em;
-}
-.emp-form-danger-zone span,
-.task-form-danger-zone span {
-    display: block;
-    background: crimson;
-    color: white;
-    border-radius: 4px 4px 0px 0px;
-}
-.error-background {
-    background-color: white;
-    color: black;
-    padding: 4px;
-    margin: 0.4em auto;
-    display: block;
-    border-radius: 4px;
-    text-align: center;
-    border: 2px solid darkseagreen;
-}
-.container {
-    display: flex;
 }
 .small-margin {
     margin: 0.4em;
@@ -254,22 +196,217 @@ select {
     float: left;
 }
 .no-display {
-    display: none;
-    background-color: none;
+    display: none !important;
+    background-color: none !important;
 }
 
+/*******************LAYOUT CLASSES*****************/
+.titles {
+    color: var(--white80);
+    display: flow-root;
+    background-image: var(--barRadialGrad);
+    box-shadow: var(--insetWhite);
+}
+.title-slim {
+    color: var(--white80);
+    display: flow-root;
+    background-image: var(--barRadialGrad);
+    overflow: hidden;
+    box-shadow: var(--insetWhite);
+}
+.title-reveal {
+    overflow: hidden;
+    animation-name: expandVertically;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+.title-collapse {
+    overflow: hidden;
+    animation-name: shrinkVertically;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+.flash-indication {
+    animation-name: glow;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+.api-option-inputs {
+    margin: 0.4em;
+}
+.option-border {
+    border: 2px solid var(--white80);
+    border-radius: 4px;
+    height: max-content;
+    color: black;
+}
+.api-features {
+    float: left;
+    width: 80%;
+}
+.api-option-display {
+    min-height: 8em;
+    margin: 0.4em;
+}
+.options {
+    margin: 0 4px 1em;
+}
+.api-option-title {
+    background-color: var(--white80);
+    display: block;
+}
+
+/*******************MODAL CLASSES*****************/
+.modal-overlay {
+    width: 100%;
+    height: 100%;
+    background: var(--black50);
+    position: fixed;
+    top: 0;
+}
+.modal-container {
+    max-width: 300px;
+    margin: 10.3% auto;
+    background: var(--whiteGoldGrad);
+    box-shadow: var(--insetWhite);
+    border-radius: 0 10px 0 0;
+}
+.modal-heading {
+    background-color: var(--black30);
+    height: 2em;
+    border-radius: 0 10px 0 0;
+    padding: 4px;
+    color: white;
+    font-weight: bold;
+    box-shadow: var(--insetWhite);
+}
+
+/*******************FORM CLASSES*****************/
+.form-heading {
+    background-color: var(--white80);
+    height: 2em;
+}
+.form-content {
+    display: block;
+    margin: 0px;
+    margin-block-end: 0px;
+    padding: 4px;
+    text-align: center;
+}
+.form-content input,
+select {
+    padding: inherit;
+    display: block;
+    margin: auto !important;
+    width: 90%;
+}
+.form-image-preview {
+    display: block;
+    margin: 0.4em auto;
+    border-radius: 4px;
+    background: var(--darkGrey50);
+    padding: 10px;
+    height: 50px;
+    width: 50px;
+}
+.emp-form-danger-zone,
+.task-form-danger-zone {
+    border-radius: 4px;
+    background: var(--white80);
+    margin-top: 1em;
+}
+.emp-form-danger-zone span,
+.task-form-danger-zone span {
+    display: block;
+    background: crimson;
+    color: white;
+    border-radius: 4px 4px 0px 0px;
+}
+
+/*******************TABLE CLASSES*****************/
+.table-styling {
+    border-spacing: 0;
+    width: inherit;
+}
+.th-style {
+    width: 10em;
+    padding: 0.4em;
+    border-bottom: 1px solid var(--black50);
+}
+.th-action {
+    width: 10em;
+    padding: 0.4em;
+    text-align: center;
+    border-left: 1px solid;
+    border-bottom: 1px solid var(--black50);
+}
+.thead-style {
+    text-align: left;
+}
+.tr-style {
+    display: table-row;
+}
+.td-style {
+    padding: 0.4em;
+    border-bottom: 1px solid var(--black50);
+    color: white;
+}
+.td-action {
+    padding: 0.4em;
+    border-bottom: 1px solid var(--black50);
+    border-left: 1px solid var(--black50);
+}
+
+/*******************GRAPHICAL CLASSES*****************/
+.message-background,
+.confirmed-background {
+    color: black;
+    padding: 4px;
+    margin: 0.4em auto;
+    display: block;
+    text-align: center;
+}
+.message-background {
+    border-radius: 4px;
+    background-color: var(--white40);
+    border: 2px solid var(--black50);
+}
+.confirmed-background {
+    background: var(--whiteGoldGrad);
+    box-shadow: var(--insetWhite);
+}
+.data-display-background {
+    border-radius: 0.4em;
+    background: linear-gradient(135deg, transparent, var(--black50));
+    box-shadow: inset 1px 1px 2px -1px var(--white80), inset -1px -1px 2px -1px var(--black50),
+        0px 0px 2px 0px var(--black50);
+}
+.loading {
+    padding: 10px;
+    background: var(--black50);
+    color: white;
+    height: max-content;
+    width: max-content;
+    text-align: center;
+    margin: auto;
+    position: relative;
+    top: 30%;
+    border-radius: 0.4em;
+}
+
+/*******************MEDIA BREAKPOINTS*****************/
 @media (max-width: 900px) {
     .api-features {
         width: 100%;
-        overflow: inherit;
     }
     #title-div {
+        height: auto;
         width: 100%;
-        height: max-content;
     }
-    .titles {
-        border-bottom: 1px solid black;
-        border-right: 0px;
+    #menu-bar {
+        height: 0%;
+        position: fixed;
+        overflow: hidden;
     }
     footer {
         width: 100%;
@@ -282,39 +419,88 @@ select {
     #create-forms {
         max-width: 100%;
     }
-    /*
-    .option-form input,
-    select {
-        width: 75%;
+}
+@media (max-width: 550px) {
+    .tr-style {
+        display: grid;
+        border-bottom: 1px solid var(--black50);
     }
-    .option-form {
-        display: flex;
-        padding: 0px;
+    .td-action {
+        border: none;
+    }
+    .td-style {
         margin: auto;
-        width: max-content;
+        border: none;
     }
-    */
+    footer {
+        font-size: 10px;
+    }
+}
+@media (max-width: 400px) {
+    #title-heading h3 {
+        font-size: 17px;
+    }
+}
+@media (max-width: 320px) {
+    #title-heading h3 {
+        font-size: 15px;
+    }
+}
+@media (max-width: 280px) {
+    #title-heading h3 {
+        font-size: 13px;
+    }
+}
+
+@media (max-height: 910px) {
+}
+@media (max-height: 750px) {
+}
+@media (max-height: 700px) {
+    #mock-data {
+        height: 25vh;
+    }
 }
 @media (max-height: 510px) {
     .api-features {
         width: 100%;
-        overflow: inherit;
     }
     #title-div {
         width: 100%;
-        height: max-content;
+        height: 40px;
     }
-    .titles {
-        border-bottom: 1px solid black;
-        border-right: 0px;
+    #menu-bar {
+        height: 0%;
+        position: fixed;
+        overflow: hidden;
     }
     footer {
         width: 100%;
     }
 }
-@media (max-height: 910px) {
-    footer {
-        position: sticky;
-        width: 100%;
+
+/*******************ANIMATIONS*****************/
+@keyframes expandVertically {
+    0% {
+        height: 0%;
+    }
+    100% {
+        height: 100%;
+    }
+}
+@keyframes shrinkVertically {
+    0% {
+        height: 100%;
+    }
+    100% {
+        height: 0%;
+    }
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: inset 0px 0px 100px 50px rgb(255 255 255);
+    }
+    100% {
     }
 }

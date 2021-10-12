@@ -1,6 +1,7 @@
-import { openEmpForm, openTaskForm } from './menuEvents.js';
-import { getAllEmployees, getAllTasks, login, searchData } from './dataManager.js';
+import { getAllEmployees, getAllTasks, login, searchData } from './routes.js';
 import { validateLoginForm } from './form-validation/validateLoginForm.js';
+import { clearElement } from './render/renderTools.js';
+import { createHamburger } from './render/renderInputs.js';
 
 const mainButtons = document.getElementsByTagName('button');
 const loginForm = document.getElementById('login-form');
@@ -9,8 +10,6 @@ const passwordInput = loginForm.elements[1];
 const loginBtn = mainButtons[0];
 const getEmpBtn = mainButtons[1];
 const getTaskBtn = mainButtons[2];
-const newEmpBtn = mainButtons[3];
-const newTaskBtn = mainButtons[4];
 const loginMessageID = "login-msg";
 const searchInput = document.getElementById('search-input');
 
@@ -25,12 +24,12 @@ const searchInput = document.getElementById('search-input');
 
         validateLoginForm(loginForm, false, loginMessageID);
     });
-
-    searchInput.addEventListener(action, (e) => {
-
-        searchData(e);
-    });
 })
+
+searchInput.addEventListener('keyup', (e) => {
+
+    searchData(e);
+});
 
 loginBtn.addEventListener('click', () => {
 
@@ -44,31 +43,34 @@ getTaskBtn.addEventListener('click', () => {
 
     getAllTasks();
 });
-newEmpBtn.addEventListener('click', () => {
 
-    openEmpForm();
-});
-newTaskBtn.addEventListener('click', () => {
+function showHamburger() {
 
-    openTaskForm();
-});
+    const parentElm = document.getElementById("dropdown");
 
+    if (parentElm.children.length === 0) {
 
-//testing out basic implementaion of ovserver to track changes in http elements
-
-/*
-const targetNode = document.getElementById('error-msg');
-
-const config = { attributes: true, childList: true, subtree: true };
-
-const callback = function (mutationsList, observer) {
-
-    console.log(mutationsList)
+        createHamburger("dropdown", "menu-bar");
+    }
 }
 
-const observer = new MutationObserver(callback);
+['load', 'resize'].forEach((action) => {
 
-observer.observe(targetNode, config);
+    window.addEventListener(action, (e) => {
 
-//observer.disconnect();
-*/
+        const width = e.currentTarget.innerWidth;
+        const height = e.currentTarget.innerHeight;
+        const titleElm = document.getElementById("menu-bar");
+
+        if (width <= 900 || height <= 510) {
+
+            titleElm.className = "title-slim";
+            showHamburger();
+        }
+        else {
+
+            titleElm.className = "titles";
+            clearElement("#dropdown");
+        }
+    })
+})

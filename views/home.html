@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="../static/css/home.css">
     <link rel="stylesheet" href="../static/css/buttons.css">
     <link rel="stylesheet" href="../static/css/login.css">
+    <link rel="stylesheet" href="../static/css/normalize.css">
     <title>Nigel Seecharan Simple Api</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,43 +16,49 @@
 <body>
     <div id="title-div" class="titles">
         <div id="title-heading">
-            <h3>Welcome to Nigel Seecharan's Simple Api</h3>
+            <div id="dropdown"></div>
+            <div>
+                <h3>Welcome to Nigel Seecharan's Simple Api</h3>
+            </div>
         </div>
-        <div class="small-margin">
-            <p>This api is for demo purposes, and has routes that access small lists of data related to employees and
-                tasks. Log in in to use all api features.</p>
-            <form id="login-form" name="loginForm" onsubmit="event.preventDefault()">
-                <div>
-                    <label for="username">User Name</label>
-                    <input id="username" name="username" type="text" autocomplete="username"
-                        aria-label="username login field"
-                        title="4 to 64 characters, must begin with a letter, and may also contain numbers as well as periods."
-                        minlength="4" maxlength="64" required>
+        <div id="menu-bar">
+            <div class="small-margin">
+                <p>This api is for demo purposes, and has routes that access small lists of data related to employees
+                    and
+                    tasks. Log in in to use all api features.</p>
+                <div id="login-area">
+                    <form id="login-form" name="loginForm" onsubmit="event.preventDefault()">
+                        <div>
+                            <label for="username">User Name</label>
+                            <input id="username" name="username" type="text" autocomplete="username"
+                                aria-label="username login field"
+                                title="4 to 64 characters, must begin with a letter, and may also contain numbers as well as periods."
+                                minlength="4" maxlength="64" required>
+                        </div>
+                        <div>
+                            <label for="password">Password</label>
+                            <input id="password" name="password" type="password" autocomplete="current-password"
+                                aria-label="password login field"
+                                title="8 to 64 characters, and should contain a mix of upper case letters, lower case letters, numbers, as well as special symbols"
+                                minlength="8" maxlength="64" required>
+                        </div>
+                        <div>
+                            <button id="login-button" name="loginButton" class="btn-sizing" aria-label="login button"
+                                disabled>Login</button>
+                        </div>
+                    </form>
                 </div>
-                <div>
-                    <label for="password">Password</label>
-                    <input id="password" name="password" type="password" autocomplete="current-password"
-                        aria-label="password login field"
-                        title="8 to 64 characters, and should contain a mix of upper case letters, lower case letters, numbers, as well as special symbols"
-                        minlength="8" maxlength="64" required>
+                <p id="login-msg"></p>
+                <div id="api-info">
+                    <p>For information on the routes, please refer to the project
+                        <a href='https://github.com/nseecharan/JavaScript-Ajax-ResApi-Simple'
+                            aria-label="link to API read me on github">readme</a>.
+                    </p>
                 </div>
-                <div>
-                    <button id="login-button" name="loginButton" class="btn-sizing" aria-label="login button"
-                        disabled>Login</button>
-                </div>
-            </form>
-            <p id="login-msg"></p>
-        </div>
-        <div id="api-info" class="small-margin">
-            <p>For information on the routes, please refer to the project
-                <a href='https://github.com/nseecharan/JavaScript-Ajax-ResApi-Simple'
-                    aria-label="link to API read me on github">readme</a>.
-            </p>
+            </div>
         </div>
     </div>
-
     <div class="api-features">
-        <!--h3 class="small-margin underline">Display Data</h3-->
         <div id="load-data" class="option-border api-option-display">
             <span class="api-option-title">Api Options</span>
             <div class="api-option-inputs">
@@ -63,32 +70,18 @@
                     <label>Search</label>
                     <input id="search-input" type="text" aria-label="search field" />
                 </div>
+                <span id="general-msg"></span>
             </div>
         </div>
         <div id="data-display">
             <div id="styled-dsp">
-                <div id="create-options" class="no-display">
-                    <button class="btn-sizing" aria-label="create new employee button">New Employee</button>
-                    <button class="btn-sizing" aria-label="create new task button">New Task</button>
-                    <span id="general-msg"></span>
-                </div>
-                <div class="container">
-                    <div id="create-forms">
-                        <div id="submit-emp"></div>
-                        <div id="submit-task"></div>
-                    </div>
-                    <div id="mock-data">
-                        <table id="renderTable" class="table-styling">
-                            <thead id="tableHdr" class="thead-style"></thead>
-                            <tbody id="tableBody"></tbody>
-                        </table>
-                    </div>
-                </div>
+                <div id="create-options"></div>
+                <div id="mock-data"></div>
             </div>
-        </div>
-        <div id="json-dsp">
-            <pre>Raw Data Display</pre>
-            <pre id="raw-data"></pre>
+            <div id="json-dsp">
+                <pre>Raw Data Display</pre>
+                <pre id="raw-data"></pre>
+            </div>
         </div>
         <footer>
             <div>
@@ -98,6 +91,7 @@
             </div>
         </footer>
     </div>
+    <div id="overlay-display"></div>
 </body>
 
 </html>
