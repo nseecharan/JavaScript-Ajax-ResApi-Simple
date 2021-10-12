@@ -1,4 +1,4 @@
-import { DataManager } from './DataManager.js';
+import DataManager from './DataManager.js';
 import { renderData, renderRawData } from './render/renderData.js';
 import { openEmpForm, openTaskForm } from './menuEvents.js';
 import { classToggle, readImage, clearElement, renderMessage, scrollToElement, scrollEndAnimation, loading } from './render/renderTools.js';

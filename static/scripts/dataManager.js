@@ -1,4 +1,4 @@
-export const DataManager = () => {
+const DataManager = () => {
 
     let dbResponse;
     let searchResults = [];
@@ -44,3 +44,5 @@ export const DataManager = () => {
         getToken,
     }
 }
+
+export default DataManager;
