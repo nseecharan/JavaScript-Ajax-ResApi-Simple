@@ -65,32 +65,18 @@
                 <div id="option-inputs">
                     <button class="btn-sizing" aria-label="get list of employees, button">Get Employees</button>
                     <button class="btn-sizing" aria-label="get list of tasks, button">Get Tasks</button>
-                    <div id="search" class="no-display">
-                        <label>Search</label>
-                        <input id="search-input" type="text" aria-label="search field" />
-                    </div>
                 </div>
-                <div id="create-options" class="no-display">
-                    <button class="btn-sizing" aria-label="create new employee button">New Employee</button>
-                    <button class="btn-sizing" aria-label="create new task button">New Task</button>
-                    <div id="scroll-option">
-                        <input id="scroll-option-input" type="checkbox" value="scroll"
-                            aria-label="this is an option that when enabled, will scroll the list to the newly created item">
-                        <label for="scroll-option">Scroll on create</label>
-                    </div>
+                <div id="search" class="no-display">
+                    <label>Search</label>
+                    <input id="search-input" type="text" aria-label="search field" />
                 </div>
                 <span id="general-msg"></span>
             </div>
         </div>
         <div id="data-display">
             <div id="styled-dsp">
-                <div class="container">
-                    <div id="create-forms">
-                        <div id="submit-emp"></div>
-                        <div id="submit-task"></div>
-                    </div>
-                    <div id="mock-data"></div>
-                </div>
+                <div id="create-options"></div>
+                <div id="mock-data"></div>
             </div>
             <div id="json-dsp">
                 <pre>Raw Data Display</pre>
@@ -105,6 +91,7 @@
             </div>
         </footer>
     </div>
+    <div id="overlay-display"></div>
 </body>
 
 </html>

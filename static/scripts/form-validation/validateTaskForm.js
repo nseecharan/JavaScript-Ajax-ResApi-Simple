@@ -1,7 +1,7 @@
 import { validateTextAndNumbers } from './validation.js';
 import { highlightField } from '../render/renderTools.js';
 
-export function validateTaskForm(formID) {
+export const validateTaskForm = (formID) => {
 
     const form = document.getElementById(formID);
     const messageElements = form.getElementsByTagName('p');

@@ -73,7 +73,7 @@ export const highlightField = (element, validationMsg) => {
 
     renderMessage("", validationMsg.elementId, s.noDisplayClass, s.messageClass);
 
-    element.style.border = "none";
+    element.style.borderColor = "transparent";
 
     if (validationMsg.status === "error") {
 
@@ -85,6 +85,7 @@ export const highlightField = (element, validationMsg) => {
             element.style.outline = "none";
         }
     }
+    else { }
 }
 
 //This function will attempt to load an image into memory for file upload.
@@ -123,9 +124,9 @@ export const scrollEndAnimation = (scrollToElm, scrollWindowID, animationClass, 
     const scrollWindow = document.getElementById(scrollWindowID);
     scrollWindow.addEventListener('scroll', function scroll() {
 
-        const hOffset = scrollWindow.offsetHeight;
-        const top = scrollWindow.scrollTop;
-        const height = scrollWindow.scrollHeight;
+        const hOffset = Math.ceil(scrollWindow.offsetHeight);
+        const top = Math.ceil(scrollWindow.scrollTop);
+        const height = Math.ceil(scrollWindow.scrollHeight);
 
         if (hOffset + top >= height) {
 
@@ -145,4 +146,17 @@ export const applyTemporaryAnimation = (element, animationClass, currentClasses)
         element.className = currentClasses;
         element.removeEventListener('animationend', addAnimation);
     })
+}
+
+export const loading = (parentID) => {
+
+    const overlay = document.createElement('div');
+    overlay.className = s.modal_overlayClass;
+    const loadingGraphic = document.createElement('div');
+    loadingGraphic.className = s.loading;
+    loadingGraphic.textContent = "Please wait while we retrieve the data...";
+
+    overlay.appendChild(loadingGraphic);
+
+    document.getElementById(parentID).append(overlay);
 }

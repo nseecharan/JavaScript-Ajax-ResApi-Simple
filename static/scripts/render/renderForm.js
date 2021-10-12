@@ -1,6 +1,6 @@
 import { confirmDeleteEmp, confirmDeleteTask } from '../menuEvents.js';
 import { createButton, createSelect, createInput, createField } from './renderInputs.js';
-import { createEmployee, createTask, updateEmployee, updateTask } from '../dataManager.js';
+import { createEmployee, createTask, updateEmployee, updateTask } from '../routes.js';
 import { validateEmployeeForm } from '../form-validation/validateEmployeeForm.js';
 import { validateTaskForm } from '../form-validation/validateTaskForm.js';
 import * as s from '../elementAttributes.js';//import styles
@@ -61,6 +61,11 @@ sexSelect.addEventListener('change', () => {
     validateEmployeeForm(s.empFormID, 5);
 })
 
+imageUploadBtn.addEventListener("click", () => {
+
+    document.getElementById("img-upload").click();
+});
+
 //This function manages which form to generate between tasks and employees, and allows
 //you to indicate if the generated form should be configured to update or create data.
 //The first argument dictates if the form sould be for tasks or employees, and the 
@@ -95,7 +100,7 @@ export const changeForm = (isEmpForm, isUpdate, titleID, titleChange, formID, bt
 
         title.textContent = titleChange;
         const newButton = createButton(s.submitBtnID, s.buttonClass, btnName, "submit");
-        newButton.disabled = true;
+        //newButton.disabled = true;
         const form = document.getElementById(formID);
         const dangerZone = document.querySelector('.' + formID + s.dangerZoneClass);
 
@@ -195,7 +200,7 @@ const setSubmitType = (isEmpForm, isUpdate, button, formID, updateDataID = "") =
         if (isUpdate) {
 
             button.addEventListener('click', () => {
-
+                
                 updateTask(updateDataID, formID);
             })
         }
@@ -216,7 +221,7 @@ const renderTaskForm = (formTitle, formId, cancelBtnID, submintBtnName, elementI
 
     const form = document.getElementById(formId);
     const submitButton = createButton(s.submitBtnID, s.buttonClass, submintBtnName, "submit", submintBtnName + " button");
-    submitButton.disabled = true;
+    //submitButton.disabled = true;
 
     form.append(taskField, submitButton);
     form.reset();
@@ -229,7 +234,7 @@ const renderEmployeeForm = (formTitle, formId, cancelBtnID, submintBtnName, elem
 
     const form = document.getElementById(formId);
     const submitButton = createButton(s.submitBtnID, s.buttonClass, submintBtnName, "submit", submintBtnName + " button");
-    submitButton.disabled = true;
+    //submitButton.disabled = true;
     const imageDiv = renderImageUpload();
     const infoDiv = document.createElement('div');
     infoDiv.className = s.formInfoAreaClass;
@@ -246,11 +251,6 @@ const renderImageUpload = () => {
     const image = document.createElement('img');
     const previewArea = document.createElement('div');
     labelImage.textContent = "Image";
-
-    imageUploadBtn.addEventListener("click", () => {
-
-        document.getElementById("img-upload").click();
-    })
 
     previewArea.className = s.imagePreviewClass;
     image.width = "200";
@@ -276,25 +276,25 @@ const renderImageUpload = () => {
 //Generates the basic form elements that are shared between task and employee forms.
 const renderFormStructure = (formTitle, formId, cancelBtnID, elementIdentifier) => {
 
+    const overlay = document.createElement('div');
     const container = document.createElement('div');
     const customHeader = document.createElement('div');
     const title = document.createElement('span');
     const cancelButton = createButton(cancelBtnID, s.cancelBtnClass, "X", "button", "cancel button");
     const form = document.createElement('form');
 
-    customHeader.className = s.formHeadingClass;
+    overlay.className = s.modal_overlayClass;
+    container.className = s.modal_containerClass;
+    customHeader.className = s.modal_headingClass;
     title.textContent = formTitle;
     title.id = formId + "-title";
-
     customHeader.append(title, cancelButton);
-
-    container.className = s.formContainerClass;
     form.id = formId;
     form.className = s.formClass;
     form.addEventListener("submit", (e) => {
         e.preventDefault();
     })
     container.append(customHeader, form);
-
-    document.getElementById(elementIdentifier).appendChild(container);
+    overlay.append(container);
+    document.getElementById(elementIdentifier).appendChild(overlay);
 }

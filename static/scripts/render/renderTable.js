@@ -73,7 +73,7 @@ export const renderRow = (data, parentId) => {
 
             updateBtn.addEventListener('click', () => {
 
-                openEmpUpdateForm(_id, data);
+                openEmpUpdateForm(data);
             })
 
             buttonDiv.append(updateBtn);
@@ -85,7 +85,7 @@ export const renderRow = (data, parentId) => {
 
             updateBtn.addEventListener('click', () => {
 
-                openTaskUpdateForm(_id, data);
+                openTaskUpdateForm(data);
             })
 
             buttonDiv.append(updateBtn);

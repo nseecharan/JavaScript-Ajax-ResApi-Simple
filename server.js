@@ -65,12 +65,12 @@ app.post("/api/login", (req, res) => {
 
             var token = jwt.sign(data, pAuth.jwtOptions().secretOrKey);
 
-            res.json({ "message": "You are signed in", "token": token });
+            res.json({ "message": "You are signed in", "token": token, status: "success" });
 
         })
         .catch((err) => {
 
-            res.status(422).json({ "message": err });
+            res.status(422).json({ "message": err, status: "error" });
         })
 })
 
@@ -104,21 +104,31 @@ app.post(emp_register, (req, res, next) => {
         if (!success) { return res.status(401).json({ "message": "Please log in" }); }
 
         let newEmployee = req.body;
-        if (newEmployee.image === "" || newEmployee.image === undefined) {
 
-            newEmployee.image = defaultImage;
+        //TODO:server side validataion
+
+        if (newEmployee.first_name === "" || newEmployee.last_name === "" ||
+            newEmployee.email === "" || newEmployee.sex === "") {
+
+            res.status(422).json({ "message": "Fields can not be left empty", status: "error" });
         }
+        else {
 
-        db.createEmployee(newEmployee)
-            .then((msg) => {
+            if (newEmployee.image === "" || newEmployee.image === undefined) {
 
-                res.json({ "message": msg });
-            })
-            .catch((err) => {
+                newEmployee.image = defaultImage;
+            }
 
-                res.status(422).json({ "message": err });
-            });
+            db.createEmployee(newEmployee)
+                .then((msg) => {
 
+                    res.json({ "message": msg, status: "success" });
+                })
+                .catch((err) => {
+
+                    res.status(422).json({ "message": err, status: "error" });
+                });
+        }
     })(req, res, next);
 })
 
@@ -127,18 +137,26 @@ app.post(task_add, (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
         if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ "message": "Please log in" }); }
+        if (!success) { return res.status(401).json({ "message": "Please log in", status: "error" }); }
 
-        db.createTask(req.body)
-            .then((msg) => {
+        //TODO:server side validation
 
-                res.json({ "message": msg });
-            })
-            .catch((err) => {
+        if (req.body.task === "") {
 
-                res.status(422).json({ "message": err });
-            });
+            res.status(422).json({ "message": "Fields can not be left empty", status: "error" });
+        }
+        else {
 
+            db.createTask(req.body)
+                .then((msg) => {
+
+                    res.json({ "message": msg, status: "success" });
+                })
+                .catch((err) => {
+
+                    res.status(422).json({ "message": err, status: "error" });
+                });
+        }
     })(req, res, next);
 })
 
@@ -154,7 +172,7 @@ app.get(emp_route, (req, res, next) => {
     })
         .catch((err) => {
 
-            res.status(500).json({ "message": err }).end();
+            res.status(500).json({ "message": err, status: "error" }).end();
         });
 });
 
@@ -166,7 +184,7 @@ app.get(task_route, (req, res, next) => {
     })
         .catch(() => {
 
-            res.status(500).json({ "message": err }).end();
+            res.status(500).json({ "message": err, status: "error" }).end();
         });
 });
 
@@ -176,7 +194,7 @@ app.get(emp_find + "/:empID", (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
         if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ "message": "Please log in" }); }
+        if (!success) { return res.status(401).json({ "message": "Please log in", status: "error" }); }
 
         let id = req.query.empID + "";
 
@@ -186,7 +204,7 @@ app.get(emp_find + "/:empID", (req, res, next) => {
         })
             .catch((err) => {
 
-                res.status(500).json({ "message": err }).end();
+                res.status(500).json({ "message": err, status: "error" }).end();
             });
 
 
@@ -198,7 +216,7 @@ app.get(task_find + "/:taskID", (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
         if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ "message": "Please log in" }); }
+        if (!success) { return res.status(401).json({ "message": "Please log in", status: "error" }); }
 
         let id = req.query.taskID + "";
 
@@ -208,7 +226,7 @@ app.get(task_find + "/:taskID", (req, res, next) => {
         })
             .catch((err) => {
 
-                res.status(500).json({ "message": err }).end();
+                res.status(500).json({ "message": err, status: "error" }).end();
             });
 
 
@@ -223,25 +241,38 @@ app.put(emp_update, (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
         if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ "message": "Please log in" }); }
+        if (!success) { return res.status(401).json({ "message": "Please log in", status: "error" }); }
 
-        let id = req.query.empID + "";
 
-        let newEmployee = req.body;
-        if (newEmployee.image === "" || newEmployee.image === undefined) {
 
-            newEmployee.image = defaultImage;
+        //TODO: server side validation
+
+        let updateEmployee = req.body;
+
+        if (updateEmployee.first_name === "" || updateEmployee.last_name === "" ||
+            updateEmployee.email === "" || updateEmployee.sex === "") {
+
+            res.status(422).json({ "message": "Fields can not be left empty", status: "error" });
         }
+        else {
 
-        db.updateEmployee(id, req.body)
-            .then((msg) => {
+            let id = req.query.empID + "";
 
-                res.status(200).json({ "message": msg });
-            })
-            .catch((err) => {
+            if (updateEmployee.image === "" || updateEmployee.image === undefined) {
 
-                res.json({ "message": err });
-            });
+                updateEmployee.image = defaultImage;
+            }
+
+            db.updateEmployee(id, req.body)
+                .then((msg) => {
+
+                    res.status(200).json({ "message": msg, status: "success" });
+                })
+                .catch((err) => {
+
+                    res.json({ "message": err, status: "error" });
+                });
+        }
 
     })(req, res, next);
 })
@@ -251,20 +282,28 @@ app.put(task_update, (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
         if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ "message": "Please log in" }); }
+        if (!success) { return res.status(401).json({ "message": "Please log in", status: "error" }); }
 
-        let id = req.query.taskID + "";
+        //TODO: server side validation
 
-        db.updateTask(id, req.body)
-            .then((msg) => {
+        if (req.body.task === "") {
 
-                res.status(200).json({ "message": msg });
-            })
-            .catch((err) => {
+            res.status(422).json({ "message": "Fields can not be left empty", status: "error" });
+        }
+        else {
 
-                res.json({ "message": err });
-            });
+            let id = req.query.taskID + "";
 
+            db.updateTask(id, req.body)
+                .then((msg) => {
+
+                    res.status(200).json({ "message": msg, status: "success" });
+                })
+                .catch((err) => {
+
+                    res.json({ "message": err, status: "error" });
+                });
+        }
     })(req, res, next);
 })
 
@@ -276,18 +315,18 @@ app.delete(emp_delete, (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
         if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ "message": "Please log in" }); }
+        if (!success) { return res.status(401).json({ "message": "Please log in", status: "error" }); }
 
         let id = req.query.empID + "";
 
         db.deleteEmployee(id)
             .then((msg) => {
 
-                res.status(200).json({ "message": msg });
+                res.status(200).json({ "message": msg, status: "success" });
             })
             .catch((err) => {
 
-                res.json({ "message": msg });
+                res.json({ "message": msg, status: "error" });
             });
     })(req, res, next);
 });
@@ -298,18 +337,18 @@ app.delete(task_delete, (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
         if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ "message": "Please log in" }); }
+        if (!success) { return res.status(401).json({ "message": "Please log in", status: "error" }); }
 
         let id = req.query.taskID + "";
 
         db.deleteTask(id)
             .then((msg) => {
 
-                res.status(200).json({ "message": msg });
+                res.status(200).json({ "message": msg, status: "success" });
             })
             .catch((err) => {
 
-                res.json({ "message": err });
+                res.json({ "message": err, status: "error" });
             });
     })(req, res, next);
 });
@@ -318,11 +357,6 @@ app.delete(task_delete, (req, res, next) => {
 /***************************************************************
                        END OF ROUTES                         
 ***************************************************************/
-
-
-
-//server side validation
-
 
 
 app.use((req, res) => {

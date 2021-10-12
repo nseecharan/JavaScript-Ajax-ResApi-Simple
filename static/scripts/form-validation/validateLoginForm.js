@@ -1,7 +1,7 @@
 import { validatePassword, validateUsername } from './validation.js';
 import { highlightField } from '../render/renderTools.js';
 
-export function validateLoginForm(form, isUsername, messageID) {
+export const validateLoginForm = (form, isUsername, messageID) => {
 
     const userName = form.elements[0];
     const password = form.elements[1];

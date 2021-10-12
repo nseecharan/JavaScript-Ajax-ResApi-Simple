@@ -1,5 +1,4 @@
-import { openEmpForm, openTaskForm } from './menuEvents.js';
-import { getAllEmployees, getAllTasks, login, searchData } from './dataManager.js';
+import { getAllEmployees, getAllTasks, login, searchData } from './routes.js';
 import { validateLoginForm } from './form-validation/validateLoginForm.js';
 import { clearElement } from './render/renderTools.js';
 import { createHamburger } from './render/renderInputs.js';
@@ -11,8 +10,6 @@ const passwordInput = loginForm.elements[1];
 const loginBtn = mainButtons[0];
 const getEmpBtn = mainButtons[1];
 const getTaskBtn = mainButtons[2];
-const newEmpBtn = mainButtons[3];
-const newTaskBtn = mainButtons[4];
 const loginMessageID = "login-msg";
 const searchInput = document.getElementById('search-input');
 
@@ -45,14 +42,6 @@ getEmpBtn.addEventListener('click', () => {
 getTaskBtn.addEventListener('click', () => {
 
     getAllTasks();
-});
-newEmpBtn.addEventListener('click', () => {
-
-    openEmpForm();
-});
-newTaskBtn.addEventListener('click', () => {
-
-    openTaskForm();
 });
 
 function showHamburger() {

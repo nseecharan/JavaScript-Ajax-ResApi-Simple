@@ -76,6 +76,7 @@ const testInput = (str, pattern, min, max, fieldName, elmtId) => {
 
   if (str == "") {
 
+    console.log("SHOULD NOT SUBMIT EMPTY STRING")
     return result;
   }
   else {

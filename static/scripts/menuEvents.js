@@ -1,6 +1,6 @@
 import { clearElement } from './render/renderTools.js';
 import { preloadFormData, createForm, changeForm } from './render/renderForm.js';
-import { deleteEmployee, deleteTask } from './dataManager.js';
+import { deleteEmployee, deleteTask } from './routes.js';
 import * as s from './elementAttributes.js';
 
 //MENU CONTROL EVENTS
@@ -13,11 +13,11 @@ export const openTaskForm = () => {
 
     if (!taskForm) {
 
-        createForm(false, false, "Create Task", s.taskFormID, "Create", s.taskFormParentID);
+        createForm(false, false, "Create Task", s.taskFormID, "Create", s.modal_containerID);
 
         document.getElementById(s.taskCancelBtnID).addEventListener('click', () => {
 
-            closeTaskForm();
+            clearElement("#" + s.modal_containerID);
         })
     }
     else {
@@ -28,22 +28,22 @@ export const openTaskForm = () => {
 }
 
 //This funciton will open the update task form.
-export const openTaskUpdateForm = (_id, data) => {
+export const openTaskUpdateForm = (data) => {
 
     let taskForm = document.getElementById(s.taskFormID);
 
     if (!taskForm) {
 
-        createForm(false, true, "View Task", s.taskFormID, "Update", s.taskFormParentID, _id);
+        createForm(false, true, "View Task", s.taskFormID, "Update", s.modal_containerID, data._id);
 
         document.getElementById(s.taskCancelBtnID).addEventListener('click', () => {
 
-            closeTaskForm();
+            clearElement("#" + s.modal_containerID);
         })
     }
     else {
 
-        changeForm(false, true, s.taskFormTitleID, "View Task", s.taskFormID, "Update", _id);
+        changeForm(false, true, s.taskFormTitleID, "View Task", s.taskFormID, "Update", data._id);
     }
 
     preloadFormData(s.taskFormID, data);
@@ -67,11 +67,11 @@ export const openEmpForm = () => {
 
     if (!empForm) {
 
-        createForm(true, false, "Create Employee", s.empFormID, "Create", s.empFormParentID);
+        createForm(true, false, "Create Employee", s.empFormID, "Create", s.modal_containerID);
 
         document.getElementById(s.empCancelBtnID).addEventListener('click', () => {
 
-            closeEmpForm();
+            clearElement("#" + s.modal_containerID);
         })
     }
     else {
@@ -83,22 +83,22 @@ export const openEmpForm = () => {
 }
 
 //This will open the update employee form.
-export const openEmpUpdateForm = (_id, data) => {
+export const openEmpUpdateForm = (data) => {
 
     let empForm = document.getElementById(s.empFormID);
 
     if (!empForm) {
 
-        createForm(true, true, "View Employee", s.empFormID, "Update", s.empFormParentID, _id);
+        createForm(true, true, "View Employee", s.empFormID, "Update", s.modal_containerID, data._id);
 
         document.getElementById(s.empCancelBtnID).addEventListener('click', () => {
 
-            closeEmpForm();
+            clearElement("#" + s.modal_containerID);
         })
     }
     else {
 
-        changeForm(true, true, s.empFormTitleID, "View Employee", s.empFormID, "Update", _id);
+        changeForm(true, true, s.empFormTitleID, "View Employee", s.empFormID, "Update", data._id);
     }
 
     preloadFormData(s.empFormID, data);
@@ -114,16 +114,3 @@ export const confirmDeleteEmp = (data) => {
         deleteEmployee(data._id);
     }
 }
-
-//This function will close the task form.
-export const closeTaskForm = () => {
-
-    clearElement("#submit-task");
-}
-
-//This function will close the employee form.
-export const closeEmpForm = () => {
-
-    clearElement("#submit-emp");
-}
-
