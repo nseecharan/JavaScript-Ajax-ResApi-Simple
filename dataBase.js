@@ -70,12 +70,12 @@ module.exports.connect = function () {
     return new Promise(function (resolve, reject) {
 
         db.on('error', (err) => {
-            console.log("error");
+            console.log("Database: error");
             reject("there was an error connecting to database: " + err); // reject the promise with the provided error
         });
 
         db.once('open', () => {
-            console.log("connected");
+            console.log("Database: connected");
             Employee = db.model("employee_data", employeeSchema);
             Task = db.model("task_data", taskSchema);
             Admin = db.model("admin_data", adminSchema);
@@ -96,22 +96,22 @@ module.exports.resetDatabase = function () {
         .exec()
         .then(() => {
 
-            console.log("removed all new employees");
+            console.log("Database: removed all new employees");
         })
         .catch((err) => {
 
-            console.log("There was an error deleting all new employees", err);
+            console.log("Database: There was an error deleting all new employees", err);
         });
 
     Task.deleteMany({ $or: [{ status: "editable" }] })
         .exec()
         .then(() => {
 
-            console.log("removed all new tasks");
+            console.log("Database: removed all new tasks");
         })
         .catch((err) => {
 
-            console.log("There was an error deleting all new tasks", err);
+            console.log("Database: There was an error deleting all new tasks", err);
         });
 }
 
@@ -168,7 +168,7 @@ module.exports.createEmployee = function (empData) {
             }
             else {
 
-                resolve("Employee " + data.first_name + " " + data.last_name + " successfully created");
+                resolve("Employee '" + data.first_name + " " + data.last_name + "' successfully created");
             }
         });
     });
@@ -190,7 +190,7 @@ module.exports.createTask = function (taskData) {
             }
             else {
 
-                resolve("Task " + data.task + " successfully created");
+                resolve("Task '" + data.task + "' successfully created");
             }
         });
     });
@@ -388,7 +388,7 @@ module.exports.updateEmployee = function (id, employee) {
             .exec()
             .then(() => {
 
-                resolve("Employee " + employee.first_name + " " + employee.last_name + " updated sucessfully");
+                resolve("Employee '" + employee.first_name + " " + employee.last_name + "' updated sucessfully");
             })
             .catch((err) => {
 
@@ -405,7 +405,7 @@ module.exports.updateTask = function (id, task) {
             .exec()
             .then(() => {
 
-                resolve("Task " + task.task + " updated successfully")
+                resolve("Task '" + task.task + "' updated successfully")
             })
             .catch((err) => {
 
@@ -431,7 +431,7 @@ module.exports.deleteEmployee = function (id) {
             })
             .catch((err) => {
 
-                console.log("There was an error removing the employee", err);
+                console.log("Database: There was an error removing the employee", err);
             });
     });
 };
@@ -467,7 +467,7 @@ module.exports.login = function (adminData) {
 
                 if (admin.length == 0) {
 
-                    reject("Admin account for " + adminData.username + " not found");
+                    reject("Account for '" + adminData.username + "' not found");
                 }
                 else {
 
@@ -476,26 +476,26 @@ module.exports.login = function (adminData) {
 
                             if (res === true) {
 
-                                console.log("login sucessful")
+                                console.log("Database: login sucessful")
                                 resolve({ _id: admin[0]._id, username: admin[0].username });
                             }
                             else {
 
-                                console.log("incorrect password")
-                                reject("incorrect password for " + adminData.username);
+                                console.log("Database: incorrect password")
+                                reject("incorrect password for '" + adminData.username + "'");
                             }
                         })
                         .catch((err) => {
 
-                            console.log("login error")
+                            console.log("Database: login error")
                             reject("An error occured: " + err);
                         })
                 }
             }))
             .catch((err) => {
 
-                console.log("login account not found")
-                reject("Admin account for " + adminData.username + " not found");
+                console.log("Database: login account not found")
+                reject("Admin account for '" + adminData.username + "' not found");
             })
     })
 }

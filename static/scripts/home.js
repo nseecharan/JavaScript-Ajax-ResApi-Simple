@@ -13,6 +13,7 @@ const getTaskBtn = mainButtons[2];
 const loginMessageID = "login-msg";
 const searchInput = document.getElementById('search-input');
 
+
 ['keyup', 'blur', 'focus'].forEach((action) => {
 
     userNameInput.addEventListener(action, (e) => {

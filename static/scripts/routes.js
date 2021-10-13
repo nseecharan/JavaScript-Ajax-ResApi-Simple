@@ -258,6 +258,10 @@ export const login = async () => {
         clearElement("#" + s.renderDataClass);
         classToggle(s.searchID, true, s.noDisplayClass);
     }
+    else {
+
+        statusMessage(s.loginMsgID);
+    }
 }
 
 //CREATE

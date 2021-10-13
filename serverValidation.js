@@ -8,7 +8,7 @@ const passwordPattern = /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!"#\$%&'\(\
 const emailPattern = /^[A-Z][A-Z0-9.]+@[A-Z0-9.]+\.[A-Z]{0,}$/gi; //roughly based on google email rules
 
 //Name validation that allows for letters, dashes, and quotes
-export const validateText = (str, min, max, fieldName, elementId) => {
+module.exports.validateText = function (str, min, max, fieldName, elementId) {
 
   let res = testInput(str, textPattern, min, max, fieldName, elementId);
 
@@ -20,7 +20,7 @@ export const validateText = (str, min, max, fieldName, elementId) => {
   return res;
 }
 
-export const validateTextAndNumbers = (str, min, max, fieldName, elementId) => {
+module.exports.validateTextAndNumbers = function (str, min, max, fieldName, elementId) {
 
   let res = testInput(str, textNumbersPattern, min, max, fieldName, elementId);
 
@@ -33,7 +33,7 @@ export const validateTextAndNumbers = (str, min, max, fieldName, elementId) => {
 }
 
 //Name validation that allows for letters, dashes, and quotes
-export const validateUsername = (str, min, max, fieldName, elementId) => {
+module.exports.validateUsername = function (str, min, max, fieldName, elementId) {
 
   let res = testInput(str, usernamePattern, min, max, fieldName, elementId);
 
@@ -46,7 +46,7 @@ export const validateUsername = (str, min, max, fieldName, elementId) => {
 }
 
 //Email validation with some special characters allowed
-export const validateEmail = (str, min, max, fieldName, elementId) => {
+module.exports.validateEmail = function (str, min, max, fieldName, elementId) {
 
   let res = testInput(str, emailPattern, min, max, fieldName, elementId);
 
@@ -58,7 +58,7 @@ export const validateEmail = (str, min, max, fieldName, elementId) => {
   return res;
 }
 
-export const validatePassword = (str, min, max, fieldName, elementId) => {
+module.exports.validatePassword = function (str, min, max, fieldName, elementId) {
 
   let res = testInput(str, passwordPattern, min, max, fieldName, elementId);
 
@@ -70,13 +70,12 @@ export const validatePassword = (str, min, max, fieldName, elementId) => {
   return res;
 }
 
-const testInput = (str, pattern, min, max, fieldName, elmtId) => {
+const testInput = function (str, pattern, min, max, fieldName, elmtId) {
 
   let result = { message: "", status: undefined, elementId: elmtId };
 
   if (str == "") {
 
-    console.log("SHOULD NOT SUBMIT EMPTY STRING")
     return result;
   }
   else {
