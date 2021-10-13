@@ -188,7 +188,7 @@ app.get(emp_route, (req, res, next) => {
 
     db.getAllEmployees().then((data) => {
 
-        res.json(data);
+        res.json({ data: data });
         console.log("Server: employee data set retrieved");
     })
         .catch((err) => {
@@ -202,7 +202,7 @@ app.get(task_route, (req, res, next) => {
 
     db.getAllTask().then((data) => {
 
-        res.json(data);
+        res.json({ data: data });
         console.log("Server: task data set retrieved");
     })
         .catch((err) => {
@@ -226,7 +226,7 @@ app.get(emp_find + "/:empID", (req, res, next) => {
 
         db.findEmployee(id).then((data) => {
 
-            res.json(data);
+            res.json({ data: data });
             console.log("Server: employee retrieved");
         })
             .catch((err) => {
@@ -250,7 +250,7 @@ app.get(task_find + "/:taskID", (req, res, next) => {
 
         db.findTask(id).then((data) => {
 
-            res.json(data);
+            res.json({ data: data });
             console.log("Server: task retrieved");
         })
             .catch((err) => {
