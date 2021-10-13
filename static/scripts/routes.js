@@ -19,15 +19,16 @@ const task_delete = task_route + "/delete";//id as param
 //make this work in heroku
 const DataManager = () => {
 
-    let dbResponse;
+    let dbResponse = { message: "", status: "" };
+    let dataSet = [];
     let searchResults = [];
     let token;
 
-    const setData = (newData) => {
+    const setResponse = (newData) => {
 
         dbResponse = newData;
     }
-    const getData = () => {
+    const getResponse = () => {
 
         return dbResponse;
     }
@@ -51,16 +52,26 @@ const DataManager = () => {
 
         return token;
     }
+    const setData = (data) => {
+
+        dataSet = [...data];
+    }
+    const getData = () => {
+
+        return dataSet;
+    }
 
     return {
 
-        setData,
-        getData,
+        setResponse,
+        getResponse,
         addSearchItem,
         getSearchResults,
         clearSearchResults,
         setToken,
         getToken,
+        setData,
+        getData
     }
 }
 
@@ -100,8 +111,15 @@ const parseJsonData = (json) => {
 
         dm.setToken(json.token);
     }
+    if (json.message) {
 
-    dm.setData(json);
+        dm.setResponse(json);
+    }
+    if (json.data) {
+
+        dm.setData(json.data);
+    }
+
     renderData(dm.getData(), s.renderDataClass);
     renderRawData(dm.getData());
     clearElement("#" + s.modal_containerID)
@@ -178,7 +196,7 @@ const refreshEmpData = (delay, close = false) => {
 
     return new Promise((resolve, reject) => {
 
-        if (dm.getData().message !== "Please log in") {
+        if (dm.getResponse().message !== "Please log in") {
 
             if (close) {
 
@@ -200,7 +218,7 @@ const refreshTaskData = (delay, close = false) => {
 
     return new Promise((resolve, reject) => {
 
-        if (dm.getData().message !== "Please log in") {
+        if (dm.getResponse().message !== "Please log in") {
 
             if (close) {
 
@@ -218,7 +236,8 @@ const refreshTaskData = (delay, close = false) => {
 
 const statusMessage = (messageElementID) => {
 
-    const message = dm.getData().message;
+    const message = dm.getResponse().message;
+
     if (message) {
 
         renderMessage(message, messageElementID, s.noDisplayClass, s.messageClass);
@@ -253,10 +272,7 @@ export const login = async () => {
         form.reset();
         clearElement("#" + s.loginAreaID)
         classToggle(s.createBtnOptionsID, true);
-        renderMessage(dm.getData().message, s.loginMsgID, s.noDisplayClass, s.confirmedClass);
-
-        clearElement("#" + s.renderDataClass);
-        classToggle(s.searchID, true, s.noDisplayClass);
+        renderMessage(dm.getResponse().message, s.loginMsgID, s.noDisplayClass, s.confirmedClass);
     }
     else {
 
@@ -292,7 +308,7 @@ export const createEmployee = async (formId) => {
     parseJsonData(makeReq);
     statusMessage(s.generalMsgID);
 
-    if (dm.getData().status !== "error") {
+    if (dm.getResponse().status !== "error") {
 
         await refreshEmpData(dataRefreshDelay, true);
         scrollList();
@@ -312,7 +328,7 @@ export const createTask = async (formId) => {
     parseJsonData(makeReq);
     statusMessage(s.generalMsgID);
 
-    if (dm.getData().status !== "error") {
+    if (dm.getResponse().status !== "error") {
 
         await refreshTaskData(dataRefreshDelay, true);
         scrollList();
@@ -381,7 +397,7 @@ export const updateEmployee = async (id, formId) => {
     parseJsonData(makeReq);
     statusMessage(s.generalMsgID);
 
-    if (dm.getData().status !== "error") {
+    if (dm.getResponse().status !== "error") {
 
         await refreshEmpData(dataRefreshDelay, true);
     }
@@ -401,7 +417,7 @@ export const updateTask = async (id, formId) => {
     parseJsonData(makeReq);
     statusMessage(s.generalMsgID);
 
-    if (dm.getData().status !== "error") {
+    if (dm.getResponse().status !== "error") {
 
         await refreshTaskData(dataRefreshDelay, true);
     }
