@@ -18,12 +18,18 @@ const searchInput = document.getElementById('search-input');
 
     userNameInput.addEventListener(action, (e) => {
 
-        validateLoginForm(loginForm, true, loginMessageID);
+        if (e.key !== "Enter" || e.keyCode !== 13) {
+
+            validateLoginForm(loginForm, true, loginMessageID);
+        }
     });
 
     passwordInput.addEventListener(action, (e) => {
 
-        validateLoginForm(loginForm, false, loginMessageID);
+        if (e.key !== "Enter" || e.keyCode !== 13) {
+
+            validateLoginForm(loginForm, false, loginMessageID);
+        }
     });
 })
 
