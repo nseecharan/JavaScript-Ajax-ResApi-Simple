@@ -6,6 +6,7 @@ const db = require("./dataBase.js");
 const pAuth = require("./pass-authenticator.js");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
+const validator = require("./serverValidation.js")
 
 passport.use(pAuth.getStrategy());
 app.use(passport.initialize());
@@ -44,11 +45,11 @@ function onHttpStart() {
                     defaultImage = images[2].image;
                 })
                 .catch((err) => {
-                    console.log("default images could not be retrieved from database");
+                    console.log("Server: default images could not be retrieved from database", err);
                 });
         });
 
-    console.log("Express http server listening on: " + HTTP_PORT);
+    console.log("Server: Express http server listening on: " + HTTP_PORT);
 }
 
 /***************************************************************
@@ -60,18 +61,31 @@ function onHttpStart() {
 
 app.post("/api/login", (req, res) => {
 
-    db.login(req.body)
-        .then((data) => {
+    const data = req.body;
+    const validResult = validation(data);
 
-            var token = jwt.sign(data, pAuth.jwtOptions().secretOrKey);
+    if (validResult.status === "error") {
 
-            res.json({ "message": "You are signed in", "token": token, status: "success" });
+        res.status(422).json(validResult);
+        console.log("Server validation: " + validResult.message);
+    }
+    else {
 
-        })
-        .catch((err) => {
+        db.login(data)
+            .then((data) => {
 
-            res.status(422).json({ "message": err, status: "error" });
-        })
+                var token = jwt.sign(data, pAuth.jwtOptions().secretOrKey);
+
+                res.json({ message: "You are signed in", token: token, status: "success" });
+                console.log("Server: login sucessful");
+
+            })
+            .catch((err) => {
+
+                res.status(422).json({ message: err, status: "error" });
+                console.log("Server: message from DB - " + err);
+            })
+    }
 })
 
 //Pages
@@ -101,34 +115,36 @@ app.post(emp_register, (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
         if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ "message": "Please log in" }); }
+        if (!success) { return res.status(401).json({ message: "Please log in" }); }
 
-        let newEmployee = req.body;
+        const data = req.body;
+        const validResult = validation(data);
 
-        //TODO:server side validataion
+        if (validResult.status === "error") {
 
-        if (newEmployee.first_name === "" || newEmployee.last_name === "" ||
-            newEmployee.email === "" || newEmployee.sex === "") {
-
-            res.status(422).json({ "message": "Fields can not be left empty", status: "error" });
+            res.status(422).json(validResult);
+            console.log("Server validation: " + validResult.message);
         }
         else {
 
-            if (newEmployee.image === "" || newEmployee.image === undefined) {
+            if (data.image === "" || data.image === undefined) {
 
-                newEmployee.image = defaultImage;
+                data.image = defaultImage;
             }
 
-            db.createEmployee(newEmployee)
+            db.createEmployee(data)
                 .then((msg) => {
 
-                    res.json({ "message": msg, status: "success" });
+                    res.json({ message: msg, status: "success" });
+                    console.log("Server: message from DB - " + msg);
                 })
                 .catch((err) => {
 
-                    res.status(422).json({ "message": err, status: "error" });
+                    res.status(422).json({ message: err, status: "error" });
+                    console.log("Server: message from DB - " + err);
                 });
         }
+
     })(req, res, next);
 })
 
@@ -137,24 +153,28 @@ app.post(task_add, (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
         if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ "message": "Please log in", status: "error" }); }
+        if (!success) { return res.status(401).json({ message: "Please log in", status: "error" }); }
 
-        //TODO:server side validation
+        const data = req.body;
+        const validResult = validation(data);
 
-        if (req.body.task === "") {
+        if (validResult.status === "error") {
 
-            res.status(422).json({ "message": "Fields can not be left empty", status: "error" });
+            res.status(422).json(validResult);
+            console.log("Server validation: " + validResult.message);
         }
         else {
 
-            db.createTask(req.body)
+            db.createTask(data)
                 .then((msg) => {
 
-                    res.json({ "message": msg, status: "success" });
+                    res.json({ message: msg, status: "success" });
+                    console.log("Server: message from DB - " + msg);
                 })
                 .catch((err) => {
 
-                    res.status(422).json({ "message": err, status: "error" });
+                    res.status(422).json({ message: err, status: "error" });
+                    console.log("Server: message from DB - " + err);
                 });
         }
     })(req, res, next);
@@ -169,10 +189,12 @@ app.get(emp_route, (req, res, next) => {
     db.getAllEmployees().then((data) => {
 
         res.json(data);
+        console.log("Server: employee data set retrieved");
     })
         .catch((err) => {
 
-            res.status(500).json({ "message": err, status: "error" }).end();
+            console.log("Server: message from DB - " + err);
+            res.status(500).json({ message: err, status: "error" }).end();
         });
 });
 
@@ -181,10 +203,12 @@ app.get(task_route, (req, res, next) => {
     db.getAllTask().then((data) => {
 
         res.json(data);
+        console.log("Server: task data set retrieved");
     })
-        .catch(() => {
+        .catch((err) => {
 
-            res.status(500).json({ "message": err, status: "error" }).end();
+            console.log("Server: message from DB - " + err);
+            res.status(500).json({ message: err, status: "error" }).end();
         });
 });
 
@@ -194,20 +218,22 @@ app.get(emp_find + "/:empID", (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
         if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ "message": "Please log in", status: "error" }); }
+        if (!success) { return res.status(401).json({ message: "Please log in", status: "error" }); }
 
         let id = req.query.empID + "";
+
+        //TODO validation when this gets implemented in client side
 
         db.findEmployee(id).then((data) => {
 
             res.json(data);
+            console.log("Server: employee retrieved");
         })
             .catch((err) => {
 
-                res.status(500).json({ "message": err, status: "error" }).end();
+                console.log("Server: Could not find employee", err);
+                res.status(500).json({ message: err, status: "error" }).end();
             });
-
-
     })(req, res, next);
 });
 
@@ -216,20 +242,22 @@ app.get(task_find + "/:taskID", (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
         if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ "message": "Please log in", status: "error" }); }
+        if (!success) { return res.status(401).json({ message: "Please log in", status: "error" }); }
 
         let id = req.query.taskID + "";
+
+        //TODO validation when this gets implemented in client side
 
         db.findTask(id).then((data) => {
 
             res.json(data);
+            console.log("Server: task retrieved");
         })
             .catch((err) => {
 
-                res.status(500).json({ "message": err, status: "error" }).end();
+                console.log("Server: message from DB - " + err);
+                res.status(500).json({ message: err, status: "error" }).end();
             });
-
-
     })(req, res, next);
 });
 
@@ -241,36 +269,35 @@ app.put(emp_update, (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
         if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ "message": "Please log in", status: "error" }); }
+        if (!success) { return res.status(401).json({ message: "Please log in", status: "error" }); }
 
+        const data = req.body;
+        const validResult = validation(data);
 
+        if (validResult.status === "error") {
 
-        //TODO: server side validation
-
-        let updateEmployee = req.body;
-
-        if (updateEmployee.first_name === "" || updateEmployee.last_name === "" ||
-            updateEmployee.email === "" || updateEmployee.sex === "") {
-
-            res.status(422).json({ "message": "Fields can not be left empty", status: "error" });
+            res.status(422).json(validResult);
+            console.log("Server validation: " + validResult.message);
         }
         else {
 
             let id = req.query.empID + "";
 
-            if (updateEmployee.image === "" || updateEmployee.image === undefined) {
+            if (data.image === "" || data.image === undefined) {
 
-                updateEmployee.image = defaultImage;
+                data.image = defaultImage;
             }
 
-            db.updateEmployee(id, req.body)
+            db.updateEmployee(id, data)
                 .then((msg) => {
 
-                    res.status(200).json({ "message": msg, status: "success" });
+                    res.status(200).json({ message: msg, status: "success" });
+                    console.log("Server: message from DB - " + msg);
                 })
                 .catch((err) => {
 
-                    res.json({ "message": err, status: "error" });
+                    res.json({ message: err, status: "error" });
+                    console.log("Server: message from DB - " + err);
                 });
         }
 
@@ -282,26 +309,30 @@ app.put(task_update, (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
         if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ "message": "Please log in", status: "error" }); }
+        if (!success) { return res.status(401).json({ message: "Please log in", status: "error" }); }
 
-        //TODO: server side validation
+        const data = req.body;
+        const validResult = validation(data);
 
-        if (req.body.task === "") {
+        if (validResult.status === "error") {
 
-            res.status(422).json({ "message": "Fields can not be left empty", status: "error" });
+            res.status(422).json(validResult);
+            console.log("Server validation: " + validResult.message);
         }
         else {
 
             let id = req.query.taskID + "";
 
-            db.updateTask(id, req.body)
+            db.updateTask(id, data)
                 .then((msg) => {
 
-                    res.status(200).json({ "message": msg, status: "success" });
+                    res.status(200).json({ message: msg, status: "success" });
+                    console.log("Server: message from DB - " + msg);
                 })
                 .catch((err) => {
 
-                    res.json({ "message": err, status: "error" });
+                    res.json({ message: err, status: "error" });
+                    console.log("Server: message from DB - " + err);
                 });
         }
     })(req, res, next);
@@ -315,18 +346,20 @@ app.delete(emp_delete, (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
         if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ "message": "Please log in", status: "error" }); }
+        if (!success) { return res.status(401).json({ message: "Please log in", status: "error" }); }
 
         let id = req.query.empID + "";
 
         db.deleteEmployee(id)
             .then((msg) => {
 
-                res.status(200).json({ "message": msg, status: "success" });
+                res.status(200).json({ message: msg, status: "success" });
+                console.log("Server: message from DB - " + msg);
             })
             .catch((err) => {
 
-                res.json({ "message": msg, status: "error" });
+                res.json({ message: err, status: "error" });
+                console.log("Server: message from DB - " + err);
             });
     })(req, res, next);
 });
@@ -337,18 +370,20 @@ app.delete(task_delete, (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, success, info) => {
 
         if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ "message": "Please log in", status: "error" }); }
+        if (!success) { return res.status(401).json({ message: "Please log in", status: "error" }); }
 
         let id = req.query.taskID + "";
 
         db.deleteTask(id)
             .then((msg) => {
 
-                res.status(200).json({ "message": msg, status: "success" });
+                res.status(200).json({ message: msg, status: "success" });
+                console.log("Server: message from DB - " + msg);
             })
             .catch((err) => {
 
-                res.json({ "message": err, status: "error" });
+                res.json({ message: err, status: "error" });
+                console.log("Server: message from DB - " + err);
             });
     })(req, res, next);
 });
@@ -358,6 +393,92 @@ app.delete(task_delete, (req, res, next) => {
                        END OF ROUTES                         
 ***************************************************************/
 
+function noData(value) {
+
+    if (value === "" || value === null || value === undefined) {
+
+        return true;
+    }
+
+    return false;
+}
+
+function validation(data) {
+
+    if (data.username) {
+
+        if (noData(data.username) && noData(data.password)) {
+
+            return { message: "Fields can not be left empty", status: "error" }
+        }
+
+        const unameValid = validator.validateUsername(data.username, 4, 64, "User Name", "");
+        const passValid = validator.validatePassword(data.password, 8, 64, "Password", "");
+
+        if (passValid.status === "success" && unameValid.status === "success") {
+
+            return { message: "", status: "success" };
+        }
+
+        const unameErr = unameValid.status === "error" ? " 'Username'" : "";
+        const passErr = passValid.status === "error" ? " 'Password'" : "";
+        const addAnd = (unameErr !== "" && passErr !== "") ? " and" : "";
+        const message = "Data not submitted: the" + unameErr + addAnd + passErr + " had errors";
+
+        return { message: message, status: "error" };
+    }
+    else {
+
+        if (data.task) {
+
+            if (noData(data.task)) {
+
+                return { message: "Fields can not be left empty", status: "error" }
+            }
+
+            const taskNameValid = validator.validateTextAndNumbers(data.task, 2, 128, "Task Name", "");
+
+            if (taskNameValid.status === "success") {
+
+                return { message: "", status: "success" };
+            }
+
+            return { message: "Data not submitted: the task name entered had errors", status: "error" };
+        }
+        else {
+
+            if (noData(data.first_name) && noData(data.last_name)
+                && noData(data.email) && noData(data.sex)) {
+
+                return { message: "Fields can not be left empty", status: "error" }
+            }
+
+            const fnameValid = validator.validateText(data.first_name, 2, 64, "First Name", "");
+            const lnameValid = validator.validateText(data.last_name, 2, 64, "Last Name", "");
+            const emailValid = validator.validateEmail(data.email, 8, 128, "Email", "");
+            const sexValid = {
+                message: (!data.sex) ? "A sex must be selected" : "",
+                status: (!data.sex) ? "error" : "success",
+                elementId: ""
+            }
+
+            if (fnameValid.status === "success" && lnameValid.status === "success" &&
+                emailValid.status === "success" && sexValid.status === "success") {
+
+                return { message: "", status: "success" };
+            }
+
+            const fnameErr = fnameValid.status === "error" ? " 'First Name'," : "";
+            const lnameErr = lnameValid.status === "error" ? " 'Last Name'," : "";
+            const emailErr = emailValid.status === "error" ? " 'Email'," : "";
+            const sexErr = sexValid.status === "error" ? " 'Sex'," : "";
+            const addAnd = (fnameErr !== "" || lnameErr !== "" || emailErr !== "") && sexErr !== "" ? " and" : "";
+            const message = "Data not submitted: the" + fnameErr + lnameErr + emailErr + addAnd + sexErr + " had errors";
+
+            return { message: message, status: "error" };
+        }
+    }
+}
 
 app.use((req, res) => {
     res.status(404).end();
