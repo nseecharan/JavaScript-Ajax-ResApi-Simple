@@ -42,24 +42,7 @@ export const renderRow = (data, parentId) => {
         return;
     }
 
-    const name = data.first_name + " " + data.last_name;
-    const email = data.email;
     const _id = data._id;
-    //const sex = data.sex;
-
-    //row elements
-    let row;
-    const td1 = document.createElement('td');
-    const p1 = document.createElement('p');
-    const td2 = document.createElement('td');
-    const p2 = document.createElement('p');
-    p2.innerText = name;
-    td2.append(p2);
-    const td3 = document.createElement('td');
-    const p3 = document.createElement('p');
-    p3.innerText = email;
-    td3.append(p3);
-    const td4 = document.createElement('td');
 
     //row buttons
     const buttonDiv = document.createElement('div');
@@ -92,25 +75,50 @@ export const renderRow = (data, parentId) => {
         }
     }
 
-    td4.appendChild(buttonDiv);
+    const actionTd = document.createElement('td');
+    actionTd.appendChild(buttonDiv);
 
     //create cloumns
     if (data.first_name) {
 
+        const td1 = document.createElement('td');
+        const p1 = document.createElement('p');
+        const name = data.first_name + " " + data.last_name;
+        p1.innerText = name;
+        td1.append(p1);
+
+        const td2 = document.createElement('td');
+        const p2 = document.createElement('p');
+        const email = data.email;
+        p2.innerText = email;
+        td2.append(p2);
+
+        /*
+        const td3 = document.createElement('td');
+        const p3 = document.createElement('p');
+        const sex = (data.sex === "Male") ? "M" : (data.sex === "Female") ? "F" : "";
+        p3.innerText = sex;
+        td3.append(p3);
+        */
+
+        const imageTd = document.createElement('td');
         const img = new Image();
         img.src = data.image;
         img.alt = "Image of employee";
-        td1.appendChild(img);
-        row = addRowDetails([td1, td2, td3, td4], _id)
+        imageTd.appendChild(img);
+
+        const row = addRowDetails([imageTd, td1, td2, actionTd], _id)
+        document.getElementById(parentId).appendChild(row);
     }
     else {
 
+        const td1 = document.createElement('td');
+        const p1 = document.createElement('p');
         p1.innerText = data.task;
         td1.append(p1);
-        row = addRowDetails([td1, td4], _id)
+        const row = addRowDetails([td1, actionTd], _id)
+        document.getElementById(parentId).appendChild(row);
     }
-
-    document.getElementById(parentId).appendChild(row);
 }
 
 //This will add details to a row from an array of row details.

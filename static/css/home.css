@@ -19,29 +19,6 @@
 }
 
 /*******************HTML ELEMENTS*****************/
-.container {
-    display: flex;
-}
-.center-content {
-    text-align: center;
-}
-.small-margin {
-    margin: 0.4em;
-}
-.underline {
-    color: var(--white80);
-    border-bottom: 2px solid var(--white80);
-}
-.float-right {
-    float: right;
-}
-.float-left {
-    float: left;
-}
-.no-display {
-    display: none !important;
-    background-color: none !important;
-}
 html {
     background: var(--bgRadialGrad);
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
@@ -173,6 +150,31 @@ footer div {
 }
 #tested {
     float: right;
+}
+#page-buttons {
+    display: flex;
+}
+#page-buttons label {
+    width: 48px;
+    margin: auto 4px;
+    text-align: center;
+}
+#goto-page {
+    width: 64px;
+    margin: auto 0px !important;
+    padding: 0px !important;
+    height: min-content;
+}
+#page-indicator {
+    display: block;
+    margin: auto 4px;
+    font-weight: bold;
+    color: white;
+    border: 1px solid white;
+    min-width: 4em;
+    text-align: center;
+    padding: 4px;
+    border-radius: 4px;
 }
 
 /*******************UTILITY CLASSES*****************/
@@ -392,6 +394,11 @@ select {
     position: relative;
     top: 30%;
     border-radius: 0.4em;
+}
+.dos-screen {
+    background: var(--solidDarkGrey);
+    color: lawngreen;
+    text-shadow: 0px 0px 3px lawngreen;
 }
 
 /*******************MEDIA BREAKPOINTS*****************/

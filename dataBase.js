@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 
 let mongoDBConnectionString = process.env.CONNECTION_STRING;
 
+//https://docs.mongodb.com/realm/mongodb/run-aggregation-pipelines/
+
 let employeeSchema = new mongoose.Schema({
 
     first_name: String,
@@ -226,11 +228,12 @@ module.exports.getDefaultImages = function () {
     })
 }
 
-module.exports.getSetOfEmployees = function (limit) {
+module.exports.getSetOfEmployees = function (skip = 0, limit = 0) {
 
     return new Promise(function (resolve, reject) {
 
         Employee.find({})
+            .skip(skip)
             .limit(limit)
             .exec()
             .then((employees) => {
@@ -251,6 +254,7 @@ module.exports.getSetOfEmployees = function (limit) {
     })
 }
 
+
 module.exports.getAllEmployees = function () {
 
     return new Promise(function (resolve, reject) {
@@ -269,13 +273,12 @@ module.exports.getAllEmployees = function () {
     });
 };
 
-module.exports.findEmployee = function (id) {
+module.exports.findEmployeeByID = function (id) {
 
     return new Promise(function (resolve, reject) {
 
         //.exec is needed to make this a proper promise if no callback function is passed to the find() after the array arg
         Employee.find({ _id: id })
-            //.limit(1)
             .exec()
             .then((employee) => {
 
@@ -298,11 +301,12 @@ module.exports.findEmployee = function (id) {
 //TASKS
 /**************************************************************/
 
-module.exports.getSetOfTasks = function (limit) {
+module.exports.getSetOfTasks = function (skip = 0, limit = 0) {
 
     return new Promise(function (resolve, reject) {
 
         Task.find({})
+            .skip(skip)
             .limit(limit)
             .exec()
             .then((tasks) => {
@@ -341,12 +345,11 @@ module.exports.getAllTask = function (req, res) {
     });
 };
 
-module.exports.findTask = function (id) {
+module.exports.findTaskByID = function (id) {
 
     return new Promise(function (resolve, reject) {
 
         Task.find({ _id: id })
-            .limit(1)
             .exec()
             .then((task) => {
 

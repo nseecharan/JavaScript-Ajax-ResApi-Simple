@@ -14,6 +14,20 @@ button {
 .btn-red {
     background-color: crimson;
 }
+.arrow-right-btn,
+.arrow-left-btn {
+    margin: auto 4px auto 0px !important;
+    font-weight: bold !important;
+    width: 32px !important;
+    height: fit-content;
+    padding: 4px;
+}
+.arrow-right-btn::before {
+    content: ">";
+}
+.arrow-left-btn::before {
+    content: "<";
+}
 #login button {
     margin: 0px;
 }

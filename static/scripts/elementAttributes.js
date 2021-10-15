@@ -6,16 +6,16 @@
 
 export const ariaLabels = {
 
-    aria_empUpdateBtn: "submit button for the employee update form",
-    aria_taskUpdateBtn: "submit button for the task update form",
-    aria_empCreateBtn: "create new employee, button",
-    aria_taskCreateBtn: "create new task, button"
+    aria_empUpdateBtn: "Submit button for the employee update form.",
+    aria_taskUpdateBtn: "Submit button for the task update form.",
+    aria_empCreateBtn: "Create new employee, button.",
+    aria_taskCreateBtn: "Create new task, button."
 }
 
 export const titles = {
 
-    title_textInput: "2 to 64 characters, must begin with a letter, and may also contain single quotes, as well as spaces",
-    title_emailInput: "8 to 128 characters, and must begin with a letter, and may also contain numbers, as well as periods"
+    title_textInput: "2 to 64 characters, must begin with a letter, and may also contain single quotes, as well as spaces.",
+    title_emailInput: "8 to 128 characters, and must begin with a letter, and may also contain numbers, as well as periods."
 }
 
 export const modals = {
@@ -121,14 +121,14 @@ export const dataDisplayBGClass = "data-display-background";
 export const loading = "loading";
 
 //element Titles
-export const textInputTitle = "2 to 64 characters, must begin with a letter, and may also contain single quotes, as well as spaces";
-export const emailInputTitle = "8 to 128 characters, and must begin with a letter, and may also contain numbers, as well as periods";
+export const textInputTitle = "2 to 64 characters, must begin with a letter, and may also contain single quotes, as well as spaces.";
+export const emailInputTitle = "8 to 128 characters, and must begin with a letter, and may also contain numbers, as well as periods.";
 //export const searchTitle;
 //element Aria
-export const empUpdateBtnAria = "submit button for the employee update form";
-export const taskUpdateBtnAria = "submit button for the task update form";
-export const empCreateBtnAria = "create new employee, button";
-export const taskCreateBtnAria = "create new task, button";
+export const empUpdateBtnAria = "Submit button for the employee update form.";
+export const taskUpdateBtnAria = "Submit button for the task update form.";
+export const empCreateBtnAria = "Sreate new employee, button.";
+export const taskCreateBtnAria = "Sreate new task, button.";
 //export const searchAria;
 //element Names
 

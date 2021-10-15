@@ -3,6 +3,7 @@ import { openEmpForm, openTaskForm } from './menuEvents.js';
 import { classToggle, readImage, clearElement, renderMessage, scrollToElement, scrollEndAnimation, loading } from './render/renderTools.js';
 import { createButton } from './render/renderInputs.js';
 import * as s from './elementAttributes.js';
+import { pageNavigation } from './render/renderPageNavigation.js';
 
 const emp_route = "/api/employees";//optional name as param
 const emp_find = emp_route + "/search";
@@ -16,29 +17,32 @@ const task_add = task_route + "/add";
 const task_update = task_route + "/update";//id as param
 const task_delete = task_route + "/delete";//id as param
 
-//make this work in heroku
+const dataRefreshDelay = 100;
+const scrollDelay = 500;
+
 const DataManager = () => {
 
     let dbResponse = { message: "", status: "" };
     let dataSet = [];
     let searchResults = [];
     let token;
+    let currentPage = 0;
+    let lastPage = 0;
+
+    const getResponse = () => dbResponse;
+    const getSearchResults = () => searchResults;
+    const getToken = () => token;
+    const getData = () => dataSet;
+    const getCurrentPage = () => currentPage;
+    const getLastPage = () => lastPage;
 
     const setResponse = (newData) => {
 
         dbResponse = newData;
     }
-    const getResponse = () => {
-
-        return dbResponse;
-    }
     const addSearchItem = (data) => {
 
         searchResults.push(data);
-    }
-    const getSearchResults = () => {
-
-        return searchResults;
     }
     const clearSearchResults = () => {
 
@@ -48,17 +52,31 @@ const DataManager = () => {
 
         token = data;
     }
-    const getToken = () => {
-
-        return token;
-    }
     const setData = (data) => {
 
         dataSet = [...data];
     }
-    const getData = () => {
+    const setCurrentPage = (current) => {
 
-        return dataSet;
+        currentPage = current;
+    }
+    const incrementPage = () => {
+
+        if (currentPage < lastPage) {
+
+            currentPage++;
+        }
+    }
+    const decrementPage = () => {
+
+        if (currentPage > 0) {
+
+            currentPage--;
+        }
+    }
+    const setLastPage = (last) => {
+
+        lastPage = last;
     }
 
     return {
@@ -71,14 +89,18 @@ const DataManager = () => {
         setToken,
         getToken,
         setData,
-        getData
+        getData,
+        setCurrentPage,
+        getCurrentPage,
+        incrementPage,
+        decrementPage,
+        setLastPage,
+        getLastPage
     }
 }
 
 const dm = DataManager();
 
-const dataRefreshDelay = 100;
-const scrollDelay = 500;
 
 /***************************************************************
                         AJAX FUNCTIONS                           
@@ -87,6 +109,7 @@ const scrollDelay = 500;
 //Method that manages ajax request to server.
 const makeAjaxRequest = async (method, url, data) => {
 
+    console.log("AJAX request")
     loading(s.modal_containerID);
 
     return fetch(url, {
@@ -106,6 +129,7 @@ const makeAjaxRequest = async (method, url, data) => {
 //in the table.
 const parseJsonData = (json) => {
 
+    console.log("parseJson")
     //consider making a cookie session instead
     if (json.token) {
 
@@ -118,12 +142,21 @@ const parseJsonData = (json) => {
     if (json.data) {
 
         dm.setData(json.data);
+        dm.setResponse({ message: "", status: "success" });
+        renderMessage("", s.generalMsgID, s.noDisplayClass, s.confirmedClass);
+    }
+    if (json.pages) {
+
+        dm.setLastPage(json.pages - 1);
+        pageNavigation("page-buttons", dm.getLastPage());
     }
 
     renderData(dm.getData(), s.renderDataClass);
     renderRawData(dm.getData());
     clearElement("#" + s.modal_containerID)
+    console.log("parse DONE")
 }
+
 
 //This funciton will load the appropriate create button for the related data set,
 //and append it to the parent elemet with the ID specified in the second argument.
@@ -216,6 +249,7 @@ const refreshEmpData = (delay, close = false) => {
 //requires re-rendering.
 const refreshTaskData = (delay, close = false) => {
 
+    console.log("refresh task list")
     return new Promise((resolve, reject) => {
 
         if (dm.getResponse().message !== "Please log in") {
@@ -228,6 +262,7 @@ const refreshTaskData = (delay, close = false) => {
             setTimeout(() => {
 
                 getAllTasks();
+                console.log("refrehs task DONE")
                 resolve();
             }, delay)
         }
@@ -246,9 +281,49 @@ const statusMessage = (messageElementID) => {
 
 const scrollList = async () => {
 
+    console.log("scroll start")
     await scrollToElement(s.tableBodyID, scrollDelay);
     const lastElm = document.getElementById(s.tableBodyID).lastChild;
     scrollEndAnimation(lastElm, s.renderDataClass, s.flash, s.trClass);
+
+    console.log("scroll DONE")
+}
+
+export const getPage = async (page) => {
+
+    console.log("get page")
+    if (page <= dm.getLastPage() && page > -1) {
+
+        dm.setCurrentPage(page);
+        const makeReq = await makeAjaxRequest("GET", "/api/page/" + page + "");
+        parseJsonData(makeReq);
+        statusMessage(s.generalMsgID);
+    }
+
+    console.log("get page DONE")
+    return dm.getCurrentPage();
+}
+
+export const nextPage = () => {
+
+    if (dm.getCurrentPage() < dm.getLastPage()) {
+
+        dm.incrementPage();
+        getPage(dm.getCurrentPage());
+    }
+
+    return dm.getCurrentPage();
+}
+
+export const prevPage = () => {
+
+    if (dm.getCurrentPage() > 0) {
+
+        dm.decrementPage();
+        getPage(dm.getCurrentPage());
+    }
+
+    return dm.getCurrentPage();
 }
 
 //LOGIN
@@ -273,6 +348,11 @@ export const login = async () => {
         clearElement("#" + s.loginAreaID)
         classToggle(s.createBtnOptionsID, true);
         renderMessage(dm.getResponse().message, s.loginMsgID, s.noDisplayClass, s.confirmedClass);
+
+        if (dm.getData().length) {
+
+            dataBtnManager(dm.getData(), s.createBtnOptionsID);
+        }
     }
     else {
 
@@ -311,12 +391,14 @@ export const createEmployee = async (formId) => {
     if (dm.getResponse().status !== "error") {
 
         await refreshEmpData(dataRefreshDelay, true);
-        scrollList();
+        //await getPage(dm.getLastPage());
+        //scrollList();
     }
 }
 
 export const createTask = async (formId) => {
 
+    console.log("create task")
     const form = document.getElementById(formId);
 
     const formdata = {
@@ -331,8 +413,11 @@ export const createTask = async (formId) => {
     if (dm.getResponse().status !== "error") {
 
         await refreshTaskData(dataRefreshDelay, true);
-        scrollList();
+        //await getPage(dm.getLastPage());
+        //scrollList();
     }
+
+    console.log("create task DONE")
 }
 
 //READ
@@ -341,6 +426,7 @@ export const createTask = async (formId) => {
 
 export const getAllEmployees = async () => {
 
+    dm.setCurrentPage(0);
     const makeReq = await makeAjaxRequest("GET", emp_route);
     parseJsonData(makeReq);
     statusMessage(s.generalMsgID);
@@ -354,6 +440,7 @@ export const getAllEmployees = async () => {
 
 export const getAllTasks = async () => {
 
+    dm.setCurrentPage(0);
     const makeReq = await makeAjaxRequest("GET", task_route);
     parseJsonData(makeReq);
     statusMessage(s.generalMsgID);
