@@ -30,6 +30,9 @@ const task_delete = task_route + "/delete";//id as param
 
 let dbImages;
 let defaultImage;
+let orderedResults = [];
+
+const numberOfResults = 10;
 
 const HTTP_PORT = process.env.PORT || 8080;
 
@@ -93,6 +96,8 @@ app.post("/api/login", (req, res) => {
 
 //home page
 app.get("/", (req, res) => {
+
+    orderedResults = [];
 
     res.sendFile(path.join(__dirname, "/views/home.html"));
 
@@ -183,12 +188,73 @@ app.post(task_add, (req, res, next) => {
 //READ
 /**************************************************************/
 
+function empliteList(data) {
+
+    let liteList = [];
+    data.map((item) => {
+
+        const smallObject = {
+
+            _id: item._id,
+            first_name: item.first_name,
+            last_name: item.last_name,
+            email: item.email,
+            sex: item.sex,
+            status: item.status
+        }
+
+        liteList.push(smallObject);
+    })
+
+    return liteList;
+}
+
+function paging(data, numPerPage) {
+
+    let pageArray = data;
+    orderedResults = [];
+    const pages = Math.ceil(data.length / numPerPage);
+
+    for (let i = 0; i < pages; i++) {
+
+        let quantity = pageArray.splice(0, numPerPage);
+        orderedResults.push(quantity);
+    }
+
+    return { data: orderedResults[0], pages: pages };
+}
+
+
+app.get("/api/page/:page", (req, res, next) => {
+
+    let page;
+    try {
+
+        page = Number(req.params.page);
+
+        if (orderedResults.length) {
+
+            res.status(200).json({ data: orderedResults[page], pages: orderedResults.length })
+        }
+        else {
+
+            res.status(503).json({ message: "Data needs to be populated before this feature can be used", status: "error" })
+        }
+    }
+    catch (error) {
+
+        res.status(400).json({ message: "Error populating data", status: "error" })
+    }
+})
+
 //Find all items
 app.get(emp_route, (req, res, next) => {
 
     db.getAllEmployees().then((data) => {
 
-        res.json({ data: data });
+        //let emplite = empliteList(data);
+
+        res.json(paging(data, numberOfResults));
         console.log("Server: employee data set retrieved");
     })
         .catch((err) => {
@@ -202,7 +268,7 @@ app.get(task_route, (req, res, next) => {
 
     db.getAllTask().then((data) => {
 
-        res.json({ data: data });
+        res.json(paging(data, numberOfResults));
         console.log("Server: task data set retrieved");
     })
         .catch((err) => {
@@ -220,11 +286,11 @@ app.get(emp_find + "/:empID", (req, res, next) => {
         if (err) { return next(err); }
         if (!success) { return res.status(401).json({ message: "Please log in", status: "error" }); }
 
-        let id = req.query.empID + "";
+        let id = req.params.empID + "";
 
         //TODO validation when this gets implemented in client side
 
-        db.findEmployee(id).then((data) => {
+        db.findEmployeeByID(id).then((data) => {
 
             res.json({ data: data });
             console.log("Server: employee retrieved");
@@ -244,11 +310,11 @@ app.get(task_find + "/:taskID", (req, res, next) => {
         if (err) { return next(err); }
         if (!success) { return res.status(401).json({ message: "Please log in", status: "error" }); }
 
-        let id = req.query.taskID + "";
+        let id = req.params.taskID + "";
 
         //TODO validation when this gets implemented in client side
 
-        db.findTask(id).then((data) => {
+        db.findTaskByID(id).then((data) => {
 
             res.json({ data: data });
             console.log("Server: task retrieved");

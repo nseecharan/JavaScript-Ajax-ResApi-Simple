@@ -1,13 +1,16 @@
 :root {
     --white80: rgba(255, 255, 255, 0.8);
+    --white60: rgba(255, 255, 255, 0.6);
     --white40: rgba(255, 255, 255, 0.4);
     --white20: rgba(255, 255, 255, 0.2);
+    --white10: rgba(255, 255, 255, 0.2);
     --whiteGoldGrad: linear-gradient(315deg, lightyellow, var(--solidGrey));
     --bgRadialGrad: radial-gradient(circle at 85% 88%, palegreen -10%, lightseagreen 75%);
     --barRadialGrad: radial-gradient(at 150% 150%, #000, #006666);
     --black50: rgba(0, 0, 0, 0.5);
     --black30: rgba(0, 0, 0, 0.3);
     --black20: rgba(0, 0, 0, 0.2);
+    --black10: rgba(0, 0, 0, 0.1);
     --darkGrey50: rgba(50, 50, 50, 0.5);
     --solidGrey: rgb(100, 100, 100);
     --solidDarkGrey: rgb(30, 30, 30);
@@ -19,29 +22,6 @@
 }
 
 /*******************HTML ELEMENTS*****************/
-.container {
-    display: flex;
-}
-.center-content {
-    text-align: center;
-}
-.small-margin {
-    margin: 0.4em;
-}
-.underline {
-    color: var(--white80);
-    border-bottom: 2px solid var(--white80);
-}
-.float-right {
-    float: right;
-}
-.float-left {
-    float: left;
-}
-.no-display {
-    display: none !important;
-    background-color: none !important;
-}
 html {
     background: var(--bgRadialGrad);
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
@@ -98,6 +78,9 @@ footer div {
 #login {
     float: right;
 }
+#login button {
+    margin: 0px;
+}
 #login-form label {
     display: inline-block;
     min-width: 5em;
@@ -120,29 +103,15 @@ footer div {
 #data-display {
     margin: auto;
 }
-#raw-data {
-    height: 14vh;
-    margin: 0.4em auto;
-}
 #mock-data {
-    height: 36vh;
+    height: 47vh;
     margin: 0 auto auto auto;
     scroll-behavior: smooth;
 }
-#mock-data,
-#raw-data {
+#mock-data {
     overflow: auto;
     width: 100%;
     scroll-behavior: smooth;
-    border: 1px solid var(--black50);
-    border-radius: 0.2em;
-}
-#json-dsp,
-#styled-dsp {
-    border-radius: 4px;
-    padding: 1em;
-    margin: 0.4em;
-    box-shadow: inset 0px 0px 100px 0px var(--black50);
 }
 #styled-dsp {
     display: flow-root;
@@ -156,10 +125,6 @@ footer div {
 #create-options {
     float: right;
 }
-#option-inputs,
-#create-options {
-    width: max-content;
-}
 #search {
     margin: auto 0.4em;
     display: grid;
@@ -167,12 +132,81 @@ footer div {
 #search input {
     width: inherit;
 }
+#advanced-search {
+    width: max-content;
+    background: none;
+    border: none;
+    border-bottom: 1px solid;
+    border-radius: 0px;
+    margin: 4px 0px;
+    padding: 0px;
+    font-weight: bold;
+    color: white;
+}
 #scroll-option {
     margin: auto 0.4em;
     width: max-content;
 }
 #tested {
     float: right;
+}
+#page-buttons {
+    display: flex;
+}
+#page-buttons label {
+    width: 48px;
+    margin: auto 4px;
+    text-align: center;
+}
+#goto-page {
+    width: 64px;
+    margin: auto 0px !important;
+    padding: 3px !important;
+    height: min-content;
+}
+#page-indicator {
+    display: block;
+    margin: auto 4px;
+    font-weight: bold;
+    color: white;
+    border: 1px solid white;
+    min-width: 4em;
+    text-align: center;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+/*******************BUTTON CLASSES*****************/
+
+button {
+    border-radius: 4px;
+    border: 1px solid black;
+    cursor: pointer;
+}
+.btn-sizing {
+    padding: 4px !important;
+    margin: 4px !important;
+    height: fit-content !important;
+}
+.btn-sizing:disabled {
+    cursor: not-allowed;
+}
+.btn-red {
+    background-color: crimson;
+}
+.arrow-right-btn,
+.arrow-left-btn {
+    margin: auto 4px auto 0px !important;
+    font-weight: bold !important;
+    width: 32px !important;
+    height: fit-content;
+    padding: 4px;
+}
+.arrow-right-btn::before {
+    content: ">";
+}
+.arrow-left-btn::before {
+    content: "<";
 }
 
 /*******************UTILITY CLASSES*****************/
@@ -233,6 +267,7 @@ footer div {
 }
 .api-option-inputs {
     margin: 0.4em;
+    min-height: 140px; /*120*/
 }
 .option-border {
     border: 2px solid var(--white80);
@@ -345,6 +380,8 @@ select {
 }
 .tr-style {
     display: table-row;
+    background: linear-gradient(345deg, var(--white20) 0%, var(--black10) 53%, var(--black10) 74%, var(--white40) 101%);
+    box-shadow: inset 0 0 1px 0px white;
 }
 .td-style {
     padding: 0.4em;
@@ -354,7 +391,6 @@ select {
 .td-action {
     padding: 0.4em;
     border-bottom: 1px solid var(--black50);
-    border-left: 1px solid var(--black50);
 }
 
 /*******************GRAPHICAL CLASSES*****************/
@@ -392,6 +428,24 @@ select {
     position: relative;
     top: 30%;
     border-radius: 0.4em;
+}
+.dos-screen {
+    background: var(--solidDarkGrey);
+    color: lawngreen;
+    text-shadow: 0px 0px 3px lawngreen;
+    border-radius: 0.2em;
+}
+.faint-glass {
+    border-radius: 4px;
+    padding: 1em;
+    margin: 0.4em;
+    background: var(--black10);
+    box-shadow: 0 0 0px 1px var(--black20), inset 0 0 1px 1px var(--white10);
+}
+.dim-window {
+    box-shadow: 0px 0px 0px 1px var(--black10);
+    border-radius: 0.2em;
+    background: var(--black10);
 }
 
 /*******************MEDIA BREAKPOINTS*****************/
@@ -458,7 +512,7 @@ select {
 }
 @media (max-height: 700px) {
     #mock-data {
-        height: 25vh;
+        height: 40vh;
     }
 }
 @media (max-height: 510px) {

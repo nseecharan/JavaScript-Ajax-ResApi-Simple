@@ -100,7 +100,6 @@ export const changeForm = (isEmpForm, isUpdate, titleID, titleChange, formID, bt
 
         title.textContent = titleChange;
         const newButton = createButton(s.submitBtnID, s.buttonClass, btnName, "submit");
-        //newButton.disabled = true;
         const form = document.getElementById(formID);
         const dangerZone = document.querySelector('.' + formID + s.dangerZoneClass);
 
