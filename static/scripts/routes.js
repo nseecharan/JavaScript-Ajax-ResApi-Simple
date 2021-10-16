@@ -1,4 +1,4 @@
-import { renderData, renderRawData } from './render/renderData.js';
+import { renderData } from './render/renderData.js';
 import { openEmpForm, openTaskForm } from './menuEvents.js';
 import { classToggle, readImage, clearElement, renderMessage, scrollToElement, scrollEndAnimation, loading } from './render/renderTools.js';
 import { createButton } from './render/renderInputs.js';
@@ -28,6 +28,7 @@ const DataManager = () => {
     let token;
     let currentPage = 0;
     let lastPage = 0;
+    let renderPretty = true;
 
     const getResponse = () => dbResponse;
     const getSearchResults = () => searchResults;
@@ -35,6 +36,7 @@ const DataManager = () => {
     const getData = () => dataSet;
     const getCurrentPage = () => currentPage;
     const getLastPage = () => lastPage;
+    const getRenderStyle = () => renderPretty;
 
     const setResponse = (newData) => {
 
@@ -78,6 +80,17 @@ const DataManager = () => {
 
         lastPage = last;
     }
+    const toggleRenderStyle = () => {
+
+        if (renderPretty === true) {
+
+            renderPretty = false;
+        }
+        else {
+
+            renderPretty = true;
+        }
+    }
 
     return {
 
@@ -95,7 +108,9 @@ const DataManager = () => {
         incrementPage,
         decrementPage,
         setLastPage,
-        getLastPage
+        getLastPage,
+        toggleRenderStyle,
+        getRenderStyle
     }
 }
 
@@ -109,7 +124,6 @@ const dm = DataManager();
 //Method that manages ajax request to server.
 const makeAjaxRequest = async (method, url, data) => {
 
-    console.log("AJAX request")
     loading(s.modal_containerID);
 
     return fetch(url, {
@@ -120,7 +134,7 @@ const makeAjaxRequest = async (method, url, data) => {
             'Authorization': 'jwt ' + dm.getToken()
         }
     })
-        .then((response) => response.json())
+        .then((response) => response.json());
 }
 
 //Extracts relevant information from the json data, and then renderes it.
@@ -129,7 +143,6 @@ const makeAjaxRequest = async (method, url, data) => {
 //in the table.
 const parseJsonData = (json) => {
 
-    console.log("parseJson")
     //consider making a cookie session instead
     if (json.token) {
 
@@ -142,7 +155,6 @@ const parseJsonData = (json) => {
     if (json.data) {
 
         dm.setData(json.data);
-        dm.setResponse({ message: "", status: "success" });
         renderMessage("", s.generalMsgID, s.noDisplayClass, s.confirmedClass);
     }
     if (json.pages) {
@@ -151,12 +163,13 @@ const parseJsonData = (json) => {
         pageNavigation("page-buttons", dm.getLastPage());
     }
 
-    renderData(dm.getData(), s.renderDataClass);
-    renderRawData(dm.getData());
-    clearElement("#" + s.modal_containerID)
-    console.log("parse DONE")
+    renderData(dm.getData(), s.renderDataClass, dm.getRenderStyle());
+    clearElement("#" + s.modal_containerID);
 }
 
+/***************************************************************
+                        MAIN FUNCTIONS                          
+***************************************************************/
 
 //This funciton will load the appropriate create button for the related data set,
 //and append it to the parent elemet with the ID specified in the second argument.
@@ -184,10 +197,6 @@ const dataBtnManager = (data, parentID) => {
         btnParent.appendChild(newButton);
     }
 }
-
-/***************************************************************
-                        MAIN FUNCTIONS                          
-***************************************************************/
 
 //Will check to see if the characters entered in the search exist in the loaded table, 
 //and will re-render the table to show the matching results. It checks the data in the
@@ -218,8 +227,41 @@ export const searchData = (e) => {
             }
         });
 
-        renderData(dm.getSearchResults(), s.renderDataClass);
-        renderRawData(dm.getSearchResults());
+        renderData(dm.getSearchResults(), s.renderDataClass, dm.getRenderStyle());
+    }
+}
+
+//Will increament the page index, and then get the data at that index.
+export const nextPage = () => {
+
+    if (dm.getCurrentPage() < dm.getLastPage()) {
+
+        dm.incrementPage();
+        getPage(dm.getCurrentPage());
+    }
+
+    return dm.getCurrentPage();
+}
+
+//Will decrement the page index, and then get the data at that index.
+export const prevPage = () => {
+
+    if (dm.getCurrentPage() > 0) {
+
+        dm.decrementPage();
+        getPage(dm.getCurrentPage());
+    }
+
+    return dm.getCurrentPage();
+}
+
+export const toggleDataStyle = async () => {
+
+    if (dm.getData().length > 0) {
+
+        dm.toggleRenderStyle();
+        classToggle(s.renderDataClass, false, "dim-window", "dos-screen");
+        getPage(dm.getCurrentPage());
     }
 }
 
@@ -249,7 +291,6 @@ const refreshEmpData = (delay, close = false) => {
 //requires re-rendering.
 const refreshTaskData = (delay, close = false) => {
 
-    console.log("refresh task list")
     return new Promise((resolve, reject) => {
 
         if (dm.getResponse().message !== "Please log in") {
@@ -262,7 +303,6 @@ const refreshTaskData = (delay, close = false) => {
             setTimeout(() => {
 
                 getAllTasks();
-                console.log("refrehs task DONE")
                 resolve();
             }, delay)
         }
@@ -281,46 +321,24 @@ const statusMessage = (messageElementID) => {
 
 const scrollList = async () => {
 
-    console.log("scroll start")
     await scrollToElement(s.tableBodyID, scrollDelay);
     const lastElm = document.getElementById(s.tableBodyID).lastChild;
     scrollEndAnimation(lastElm, s.renderDataClass, s.flash, s.trClass);
-
-    console.log("scroll DONE")
 }
 
+/***************************************************************
+                        API CALLS                          
+***************************************************************/
+
+//Will make a request to the API to get the data at the indicated page index.
 export const getPage = async (page) => {
 
-    console.log("get page")
     if (page <= dm.getLastPage() && page > -1) {
 
         dm.setCurrentPage(page);
         const makeReq = await makeAjaxRequest("GET", "/api/page/" + page + "");
         parseJsonData(makeReq);
         statusMessage(s.generalMsgID);
-    }
-
-    console.log("get page DONE")
-    return dm.getCurrentPage();
-}
-
-export const nextPage = () => {
-
-    if (dm.getCurrentPage() < dm.getLastPage()) {
-
-        dm.incrementPage();
-        getPage(dm.getCurrentPage());
-    }
-
-    return dm.getCurrentPage();
-}
-
-export const prevPage = () => {
-
-    if (dm.getCurrentPage() > 0) {
-
-        dm.decrementPage();
-        getPage(dm.getCurrentPage());
     }
 
     return dm.getCurrentPage();
@@ -349,6 +367,9 @@ export const login = async () => {
         classToggle(s.createBtnOptionsID, true);
         renderMessage(dm.getResponse().message, s.loginMsgID, s.noDisplayClass, s.confirmedClass);
 
+        dm.setResponse({ message: "", status: "success" });
+        renderMessage("", s.generalMsgID, s.noDisplayClass, s.confirmedClass);
+
         if (dm.getData().length) {
 
             dataBtnManager(dm.getData(), s.createBtnOptionsID);
@@ -362,7 +383,8 @@ export const login = async () => {
 
 //CREATE
 /*******************************************************/
-//The create functions will add new data, and then scroll to the new entry once the table has been re-rendered.
+//The create functions will add new data, and then scroll to the new entry once the
+//table has been re-rendered.
 
 export const createEmployee = async (formId) => {
 
@@ -391,14 +413,18 @@ export const createEmployee = async (formId) => {
     if (dm.getResponse().status !== "error") {
 
         await refreshEmpData(dataRefreshDelay, true);
-        //await getPage(dm.getLastPage());
-        //scrollList();
+
+        setTimeout(() => {
+
+            getPage(dm.getLastPage());
+            scrollList();
+
+        }, dataRefreshDelay * 5)
     }
 }
 
 export const createTask = async (formId) => {
 
-    console.log("create task")
     const form = document.getElementById(formId);
 
     const formdata = {
@@ -413,11 +439,14 @@ export const createTask = async (formId) => {
     if (dm.getResponse().status !== "error") {
 
         await refreshTaskData(dataRefreshDelay, true);
-        //await getPage(dm.getLastPage());
-        //scrollList();
-    }
 
-    console.log("create task DONE")
+        setTimeout(() => {
+
+            getPage(dm.getLastPage());
+            scrollList();
+
+        }, dataRefreshDelay * 2)
+    }
 }
 
 //READ
@@ -431,6 +460,7 @@ export const getAllEmployees = async () => {
     parseJsonData(makeReq);
     statusMessage(s.generalMsgID);
     classToggle(s.searchID, true);
+    classToggle("toggle-style-btn", true, "btn-sizing float-right");
 
     if (dm.getToken()) {
 
@@ -445,6 +475,7 @@ export const getAllTasks = async () => {
     parseJsonData(makeReq);
     statusMessage(s.generalMsgID);
     classToggle(s.searchID, true);
+    classToggle("toggle-style-btn", true, "btn-sizing float-right");
 
     if (dm.getToken()) {
 

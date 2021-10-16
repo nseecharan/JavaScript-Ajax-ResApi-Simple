@@ -18,7 +18,6 @@ export const pageNavigation = async (parentID, maxPages) => {
     pageNumContainer.id = "page-indicator";
     pageInput.min = 0;
     pageInput.max = maxPages;
-
     const current = await getPage();
     pageInput.value = current;
     currentPage.textContent = current;

@@ -1,4 +1,4 @@
-import { getAllEmployees, getAllTasks, login, searchData, nextPage, prevPage, getPage } from './routes.js';
+import { getAllEmployees, getAllTasks, login, searchData, toggleDataStyle } from './routes.js';
 import { validateLoginForm } from './form-validation/validateLoginForm.js';
 import { clearElement } from './render/renderTools.js';
 import { createHamburger } from './render/renderInputs.js';
@@ -80,30 +80,7 @@ function showHamburger() {
     })
 })
 
+document.getElementById("toggle-style-btn").addEventListener('click', () => {
 
-//testing paging
-
-/*
-const nextBtn = document.getElementById('next-btn');
-const prevBtn = document.getElementById('prev-btn');
-
-const goToBtn = document.getElementById('go-to-btn');
-
-nextBtn.addEventListener('click', () => {
-
-    nextPage();
+    toggleDataStyle();
 })
-
-prevBtn.addEventListener('click', () => {
-
-    prevPage();
-})
-
-goToBtn.addEventListener('click', () => {
-
-    const page = document.getElementById("goto-page").value;
-
-    getPage(page);
-})
-*/
-

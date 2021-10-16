@@ -4,8 +4,6 @@
 <head>
     <script defer type="module" src="../static/scripts/home.js"></script>
     <link rel="stylesheet" href="../static/css/home.css">
-    <link rel="stylesheet" href="../static/css/buttons.css">
-    <link rel="stylesheet" href="../static/css/login.css">
     <link rel="stylesheet" href="../static/css/normalize.css">
     <title>Nigel Seecharan Simple Api</title>
     <meta charset="UTF-8">
@@ -63,27 +61,26 @@
             <span class="api-option-title">Api Options</span>
             <div class="api-option-inputs">
                 <div id="option-inputs">
-                    <button id="get-emp-btn" class="btn-sizing" aria-label="get list of employees, button">Get
-                        Employees</button>
-                    <button id="get-task-btn" class="btn-sizing" aria-label="get list of tasks, button">Get
-                        Tasks</button>
+                    <button id="get-emp-btn" class="btn-sizing"
+                        aria-label="get list of employees, button">Employees</button>
+                    <button id="get-task-btn" class="btn-sizing" aria-label="Get list of tasks, button.">Tasks</button>
+                    <button id="toggle-style-btn" class="btn-sizing float-right no-display"
+                        aria-label="Change how the data will be displayed.">Toggle
+                        Style</button>
                 </div>
                 <div id="search" class="no-display">
-                    <label>Search</label>
-                    <input id="search-input" type="text" aria-label="search field" />
+                    <label>Filter Name</label>
+                    <input id="search-input" type="text" aria-label="Input field to filter page results by name." />
+                    <button id="advanced-search">Advanced Search</button>
                 </div>
                 <span id="general-msg"></span>
             </div>
         </div>
         <div id="data-display">
-            <div id="styled-dsp">
+            <div id="styled-dsp" class="faint-glass">
                 <div id="create-options"></div>
-                <div id="mock-data"></div>
+                <div id="mock-data" class="dim-window"></div>
                 <div id="page-buttons"></div>
-            </div>
-            <div id="json-dsp">
-                <pre>Raw Data Display</pre>
-                <pre id="raw-data"></pre>
             </div>
         </div>
         <footer>
