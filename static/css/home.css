@@ -435,6 +435,14 @@ select {
     text-shadow: 0px 0px 3px lawngreen;
     border-radius: 0.2em;
 }
+.dos-screen-full {
+    background: var(--solidDarkGrey);
+    color: lawngreen;
+    border-radius: 0.2em;
+    background-image: radial-gradient(var(--white10), transparent 50%);
+    background-position: 7em -7em;
+    background-attachment: fixed;
+}
 .faint-glass {
     border-radius: 4px;
     padding: 1em;

@@ -1,9 +1,11 @@
 import { confirmDeleteEmp, confirmDeleteTask } from '../menuEvents.js';
 import { createButton, createSelect, createInput, createField } from './renderInputs.js';
-import { createEmployee, createTask, updateEmployee, updateTask } from '../routes.js';
+import { advancedSearch, createEmployee, createTask, updateEmployee, updateTask } from '../routes.js';
+import { validateAdvSearch } from '../form-validation/validateAdvSearchForm.js';
 import { validateEmployeeForm } from '../form-validation/validateEmployeeForm.js';
 import { validateTaskForm } from '../form-validation/validateTaskForm.js';
-import * as s from '../elementAttributes.js';//import styles
+import { clearElement } from '../render/renderTools.js';
+import * as s from '../elementAttributes.js';//import styles or 's'
 
 const taskInput = createInput("task-id", "", "text", "Task Name", 2, 128, "enter task name", "taskNameField", s.textInputTitle, true);
 const fnameInput = createInput("fname-id", "", "text", "First Name", 2, 64, "enter employee's first name", "firstNameField", s.textInputTitle, true);
@@ -25,12 +27,19 @@ lnameInput.required = true;
 emailInput.required = true;
 sexSelect.required = true;
 
-//create fields that include the inputs above, with a label, and status message element
-const taskField = createField("Task Name", taskInput, s.taskMsgID, s.noDisplayClass)
+//Create fields that include the inputs above, with a label, and status message element.
+const taskField = createField("Task Name", taskInput, s.taskMsgID, s.noDisplayClass);
 const fnameField = createField("First Name", fnameInput, s.fnameMsgID, s.noDisplayClass);
 const lnameField = createField("Last Name", lnameInput, s.lnameMsgID, s.noDisplayClass);
 const emailField = createField("Email", emailInput, s.emailMsgID, s.noDisplayClass);
 const sexField = createField("Sex", sexSelect, s.sexMsgID, s.noDisplayClass);
+
+//Inputs used for the advanced search feature.
+//Seperate validation methods will be attached ot these.
+const searchTaskInput = createInput("adv-search-task-id", "", "text", "Task Name", 2, 128, "Enter a task name.", "Task name advanced search field.", s.textInputTitle, false);
+const searchNameInput = createInput("adv-search-fname-id", "", "text", "Employee Name", 2, 128, "Enter an employee name.", "Employee name advanced search field.", s.textInputTitle, false);
+const searchTaskField = createField("Task Name", searchTaskInput, s.taskMsgID, s.noDisplayClass);
+const searchNameField = createField("First Name", searchNameInput, s.fnameMsgID, s.noDisplayClass);
 
 
 ['keyup', 'blur', 'focus'].forEach((action) => {
@@ -54,6 +63,15 @@ const sexField = createField("Sex", sexSelect, s.sexMsgID, s.noDisplayClass);
 
         validateTaskForm(s.taskFormID);
     })
+    searchTaskInput.addEventListener(action, () => {
+
+        validateAdvSearch(false, "adv-search");
+    });
+    searchNameInput.addEventListener(action, () => {
+
+        validateAdvSearch(true, "adv-search");
+    });
+
 })
 
 sexSelect.addEventListener('change', () => {
@@ -66,27 +84,10 @@ imageUploadBtn.addEventListener("click", () => {
     document.getElementById("img-upload").click();
 });
 
-//This function manages which form to generate between tasks and employees, and allows
-//you to indicate if the generated form should be configured to update or create data.
-//The first argument dictates if the form sould be for tasks or employees, and the 
-//second argument dictates if the configuration should be set to update or create.
-export const createForm = (isEmpForm, isUpdate, title, formID, btnName, parentID, updateDataID = "") => {
 
-    if (isEmpForm) {
-
-        renderEmployeeForm(title, formID, s.empCancelBtnID, btnName, parentID);
-    }
-    else {
-
-        renderTaskForm(title, formID, s.taskCancelBtnID, btnName, parentID);
-    }
-
-    const form = document.getElementById(formID);
-    const last = form.elements.length - 1;
-    const button = form.elements[last];
-
-    setSubmitType(isEmpForm, isUpdate, button, formID, updateDataID);
-}
+/***************************************************************
+                         FORM METHODS                          
+***************************************************************/
 
 //This function will allow you to change an already generated form to either the update, or
 //create configuration. The first two arguments work just like the "createForm," function,
@@ -173,74 +174,93 @@ export const preloadFormData = (formID, data) => {
     }
 }
 
-//This function manages the what what the submit button will do depending on the 
-//configuration of the form.
-const setSubmitType = (isEmpForm, isUpdate, button, formID, updateDataID = "") => {
+/***************************************************************
+                    FORM CONFIGURATIONS                          
+***************************************************************/
+
+//Data entry form configuration.
+export const createDataEntryForm = (isEmpForm, formTitle, formID, cancelBtnID, submintBtnName, elementIdentifier, isUpdate = false, updateDataID = "") => {
+
+    renderFormStructure(formTitle, formID, cancelBtnID, elementIdentifier);
+
+    const form = document.getElementById(formID);
+    const submitButton = createButton(s.submitBtnID, s.buttonClass, submintBtnName, "submit", submintBtnName + " button");
+    setSubmitType(isEmpForm, isUpdate, submitButton, formID, updateDataID);
 
     if (isEmpForm) {
 
-        if (isUpdate) {
-
-            button.addEventListener('click', () => {
-
-                updateEmployee(updateDataID, formID);
-            })
-        }
-        else {
-
-            button.addEventListener('click', () => {
-
-                createEmployee(formID);
-            })
-        }
+        const infoDiv = document.createElement('div');
+        infoDiv.className = s.formInfoAreaClass;
+        infoDiv.append(fnameField, lnameField, emailField, sexField, submitButton);
+        const imageDiv = renderImageUpload();
+        form.append(imageDiv, infoDiv);
     }
     else {
 
-        if (isUpdate) {
-
-            button.addEventListener('click', () => {
-                
-                updateTask(updateDataID, formID);
-            })
-        }
-        else {
-
-            button.addEventListener('click', () => {
-
-                createTask(formID);
-            })
-        }
+        form.append(taskField, submitButton);
     }
-}
 
-//Generates the form for a task.
-const renderTaskForm = (formTitle, formId, cancelBtnID, submintBtnName, elementIdentifier) => {
-
-    renderFormStructure(formTitle, formId, cancelBtnID, elementIdentifier);
-
-    const form = document.getElementById(formId);
-    const submitButton = createButton(s.submitBtnID, s.buttonClass, submintBtnName, "submit", submintBtnName + " button");
-    //submitButton.disabled = true;
-
-    form.append(taskField, submitButton);
     form.reset();
 }
 
-//Generates the form for an employee.
-const renderEmployeeForm = (formTitle, formId, cancelBtnID, submintBtnName, elementIdentifier) => {
+//Advanced Search configuration.
+export const createAdvancedSearchForm = (isEmpForm, formTitle, formID, cancelBtnID, submintBtnName, elementIdentifier) => {
 
-    renderFormStructure(formTitle, formId, cancelBtnID, elementIdentifier);
+    renderFormStructure(formTitle, formID, cancelBtnID, elementIdentifier);
 
-    const form = document.getElementById(formId);
+    const form = document.getElementById(formID);
     const submitButton = createButton(s.submitBtnID, s.buttonClass, submintBtnName, "submit", submintBtnName + " button");
-    //submitButton.disabled = true;
-    const imageDiv = renderImageUpload();
-    const infoDiv = document.createElement('div');
-    infoDiv.className = s.formInfoAreaClass;
-    infoDiv.append(fnameField, lnameField, emailField, sexField, submitButton);
 
-    form.append(imageDiv, infoDiv);
+    submitButton.addEventListener('click', () => {
+
+        advancedSearch(isEmpForm, formID);
+    })
+
+    if (isEmpForm) {
+
+        form.append(searchNameField, submitButton);
+    }
+    else {
+
+        form.append(searchTaskField, submitButton);
+    }
+
     form.reset();
+}
+
+/***************************************************************
+                        FORM HELPERS                          
+***************************************************************/
+
+//Generates the basic form elements that are shared between task and employee forms.
+const renderFormStructure = (formTitle, formID, cancelBtnID, elementIdentifier) => {
+
+    const overlay = document.createElement('div');
+    const container = document.createElement('div');
+    const customHeader = document.createElement('div');
+    const title = document.createElement('span');
+    const cancelButton = createButton(cancelBtnID, s.cancelBtnClass, "X", "button", "cancel button");
+    const form = document.createElement('form');
+
+    cancelButton.addEventListener('click', () => {
+
+        clearElement("#" + s.modal_containerID);
+    })
+
+    overlay.className = s.modal_overlayClass;
+    container.className = s.modal_containerClass;
+    customHeader.className = s.modal_headingClass;
+    title.textContent = formTitle;
+    title.id = formID + "-title";
+    customHeader.append(title, cancelButton);
+    form.id = formID;
+    form.className = s.formClass;
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+    })
+    container.append(customHeader, form);
+    overlay.append(container);
+    document.getElementById(elementIdentifier).appendChild(overlay);
 }
 
 //Creates the image preview, and uplaod section for for the employee form.
@@ -272,28 +292,42 @@ const renderImageUpload = () => {
     return imageDiv;
 }
 
-//Generates the basic form elements that are shared between task and employee forms.
-const renderFormStructure = (formTitle, formId, cancelBtnID, elementIdentifier) => {
+//This function manages the what what the submit button will do depending on the 
+//configuration of the form.
+const setSubmitType = (isEmpForm, isUpdate, button, formID, updateDataID = "") => {
 
-    const overlay = document.createElement('div');
-    const container = document.createElement('div');
-    const customHeader = document.createElement('div');
-    const title = document.createElement('span');
-    const cancelButton = createButton(cancelBtnID, s.cancelBtnClass, "X", "button", "cancel button");
-    const form = document.createElement('form');
+    if (isEmpForm) {
 
-    overlay.className = s.modal_overlayClass;
-    container.className = s.modal_containerClass;
-    customHeader.className = s.modal_headingClass;
-    title.textContent = formTitle;
-    title.id = formId + "-title";
-    customHeader.append(title, cancelButton);
-    form.id = formId;
-    form.className = s.formClass;
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-    })
-    container.append(customHeader, form);
-    overlay.append(container);
-    document.getElementById(elementIdentifier).appendChild(overlay);
+        if (isUpdate) {
+
+            button.addEventListener('click', () => {
+
+                updateEmployee(updateDataID, formID);
+            })
+        }
+        else {
+
+            button.addEventListener('click', () => {
+
+                createEmployee(formID);
+            })
+        }
+    }
+    else {
+
+        if (isUpdate) {
+
+            button.addEventListener('click', () => {
+
+                updateTask(updateDataID, formID);
+            })
+        }
+        else {
+
+            button.addEventListener('click', () => {
+
+                createTask(formID);
+            })
+        }
+    }
 }

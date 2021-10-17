@@ -254,7 +254,6 @@ module.exports.getSetOfEmployees = function (skip = 0, limit = 0) {
     })
 }
 
-
 module.exports.getAllEmployees = function () {
 
     return new Promise(function (resolve, reject) {
@@ -267,7 +266,7 @@ module.exports.getAllEmployees = function () {
             }
             else {
 
-                resolve(data)
+                resolve(data);
             }
         });
     });
@@ -327,7 +326,7 @@ module.exports.getSetOfTasks = function (skip = 0, limit = 0) {
     })
 }
 
-module.exports.getAllTask = function (req, res) {
+module.exports.getAllTasks = function (req, res) {
 
     return new Promise(function (resolve, reject) {
 
