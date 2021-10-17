@@ -1,24 +1,23 @@
-import { clearElement } from './render/renderTools.js';
-import { preloadFormData, createForm, changeForm } from './render/renderForm.js';
+import { preloadFormData, createDataEntryForm, createAdvancedSearchForm, changeForm } from './render/renderForm.js';
 import { deleteEmployee, deleteTask } from './routes.js';
 import * as s from './elementAttributes.js';
 
 //MENU CONTROL EVENTS
 //******************************************/
 
+export const advancedSearchForm = (dataSetType) => {
+
+    createAdvancedSearchForm(dataSetType, "Advanced Search", "adv-search", "cancel-btn", "Search", s.modal_containerID);
+}
+
 //This funciton will open the creat task form.
 export const openTaskForm = () => {
 
-    let taskForm = document.getElementById(s.taskFormID);
+    const taskForm = document.getElementById(s.taskFormID);
 
     if (!taskForm) {
 
-        createForm(false, false, "Create Task", s.taskFormID, "Create", s.modal_containerID);
-
-        document.getElementById(s.taskCancelBtnID).addEventListener('click', () => {
-
-            clearElement("#" + s.modal_containerID);
-        })
+        createDataEntryForm(false, "Create Task", s.taskFormID, "cancel-btn", "Create", s.modal_containerID);
     }
     else {
 
@@ -30,16 +29,11 @@ export const openTaskForm = () => {
 //This funciton will open the update task form.
 export const openTaskUpdateForm = (data) => {
 
-    let taskForm = document.getElementById(s.taskFormID);
+    const taskForm = document.getElementById(s.taskFormID);
 
     if (!taskForm) {
 
-        createForm(false, true, "View Task", s.taskFormID, "Update", s.modal_containerID, data._id);
-
-        document.getElementById(s.taskCancelBtnID).addEventListener('click', () => {
-
-            clearElement("#" + s.modal_containerID);
-        })
+        createDataEntryForm(false, "View Task", s.taskFormID, "cancel-btn", "Update", s.modal_containerID, true, data._id);
     }
     else {
 
@@ -52,7 +46,7 @@ export const openTaskUpdateForm = (data) => {
 //This funciton will prompt for confirmation on deleting a task from the database.
 export const confirmDeleteTask = (data) => {
 
-    let confirmDel = confirm("Delete this " + data.task + "? This action can not be undone.");
+    const confirmDel = confirm("Delete this " + data.task + "? This action can not be undone.");
 
     if (confirmDel == true) {
 
@@ -63,16 +57,11 @@ export const confirmDeleteTask = (data) => {
 //This function will open the create employee form.
 export const openEmpForm = () => {
 
-    let empForm = document.getElementById(s.empFormID);
+    const empForm = document.getElementById(s.empFormID);
 
     if (!empForm) {
 
-        createForm(true, false, "Create Employee", s.empFormID, "Create", s.modal_containerID);
-
-        document.getElementById(s.empCancelBtnID).addEventListener('click', () => {
-
-            clearElement("#" + s.modal_containerID);
-        })
+        createDataEntryForm(true, "Create Employee", s.empFormID, "cancel-btn", "Create", s.modal_containerID);
     }
     else {
 
@@ -85,16 +74,11 @@ export const openEmpForm = () => {
 //This will open the update employee form.
 export const openEmpUpdateForm = (data) => {
 
-    let empForm = document.getElementById(s.empFormID);
+    const empForm = document.getElementById(s.empFormID);
 
     if (!empForm) {
 
-        createForm(true, true, "View Employee", s.empFormID, "Update", s.modal_containerID, data._id);
-
-        document.getElementById(s.empCancelBtnID).addEventListener('click', () => {
-
-            clearElement("#" + s.modal_containerID);
-        })
+        createDataEntryForm(true, "View Employee", s.empFormID, "cancel-btn", "Update", s.modal_containerID, true, data._id);
     }
     else {
 
@@ -107,7 +91,7 @@ export const openEmpUpdateForm = (data) => {
 //This funciton will prompt for confirmation on deleting a employee from the database.
 export const confirmDeleteEmp = (data) => {
 
-    let confirmDel = confirm("Delete this " + data.first_name + " " + data.last_name + "? This action can not be undone.");
+    const confirmDel = confirm("Delete this " + data.first_name + " " + data.last_name + "? This action can not be undone.");
 
     if (confirmDel == true) {
 

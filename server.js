@@ -104,14 +104,6 @@ app.get("/", (req, res) => {
     return 0;
 });
 
-//login page
-app.get("/login", (req, res) => {
-
-    res.sendFile(path.join(__dirname, "/views/login.html"));
-
-    return 0;
-});
-
 //CREATE
 /**************************************************************/
 
@@ -224,13 +216,12 @@ function paging(data, numPerPage) {
     return { data: orderedResults[0], pages: pages };
 }
 
+//Change the current page of data.
+app.get("/api/loaded-data/page/:page", (req, res, next) => {
 
-app.get("/api/page/:page", (req, res, next) => {
-
-    let page;
     try {
 
-        page = Number(req.params.page);
+        const page = Number(req.params.page);
 
         if (orderedResults.length) {
 
@@ -247,7 +238,7 @@ app.get("/api/page/:page", (req, res, next) => {
     }
 })
 
-//Find all items
+//Find all items.
 app.get(emp_route, (req, res, next) => {
 
     db.getAllEmployees().then((data) => {
@@ -266,7 +257,7 @@ app.get(emp_route, (req, res, next) => {
 
 app.get(task_route, (req, res, next) => {
 
-    db.getAllTask().then((data) => {
+    db.getAllTasks().then((data) => {
 
         res.json(paging(data, numberOfResults));
         console.log("Server: task data set retrieved");
@@ -278,53 +269,59 @@ app.get(task_route, (req, res, next) => {
         });
 });
 
-//Find one or some
-app.get(emp_find + "/:empID", (req, res, next) => {
+//Find by name.
+app.get(emp_find + "/name/:name", (req, res, next) => {
 
-    passport.authenticate('jwt', { session: false }, (err, success, info) => {
+    const name = req.params.name;
 
-        if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ message: "Please log in", status: "error" }); }
+    //TODO validation when this gets implemented in client side
 
-        let id = req.params.empID + "";
+    db.getAllEmployees().then((data) => {
 
-        //TODO validation when this gets implemented in client side
+        let searchRes = [];
+        data.map((emp) => {
 
-        db.findEmployeeByID(id).then((data) => {
+            if (String(emp.first_name + " " + emp.last_name).toLocaleLowerCase().includes(name.toLocaleLowerCase())) {
 
-            res.json({ data: data });
-            console.log("Server: employee retrieved");
+                searchRes.push(emp);
+            }
         })
-            .catch((err) => {
 
-                console.log("Server: Could not find employee", err);
-                res.status(500).json({ message: err, status: "error" }).end();
-            });
-    })(req, res, next);
+        res.json(paging(searchRes, numberOfResults));
+        console.log("Server: employee search results retrieved");
+    })
+        .catch((err) => {
+
+            console.log("Server: message from DB - " + err);
+            res.status(500).json({ message: err, status: "error" }).end();
+        });
 });
 
-app.get(task_find + "/:taskID", (req, res, next) => {
+app.get(task_find + "/name/:name", (req, res, next) => {
 
-    passport.authenticate('jwt', { session: false }, (err, success, info) => {
+    const name = req.params.name;
 
-        if (err) { return next(err); }
-        if (!success) { return res.status(401).json({ message: "Please log in", status: "error" }); }
+    //TODO validation when this gets implemented in client side
 
-        let id = req.params.taskID + "";
+    db.getAllTasks().then((data) => {
 
-        //TODO validation when this gets implemented in client side
+        let searchRes = [];
+        data.map((task) => {
 
-        db.findTaskByID(id).then((data) => {
+            if (String(task.task).toLocaleLowerCase().includes(name.toLocaleLowerCase())) {
 
-            res.json({ data: data });
-            console.log("Server: task retrieved");
+                searchRes.push(task);
+            }
         })
-            .catch((err) => {
 
-                console.log("Server: message from DB - " + err);
-                res.status(500).json({ message: err, status: "error" }).end();
-            });
-    })(req, res, next);
+        res.json(paging(searchRes, numberOfResults));
+        console.log("Server: task search results retrieved");
+    })
+        .catch((err) => {
+
+            console.log("Server: message from DB - " + err);
+            res.status(500).json({ message: err, status: "error" }).end();
+        });
 });
 
 //UPDATE
@@ -469,6 +466,8 @@ function noData(value) {
     return false;
 }
 
+
+//TODO: Break this function up, then add validation to search routes
 function validation(data) {
 
     if (data.username) {

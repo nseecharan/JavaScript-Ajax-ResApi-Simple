@@ -2,6 +2,7 @@ import { getAllEmployees, getAllTasks, login, searchData, toggleDataStyle } from
 import { validateLoginForm } from './form-validation/validateLoginForm.js';
 import { clearElement } from './render/renderTools.js';
 import { createHamburger } from './render/renderInputs.js';
+import { advancedSearchForm } from './menuEvents.js';
 
 const loginForm = document.getElementById('login-form');
 const userNameInput = loginForm.elements[0];
@@ -11,6 +12,26 @@ const getEmpBtn = document.getElementById("get-emp-btn");
 const getTaskBtn = document.getElementById("get-task-btn");
 const loginMessageID = "login-msg";
 const searchInput = document.getElementById('search-input');
+const toggleStyleBtn = document.getElementById("toggle-style-btn");
+const advancedSearch = document.getElementById("advanced-search");
+
+const DataSetType = () => {
+
+    let isEemployees = false;
+
+    const getDataSetType = () => isEemployees;
+    const setDataSetType = (answer) => {
+
+        isEemployees = answer;
+    }
+
+    return {
+
+        setDataSetType, getDataSetType
+    }
+}
+
+const dSetType = DataSetType();
 
 ['keyup', 'blur', 'focus'].forEach((action) => {
 
@@ -43,10 +64,12 @@ loginBtn.addEventListener('click', () => {
 getEmpBtn.addEventListener('click', () => {
 
     getAllEmployees();
+    dSetType.setDataSetType(true);
 });
 getTaskBtn.addEventListener('click', () => {
 
     getAllTasks();
+    dSetType.setDataSetType(false);
 });
 
 function showHamburger() {
@@ -80,7 +103,12 @@ function showHamburger() {
     })
 })
 
-document.getElementById("toggle-style-btn").addEventListener('click', () => {
+toggleStyleBtn.addEventListener('click', () => {
 
     toggleDataStyle();
+})
+
+advancedSearch.addEventListener('click', () => {
+
+    advancedSearchForm(dSetType.getDataSetType());
 })

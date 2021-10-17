@@ -6,13 +6,13 @@ import * as s from './elementAttributes.js';
 import { pageNavigation } from './render/renderPageNavigation.js';
 
 const emp_route = "/api/employees";//optional name as param
-const emp_find = emp_route + "/search";
+const emp_find = emp_route + "/find";
 const emp_register = emp_route + "/register";
 const emp_update = emp_route + "/update";//id as param
 const emp_delete = emp_route + "/delete";//id as param
 
 const task_route = "/api/tasks";//optional name as param
-const task_find = task_route + "/search";
+const task_find = task_route + "/find";
 const task_add = task_route + "/add";
 const task_update = task_route + "/update";//id as param
 const task_delete = task_route + "/delete";//id as param
@@ -94,28 +94,18 @@ const DataManager = () => {
 
     return {
 
-        setResponse,
-        getResponse,
-        addSearchItem,
-        getSearchResults,
-        clearSearchResults,
-        setToken,
-        getToken,
-        setData,
-        getData,
-        setCurrentPage,
-        getCurrentPage,
-        incrementPage,
-        decrementPage,
-        setLastPage,
-        getLastPage,
-        toggleRenderStyle,
-        getRenderStyle
+        setResponse, getResponse,
+        addSearchItem, getSearchResults, clearSearchResults,
+        setToken, getToken,
+        setData, getData,
+        setCurrentPage, getCurrentPage,
+        incrementPage, decrementPage,
+        setLastPage, getLastPage,
+        toggleRenderStyle, getRenderStyle
     }
 }
 
 const dm = DataManager();
-
 
 /***************************************************************
                         AJAX FUNCTIONS                           
@@ -134,7 +124,12 @@ const makeAjaxRequest = async (method, url, data) => {
             'Authorization': 'jwt ' + dm.getToken()
         }
     })
-        .then((response) => response.json());
+        .then((response) => {
+
+            //console.log(response)
+
+            return response.json()
+        });
 }
 
 //Extracts relevant information from the json data, and then renderes it.
@@ -336,12 +331,41 @@ export const getPage = async (page) => {
     if (page <= dm.getLastPage() && page > -1) {
 
         dm.setCurrentPage(page);
-        const makeReq = await makeAjaxRequest("GET", "/api/page/" + page + "");
+        const makeReq = await makeAjaxRequest("GET", "/api/loaded-data/page/" + page + "");
         parseJsonData(makeReq);
         statusMessage(s.generalMsgID);
     }
 
     return dm.getCurrentPage();
+}
+
+export const advancedSearch = async (type, formID) => {
+
+    const form = document.getElementById(formID);
+    const fieldValue = form.elements[0].value;
+
+    if (type === true) {
+
+        const makeReq = await makeAjaxRequest("GET", emp_find + "/name/" + fieldValue);
+
+        if (makeReq.data) {
+
+            dm.setCurrentPage(0);
+        }
+        parseJsonData(makeReq);
+    }
+    else {
+
+        const makeReq = await makeAjaxRequest("GET", task_find + "/name/" + fieldValue);
+
+        if (makeReq.data) {
+
+            dm.setCurrentPage(0);
+        }
+        parseJsonData(makeReq);
+    }
+
+    statusMessage(s.generalMsgID);
 }
 
 //LOGIN

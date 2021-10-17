@@ -16,7 +16,6 @@ export const validateEmployeeForm = (formID, field) => {
 
     const form = document.getElementById(formID);
     const messageElements = form.getElementsByTagName('p');
-
     const fname = form.elements[2];
     const lname = form.elements[3];
     const email = form.elements[4];
@@ -25,35 +24,17 @@ export const validateEmployeeForm = (formID, field) => {
     const lnameMessage = messageElements[1].id;
     const emailMessage = messageElements[2].id;
     const sexMessage = messageElements[3].id;
-    const fnameValid = validateText(
-        fname.value,
-        fname.attributes.minlength.value,
-        fname.attributes.maxlength.value,
-        "First Name",
-        fnameMessage);
-    const lnameValid = validateText(
-        lname.value,
-        lname.attributes.minlength.value,
-        lname.attributes.maxlength.value,
-        "Last Name",
-        lnameMessage);
-    const emailValid = validateEmail(
-        email.value,
-        email.attributes.minlength.value,
-        email.attributes.maxlength.value,
-        "Email",
-        emailMessage);
+    const fnameValid = validateText(fname.value, fname.attributes.minlength.value, fname.attributes.maxlength.value, "First Name", fnameMessage);
+    const lnameValid = validateText(lname.value, lname.attributes.minlength.value, lname.attributes.maxlength.value, "Last Name", lnameMessage);
+    const emailValid = validateEmail(email.value, email.attributes.minlength.value, email.attributes.maxlength.value, "Email", emailMessage);
     const sexValid = {
         message: (!sex.value) ? "A sex must be selected" : "",
         status: (!sex.value) ? "error" : "success",
         elementId: sexMessage
     }
 
-    if (
-        fnameValid.status === "success" &&
-        lnameValid.status === "success" &&
-        emailValid.status === "success" &&
-        sexValid.status === "success") {
+    if (fnameValid.status === "success" && lnameValid.status === "success" &&
+        emailValid.status === "success" && sexValid.status === "success") {
 
         form.elements[6].disabled = false;
     }
