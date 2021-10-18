@@ -1,7 +1,18 @@
 import { createButton } from './renderInputs.js';
 import { openEmpUpdateForm, openTaskUpdateForm } from '../menuEvents.js';
 import { clearElement } from './renderTools.js';
-import * as s from '../elementAttributes.js';//import styles
+import * as attr from '../elementAttributes.js';
+
+const tID_table = "render-table";
+const tID_header = "tableHdr";
+const tClass_style = "table-styling";
+const tClass_theadStyle = "thead-style";
+const tClass_thStyle = "th-style";
+const tClass_thAction = "th-action";
+const tClass_tdStyle = "td-style";
+const tClass_tdAction = "td-action";
+const aria_viewEmployee ="Button to view an employee, and edit the information if logged in.";
+const aria_viewTask = "Button to view a task, and edit the information if logged in.";
 
 //Create the inital table structure to render data.
 export const createTable = (headerList, parentId) => {
@@ -10,18 +21,18 @@ export const createTable = (headerList, parentId) => {
     const newTable = document.createElement('table');
     const newTblHeader = document.createElement('thead');
     const newTblBody = document.createElement('tbody');
-    newTable.id = s.tableID;
-    newTable.className = s.tableClass;
-    newTblHeader.id = s.tableHeaderID;
-    newTblHeader.className = s.tableHeaderClass;
-    newTblBody.id = s.tableBodyID;
+    newTable.id =tID_table;
+    newTable.className =tClass_style;
+    newTblHeader.id =tID_header;
+    newTblHeader.className =tClass_theadStyle;
+    newTblBody.id =attr.tID_body;
 
     if (headerList.length) {
         const last = headerList.length - 1;
         headerList.map((header, index) => {
             const th = document.createElement('th');
             th.textContent = header;
-            th.className = index === last ? s.thActionClass : s.thClass;
+            th.className = index === last ?tClass_thAction :tClass_thStyle;
             newTblHeader.appendChild(th);
         })
         newTable.append(newTblHeader, newTblBody);
@@ -52,7 +63,7 @@ export const renderRow = (data, parentId) => {
 
         if (data.first_name) {
 
-            const updateBtn = createButton(s.empUpdateBtnID, s.buttonClass, "View Employee", "button", s.empUpdateBtnAria, "employeeUpdateBtn");
+            const updateBtn = createButton(attr.btnID_empUpdate, attr.btnClass_sizing, "View Employee", "button", aria_viewEmployee, "employeeUpdateBtn");
 
             updateBtn.addEventListener('click', () => {
 
@@ -64,7 +75,7 @@ export const renderRow = (data, parentId) => {
         }
         else {
 
-            const updateBtn = createButton(s.taskUpdateBtnID, s.buttonClass, "View Task", "button", s.taskUpdateBtnAria, "taskUpdateBtn");
+            const updateBtn = createButton(attr.btnID_taskUpdate, attr.btnClass_sizing, "View Task", "button", aria_viewTask, "taskUpdateBtn");
 
             updateBtn.addEventListener('click', () => {
 
@@ -126,11 +137,11 @@ const addRowDetails = (detailList, _id) => {
 
     const row = document.createElement('tr');
     row.id = _id;
-    row.className = s.trClass;
+    row.className =attr.tClass_trStyle;
     const last = detailList.length - 1;
     detailList.map((td, index) => {
 
-        td.className = index === last ? s.tdActionClass : s.tdClass;
+        td.className = index === last ?tClass_tdAction :tClass_tdStyle;
         row.appendChild(td);
     })
 

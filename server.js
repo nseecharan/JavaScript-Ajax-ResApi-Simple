@@ -65,7 +65,7 @@ function onHttpStart() {
 app.post("/api/login", (req, res) => {
 
     const data = req.body;
-    const validResult = validation(data);
+    const validResult = validateLogin(data);
 
     if (validResult.status === "error") {
 
@@ -115,7 +115,7 @@ app.post(emp_register, (req, res, next) => {
         if (!success) { return res.status(401).json({ message: "Please log in" }); }
 
         const data = req.body;
-        const validResult = validation(data);
+        const validResult = validateEmployee(data);
 
         if (validResult.status === "error") {
 
@@ -153,7 +153,7 @@ app.post(task_add, (req, res, next) => {
         if (!success) { return res.status(401).json({ message: "Please log in", status: "error" }); }
 
         const data = req.body;
-        const validResult = validation(data);
+        const validResult = validateTask(data);
 
         if (validResult.status === "error") {
 
@@ -273,55 +273,69 @@ app.get(task_route, (req, res, next) => {
 app.get(emp_find + "/name/:name", (req, res, next) => {
 
     const name = req.params.name;
+    const validResult = validateSearch(true, name);
 
-    //TODO validation when this gets implemented in client side
+    if (validResult.status === "error") {
 
-    db.getAllEmployees().then((data) => {
+        res.status(422).json(validResult);
+        console.log("Server validation: " + validResult.message);
+    }
+    else {
 
-        let searchRes = [];
-        data.map((emp) => {
+        db.getAllEmployees().then((data) => {
 
-            if (String(emp.first_name + " " + emp.last_name).toLocaleLowerCase().includes(name.toLocaleLowerCase())) {
+            let searchRes = [];
+            data.map((emp) => {
 
-                searchRes.push(emp);
-            }
+                if (String(emp.first_name + " " + emp.last_name).toLocaleLowerCase().includes(name.toLocaleLowerCase())) {
+
+                    searchRes.push(emp);
+                }
+            })
+
+            res.json(paging(searchRes, numberOfResults));
+            console.log("Server: employee search results retrieved");
         })
+            .catch((err) => {
 
-        res.json(paging(searchRes, numberOfResults));
-        console.log("Server: employee search results retrieved");
-    })
-        .catch((err) => {
-
-            console.log("Server: message from DB - " + err);
-            res.status(500).json({ message: err, status: "error" }).end();
-        });
+                console.log("Server: message from DB - " + err);
+                res.status(500).json({ message: err, status: "error" }).end();
+            });
+    }
 });
 
 app.get(task_find + "/name/:name", (req, res, next) => {
 
     const name = req.params.name;
+    const validResult = validateSearch(false, name);
 
-    //TODO validation when this gets implemented in client side
+    if (validResult.status === "error") {
 
-    db.getAllTasks().then((data) => {
+        res.status(422).json(validResult);
+        console.log("Server validation: " + validResult.message);
+    }
+    else {
 
-        let searchRes = [];
-        data.map((task) => {
+        db.getAllTasks().then((data) => {
 
-            if (String(task.task).toLocaleLowerCase().includes(name.toLocaleLowerCase())) {
-
-                searchRes.push(task);
-            }
+            let searchRes = [];
+            data.map((task) => {
+    
+                if (String(task.task).toLocaleLowerCase().includes(name.toLocaleLowerCase())) {
+    
+                    searchRes.push(task);
+                }
+            })
+    
+            res.json(paging(searchRes, numberOfResults));
+            console.log("Server: task search results retrieved");
         })
-
-        res.json(paging(searchRes, numberOfResults));
-        console.log("Server: task search results retrieved");
-    })
-        .catch((err) => {
-
-            console.log("Server: message from DB - " + err);
-            res.status(500).json({ message: err, status: "error" }).end();
-        });
+            .catch((err) => {
+    
+                console.log("Server: message from DB - " + err);
+                res.status(500).json({ message: err, status: "error" }).end();
+            });
+    }
 });
 
 //UPDATE
@@ -335,7 +349,7 @@ app.put(emp_update, (req, res, next) => {
         if (!success) { return res.status(401).json({ message: "Please log in", status: "error" }); }
 
         const data = req.body;
-        const validResult = validation(data);
+        const validResult = validateEmployee(data);
 
         if (validResult.status === "error") {
 
@@ -375,7 +389,7 @@ app.put(task_update, (req, res, next) => {
         if (!success) { return res.status(401).json({ message: "Please log in", status: "error" }); }
 
         const data = req.body;
-        const validResult = validation(data);
+        const validResult = validateTask(data);
 
         if (validResult.status === "error") {
 
@@ -466,84 +480,122 @@ function noData(value) {
     return false;
 }
 
+/***************************************************************
+                       VALIDATION                         
+***************************************************************/
 
-//TODO: Break this function up, then add validation to search routes
-function validation(data) {
+function validateLogin(data) {
 
-    if (data.username) {
+    if (noData(data.username) && noData(data.password)) {
 
-        if (noData(data.username) && noData(data.password)) {
+        return { message: "Fields can not be left empty", status: "error" }
+    }
 
-            return { message: "Fields can not be left empty", status: "error" }
-        }
+    const unameValid = validator.validateUsername(data.username, 4, 64, "User Name", "");
+    const passValid = validator.validatePassword(data.password, 8, 64, "Password", "");
 
-        const unameValid = validator.validateUsername(data.username, 4, 64, "User Name", "");
-        const passValid = validator.validatePassword(data.password, 8, 64, "Password", "");
+    if (passValid.status === "success" && unameValid.status === "success") {
 
-        if (passValid.status === "success" && unameValid.status === "success") {
+        return { message: "", status: "success" };
+    }
+
+    const unameErr = unameValid.status === "error" ? " 'Username'" : "";
+    const passErr = passValid.status === "error" ? " 'Password'" : "";
+    const addAnd = (unameErr !== "" && passErr !== "") ? " and" : "";
+    const message = "Data not submitted: the" + unameErr + addAnd + passErr + " had errors";
+
+    return { message: message, status: "error" };
+}
+
+function validateSearch(isEmp, data) {
+
+    if (noData(data)) {
+
+        return { message: "Fields can not be left empty", status: "error" }
+    }
+
+    if (isEmp) {
+
+        const fieldValid = validator.validateText(data, 2, 128, "Employee Name", "");
+
+        if (fieldValid.status === "success") {
 
             return { message: "", status: "success" };
         }
+        else {
 
-        const unameErr = unameValid.status === "error" ? " 'Username'" : "";
-        const passErr = passValid.status === "error" ? " 'Password'" : "";
-        const addAnd = (unameErr !== "" && passErr !== "") ? " and" : "";
-        const message = "Data not submitted: the" + unameErr + addAnd + passErr + " had errors";
-
-        return { message: message, status: "error" };
+            return { message: "Data not submitted: the Employee Name entered had errors", status: "error" };
+        }
     }
     else {
 
-        if (data.task) {
+        const fieldValid = validator.validateTextAndNumbers(data, 2, 128, "Task Name", "");
 
-            if (noData(data.task)) {
+        if (fieldValid.status === "success") {
 
-                return { message: "Fields can not be left empty", status: "error" }
-            }
-
-            const taskNameValid = validator.validateTextAndNumbers(data.task, 2, 128, "Task Name", "");
-
-            if (taskNameValid.status === "success") {
-
-                return { message: "", status: "success" };
-            }
-
-            return { message: "Data not submitted: the task name entered had errors", status: "error" };
+            return { message: "", status: "success" };
         }
         else {
 
-            if (noData(data.first_name) && noData(data.last_name)
-                && noData(data.email) && noData(data.sex)) {
-
-                return { message: "Fields can not be left empty", status: "error" }
-            }
-
-            const fnameValid = validator.validateText(data.first_name, 2, 64, "First Name", "");
-            const lnameValid = validator.validateText(data.last_name, 2, 64, "Last Name", "");
-            const emailValid = validator.validateEmail(data.email, 8, 128, "Email", "");
-            const sexValid = {
-                message: (!data.sex) ? "A sex must be selected" : "",
-                status: (!data.sex) ? "error" : "success",
-                elementId: ""
-            }
-
-            if (fnameValid.status === "success" && lnameValid.status === "success" &&
-                emailValid.status === "success" && sexValid.status === "success") {
-
-                return { message: "", status: "success" };
-            }
-
-            const fnameErr = fnameValid.status === "error" ? " 'First Name'," : "";
-            const lnameErr = lnameValid.status === "error" ? " 'Last Name'," : "";
-            const emailErr = emailValid.status === "error" ? " 'Email'," : "";
-            const sexErr = sexValid.status === "error" ? " 'Sex'," : "";
-            const addAnd = (fnameErr !== "" || lnameErr !== "" || emailErr !== "") && sexErr !== "" ? " and" : "";
-            const message = "Data not submitted: the" + fnameErr + lnameErr + emailErr + addAnd + sexErr + " had errors";
-
-            return { message: message, status: "error" };
+            return { message: "Data not submitted: the Task Name entered had errors", status: "error" };
         }
     }
+
 }
+
+function validateTask(data) {
+
+    if (noData(data.task)) {
+
+        return { message: "Fields can not be left empty", status: "error" }
+    }
+
+    const taskNameValid = validator.validateTextAndNumbers(data.task, 2, 128, "Task Name", "");
+
+    if (taskNameValid.status === "success") {
+
+        return { message: "", status: "success" };
+    }
+
+    return { message: "Data not submitted: the Task Name entered had errors", status: "error" };
+}
+
+function validateEmployee(data) {
+
+    if (noData(data.first_name) && noData(data.last_name)
+        && noData(data.email) && noData(data.sex)) {
+
+        return { message: "Fields can not be left empty", status: "error" }
+    }
+
+    const fnameValid = validator.validateText(data.first_name, 2, 64, "First Name", "");
+    const lnameValid = validator.validateText(data.last_name, 2, 64, "Last Name", "");
+    const emailValid = validator.validateEmail(data.email, 8, 128, "Email", "");
+    const sexValid = {
+        message: (!data.sex) ? "A sex must be selected" : "",
+        status: (!data.sex) ? "error" : "success",
+        elementId: ""
+    }
+
+    if (fnameValid.status === "success" && lnameValid.status === "success" &&
+        emailValid.status === "success" && sexValid.status === "success") {
+
+        return { message: "", status: "success" };
+    }
+
+    const fnameErr = fnameValid.status === "error" ? " 'First Name'," : "";
+    const lnameErr = lnameValid.status === "error" ? " 'Last Name'," : "";
+    const emailErr = emailValid.status === "error" ? " 'Email'," : "";
+    const sexErr = sexValid.status === "error" ? " 'Sex'," : "";
+    const addAnd = (fnameErr !== "" || lnameErr !== "" || emailErr !== "") && sexErr !== "" ? " and" : "";
+    const message = "Data not submitted: the" + fnameErr + lnameErr + emailErr + addAnd + sexErr + " had errors";
+
+    return { message: message, status: "error" };
+}
+
+
+
+
 
 app.use((req, res) => {
     res.status(404).end();
