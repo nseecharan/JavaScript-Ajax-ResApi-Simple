@@ -4,15 +4,47 @@ import { advancedSearch, createEmployee, createTask, updateEmployee, updateTask 
 import { validateAdvSearch } from '../form-validation/validateAdvSearchForm.js';
 import { validateEmployeeForm } from '../form-validation/validateEmployeeForm.js';
 import { validateTaskForm } from '../form-validation/validateTaskForm.js';
-import { clearElement } from '../render/renderTools.js';
-import * as s from '../elementAttributes.js';//import styles or 's'
+import { clearElement, clearMessages, unhighlightField } from '../render/renderTools.js';
+import * as attr from '../elementAttributes.js';
 
-const taskInput = createInput("task-id", "", "text", "Task Name", 2, 128, "enter task name", "taskNameField", s.textInputTitle, true);
-const fnameInput = createInput("fname-id", "", "text", "First Name", 2, 64, "enter employee's first name", "firstNameField", s.textInputTitle, true);
-const lnameInput = createInput("lname-id", "", "text", "Last Name", 2, 64, "enter employee's last name", "lastNameField", s.textInputTitle, true);
-const emailInput = createInput("email-id", "", "text", "Email", 8, 128, "enter employee's email", "emailField", s.emailInputTitle);
-const imageInput = createInput("img-upload", "", "file", "");
-const imageUploadBtn = createButton("", s.buttonClass, "Upload Image", "button", "add an optional employee image", "imageUploadBtn");
+const taskName = "Task Name";
+const fname = "First Name";
+const lname = "Last Name";
+const email = "Email";
+const sex = "Sex";
+const empName = "Employee Name";
+const fClass_content = "form-content";
+const fClass_InfoArea = "form-info-div";
+const fClass_imageArea = "form-image-div";
+const fClass_imagePreview = "form-image-preview";
+const inputID_task = "task-id";
+const inputID_fname = "fname-id";
+const inputID_lname = "lname-id";
+const inputID_email = "email-id";
+const inputID_image = "img-upload";
+const inputID_sex = "sex-id";
+const btnID_delete = "delete-btn";
+const btnID_submit = "submit-btn";
+const msgID_task = "task-message";
+const msgID_fname = "fname-message";
+const msgID_empName = "empName-message";
+const msgID_lname = "lname-message";
+const msgID_email = "email-message";
+const msgID_sex = "sex-message";
+const aria_taskInput = "Enter the task name.";
+const aria_searchEmpInput = "Enter the employee name."
+const aria_fnameInput = "Enter the employee's first name.";
+const aria_lnameInput = "Enter the employee's last name.";
+const aria_emailInput = "Enter the employee's email.";
+const aria_imageUploadBtn = "add an optional employee image";
+const title_emailInput = "8 to 128 characters, and must begin with a letter, and may also contain numbers, as well as periods.";
+
+const taskInput = createInput(inputID_task, "", "text", taskName, 2, 128, aria_taskInput, "taskNameField", attr.title_textNumInput_2_128, true);
+const fnameInput = createInput(inputID_fname, "", "text", fname, 2, 64, aria_fnameInput, "firstNameField", attr.title_textInput_2_64, true);
+const lnameInput = createInput(inputID_lname, "", "text", lname, 2, 64, aria_lnameInput, "lastNameField", attr.title_textInput_2_64, true);
+const emailInput = createInput(inputID_email, "", "text", email, 8, 128, aria_emailInput, "emailField", title_emailInput);
+const imageInput = createInput(inputID_image, "", "file", "");
+const imageUploadBtn = createButton("", attr.buttonClass, "Upload Image", "button", aria_imageUploadBtn, "imageUploadBtn");
 
 const optionsArray = [
     { value: "", text: "No Selection" },
@@ -20,7 +52,7 @@ const optionsArray = [
     { value: "Female", text: "Female" },
 ]
 
-const sexSelect = createSelect("sex-id", "", optionsArray, "select employee's sex");
+const sexSelect = createSelect(inputID_sex, "", optionsArray, "select employee's sex");
 
 fnameInput.required = true;
 lnameInput.required = true;
@@ -28,60 +60,59 @@ emailInput.required = true;
 sexSelect.required = true;
 
 //Create fields that include the inputs above, with a label, and status message element.
-const taskField = createField("Task Name", taskInput, s.taskMsgID, s.noDisplayClass);
-const fnameField = createField("First Name", fnameInput, s.fnameMsgID, s.noDisplayClass);
-const lnameField = createField("Last Name", lnameInput, s.lnameMsgID, s.noDisplayClass);
-const emailField = createField("Email", emailInput, s.emailMsgID, s.noDisplayClass);
-const sexField = createField("Sex", sexSelect, s.sexMsgID, s.noDisplayClass);
+const taskField = createField(taskName, taskInput, msgID_task, attr.utlClass_noDisplay);
+const fnameField = createField(fname, fnameInput, msgID_fname, attr.utlClass_noDisplay);
+const lnameField = createField(lname, lnameInput, msgID_lname, attr.utlClass_noDisplay);
+const emailField = createField(email, emailInput, msgID_email, attr.utlClass_noDisplay);
+const sexField = createField(sex, sexSelect, msgID_sex, attr.utlClass_noDisplay);
 
 //Inputs used for the advanced search feature.
 //Seperate validation methods will be attached ot these.
-const searchTaskInput = createInput("adv-search-task-id", "", "text", "Task Name", 2, 128, "Enter a task name.", "Task name advanced search field.", s.textInputTitle, false);
-const searchNameInput = createInput("adv-search-fname-id", "", "text", "Employee Name", 2, 128, "Enter an employee name.", "Employee name advanced search field.", s.textInputTitle, false);
-const searchTaskField = createField("Task Name", searchTaskInput, s.taskMsgID, s.noDisplayClass);
-const searchNameField = createField("First Name", searchNameInput, s.fnameMsgID, s.noDisplayClass);
+const searchTaskInput = createInput(attr.fID_advSearchForm + "-task-id", "", "text", taskName, 2, 128, aria_taskInput, "searchTaskNameField", attr.title_textNumInput_2_128, false);
+const searchNameInput = createInput(attr.fID_advSearchForm + "-empName-id", "", "text", empName, 2, 128, aria_searchEmpInput, "searchEmpNameField", attr.title_textInput_2_128, false);
+const searchTaskField = createField(taskName, searchTaskInput, msgID_task, attr.utlClass_noDisplay);
+const searchNameField = createField(empName, searchNameInput, msgID_empName, attr.utlClass_noDisplay);
 
 
 ['keyup', 'blur', 'focus'].forEach((action) => {
 
     fnameInput.addEventListener(action, () => {
 
-        validateEmployeeForm(s.empFormID, 2);
+        validateEmployeeForm(attr.fID_empForm, 2);
     });
 
     lnameInput.addEventListener(action, () => {
 
-        validateEmployeeForm(s.empFormID, 3);
+        validateEmployeeForm(attr.fID_empForm, 3);
     });
 
     emailInput.addEventListener(action, () => {
 
-        validateEmployeeForm(s.empFormID, 4);
+        validateEmployeeForm(attr.fID_empForm, 4);
     });
 
     taskInput.addEventListener(action, () => {
 
-        validateTaskForm(s.taskFormID);
+        validateTaskForm(attr.fID_taskForm);
     })
     searchTaskInput.addEventListener(action, () => {
 
-        validateAdvSearch(false, "adv-search");
+        validateAdvSearch(false, attr.fID_advSearchForm);
     });
     searchNameInput.addEventListener(action, () => {
 
-        validateAdvSearch(true, "adv-search");
+        validateAdvSearch(true, attr.fID_advSearchForm);
     });
-
 })
 
 sexSelect.addEventListener('change', () => {
 
-    validateEmployeeForm(s.empFormID, 5);
+    validateEmployeeForm(attr.fID_empForm, 5);
 })
 
 imageUploadBtn.addEventListener("click", () => {
 
-    document.getElementById("img-upload").click();
+    document.getElementById(inputID_image).click();
 });
 
 
@@ -100,9 +131,9 @@ export const changeForm = (isEmpForm, isUpdate, titleID, titleChange, formID, bt
     if (title.textContent !== titleChange) {
 
         title.textContent = titleChange;
-        const newButton = createButton(s.submitBtnID, s.buttonClass, btnName, "submit");
+        const newButton = createButton(btnID_submit, attr.btnClass_sizing, btnName, "submit");
         const form = document.getElementById(formID);
-        const dangerZone = document.querySelector('.' + formID + s.dangerZoneClass);
+        const dangerZone = document.querySelector('.' + formID + attr.spClass_dangerZone);
 
         setSubmitType(isEmpForm, isUpdate, newButton, formID, updateDataID);
 
@@ -125,10 +156,10 @@ export const preloadFormData = (formID, data) => {
     const form = document.getElementById(formID);
     const inputs = form.getElementsByTagName('input');
     const image = form.getElementsByTagName('img')[0];
-    const deleteBtn = createButton(s.deleteBtnID, s.deleteBtnClass, "Delete", "button");
+    const deleteBtn = createButton(btnID_delete, attr.btnClass_delete, "Delete", "button");
 
     const dangerZone = document.createElement('div');
-    dangerZone.className = formID + s.dangerZoneClass;
+    dangerZone.className = formID + attr.spClass_dangerZone;
     const warning = document.createElement('span');
     warning.textContent = "Danger Zone";
 
@@ -165,7 +196,7 @@ export const preloadFormData = (formID, data) => {
 
     //append delete button if it does not exist
     //else relpace the button with a new one that has the updated function
-    if (form.lastChild.className !== formID + s.dangerZoneClass) {
+    if (form.lastChild.className !== formID + attr.spClass_dangerZone) {
 
         form.append(dangerZone);
     }
@@ -178,19 +209,31 @@ export const preloadFormData = (formID, data) => {
                     FORM CONFIGURATIONS                          
 ***************************************************************/
 
+//Clears the error highlight styling from all form inputs.
+const unhighlightFormFields = () => {
+
+    unhighlightField(taskInput);
+    unhighlightField(fnameInput);
+    unhighlightField(lnameInput);
+    unhighlightField(emailInput);
+    unhighlightField(sexSelect);
+    unhighlightField(searchTaskInput);
+    unhighlightField(searchNameInput);
+}
+
 //Data entry form configuration.
 export const createDataEntryForm = (isEmpForm, formTitle, formID, cancelBtnID, submintBtnName, elementIdentifier, isUpdate = false, updateDataID = "") => {
 
     renderFormStructure(formTitle, formID, cancelBtnID, elementIdentifier);
 
     const form = document.getElementById(formID);
-    const submitButton = createButton(s.submitBtnID, s.buttonClass, submintBtnName, "submit", submintBtnName + " button");
+    const submitButton = createButton(btnID_submit, attr.btnClass_sizing, submintBtnName, "submit", submintBtnName + " button.");
     setSubmitType(isEmpForm, isUpdate, submitButton, formID, updateDataID);
 
     if (isEmpForm) {
 
         const infoDiv = document.createElement('div');
-        infoDiv.className = s.formInfoAreaClass;
+        infoDiv.className = fClass_InfoArea;
         infoDiv.append(fnameField, lnameField, emailField, sexField, submitButton);
         const imageDiv = renderImageUpload();
         form.append(imageDiv, infoDiv);
@@ -200,6 +243,8 @@ export const createDataEntryForm = (isEmpForm, formTitle, formID, cancelBtnID, s
         form.append(taskField, submitButton);
     }
 
+    unhighlightFormFields();
+    clearMessages(form.getElementsByTagName('p'), 0);
     form.reset();
 }
 
@@ -209,7 +254,7 @@ export const createAdvancedSearchForm = (isEmpForm, formTitle, formID, cancelBtn
     renderFormStructure(formTitle, formID, cancelBtnID, elementIdentifier);
 
     const form = document.getElementById(formID);
-    const submitButton = createButton(s.submitBtnID, s.buttonClass, submintBtnName, "submit", submintBtnName + " button");
+    const submitButton = createButton(btnID_submit, attr.btnClass_sizing, submintBtnName, "submit", submintBtnName + " button.");
 
     submitButton.addEventListener('click', () => {
 
@@ -225,6 +270,8 @@ export const createAdvancedSearchForm = (isEmpForm, formTitle, formID, cancelBtn
         form.append(searchTaskField, submitButton);
     }
 
+    unhighlightFormFields();
+    clearMessages(form.getElementsByTagName('p'), form.getElementsByTagName('p').length);
     form.reset();
 }
 
@@ -239,22 +286,22 @@ const renderFormStructure = (formTitle, formID, cancelBtnID, elementIdentifier) 
     const container = document.createElement('div');
     const customHeader = document.createElement('div');
     const title = document.createElement('span');
-    const cancelButton = createButton(cancelBtnID, s.cancelBtnClass, "X", "button", "cancel button");
+    const cancelButton = createButton(cancelBtnID, attr.btnClass_cancel, "X", "button", "cancel button");
     const form = document.createElement('form');
 
     cancelButton.addEventListener('click', () => {
 
-        clearElement("#" + s.modal_containerID);
+        clearElement("#" + attr.modal_containerID);
     })
 
-    overlay.className = s.modal_overlayClass;
-    container.className = s.modal_containerClass;
-    customHeader.className = s.modal_headingClass;
+    overlay.className = attr.modal_overlayClass;
+    container.className = attr.modal_containerClass;
+    customHeader.className = attr.modal_headingClass;
     title.textContent = formTitle;
     title.id = formID + "-title";
     customHeader.append(title, cancelButton);
     form.id = formID;
-    form.className = s.formClass;
+    form.className = fClass_content;
     form.addEventListener("submit", (e) => {
         e.preventDefault();
     })
@@ -271,7 +318,7 @@ const renderImageUpload = () => {
     const previewArea = document.createElement('div');
     labelImage.textContent = "Image";
 
-    previewArea.className = s.imagePreviewClass;
+    previewArea.className = fClass_imagePreview;
     image.width = "200";
     image.src = "";
     image.ariaLabel = "current emloyee image";
@@ -286,7 +333,7 @@ const renderImageUpload = () => {
     previewArea.appendChild(image);
 
     const imageDiv = document.createElement('div');
-    imageDiv.className = s.imageAreaClass;
+    imageDiv.className = fClass_imageArea;
     imageDiv.append(labelImage, previewArea, imageInput, imageUploadBtn);
 
     return imageDiv;

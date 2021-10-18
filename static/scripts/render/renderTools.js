@@ -54,38 +54,39 @@ export const renderMessage = (message, elmID, hideClass, displayClass) => {
     }
 }
 
-//Clears error messages for a series of element IDs, after a delay.
-export const clearMessages = (elmIDs, delay) => {
+//Clears error messages for a series of elements.
+export const clearMessages = (elements) => {
 
-    setTimeout(() => {
+    for (let i = 0; i < elements.length; i++) {
 
-        elmIDs.map((id) => {
+        renderMessage("", elements[i].id, s.utlClass_noDisplay, s.gfxClass_message);
+    }
+}
 
-            renderMessage("", id, s.noDisplayClass, s.messageClass);
-        })
-    }, delay)
+//Will unhighlight the element passed.
+export const unhighlightField = (field) => {
+
+    field.style.borderColor = "transparent";
 }
 
 //Will highlight the element passed in the first argument, if 
 //the if the second argument equals < error >, and also display
 //a status message.
-export const highlightField = (element, validationMsg) => {
+export const highlightField = (field, validationMsg) => {
 
-    renderMessage("", validationMsg.elementId, s.noDisplayClass, s.messageClass);
-
-    element.style.borderColor = "transparent";
+    renderMessage("", validationMsg.elementId, s.utlClass_noDisplay, s.gfxClass_message);
+    unhighlightField(field, validationMsg.elementId);
 
     if (validationMsg.status === "error") {
 
-        renderMessage(validationMsg.message, validationMsg.elementId, s.noDisplayClass, s.messageClass);
+        renderMessage(validationMsg.message, validationMsg.elementId, s.utlClass_noDisplay, s.gfxClass_message);
 
-        if (element.value !== "") {
+        if (field.value !== "") {
 
-            element.style.border = "2px solid red";
-            element.style.outline = "none";
+            field.style.border = "2px solid red";
+            field.style.outline = "none";
         }
     }
-    else { }
 }
 
 //This function will attempt to load an image into memory for file upload.
@@ -153,7 +154,7 @@ export const loading = (parentID) => {
     const overlay = document.createElement('div');
     overlay.className = s.modal_overlayClass;
     const loadingGraphic = document.createElement('div');
-    loadingGraphic.className = s.loading;
+    loadingGraphic.className = s.gfxClass_loading;
     loadingGraphic.textContent = "Please wait while we retrieve the data...";
 
     overlay.appendChild(loadingGraphic);

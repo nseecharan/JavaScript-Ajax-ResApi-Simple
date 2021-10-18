@@ -2,7 +2,7 @@ import { renderData } from './render/renderData.js';
 import { openEmpForm, openTaskForm } from './menuEvents.js';
 import { classToggle, readImage, clearElement, renderMessage, scrollToElement, scrollEndAnimation, loading } from './render/renderTools.js';
 import { createButton } from './render/renderInputs.js';
-import * as s from './elementAttributes.js';
+import * as attr from './elementAttributes.js';
 import { pageNavigation } from './render/renderPageNavigation.js';
 
 const emp_route = "/api/employees";//optional name as param
@@ -19,6 +19,9 @@ const task_delete = task_route + "/delete";//id as param
 
 const dataRefreshDelay = 100;
 const scrollDelay = 500;
+
+const aria_newEmpBtn = "Button to open the create employee form.";
+const aria_newTaskBtn = "Button to opent the create task form.";
 
 const DataManager = () => {
 
@@ -114,7 +117,7 @@ const dm = DataManager();
 //Method that manages ajax request to server.
 const makeAjaxRequest = async (method, url, data) => {
 
-    loading(s.modal_containerID);
+    loading(attr.modal_containerID);
 
     return fetch(url, {
         method: method,
@@ -150,7 +153,7 @@ const parseJsonData = (json) => {
     if (json.data) {
 
         dm.setData(json.data);
-        renderMessage("", s.generalMsgID, s.noDisplayClass, s.confirmedClass);
+        renderMessage("", attr.msgID_general, attr.utlClass_noDisplay, attr.gfxClass_confirmed);
     }
     if (json.pages) {
 
@@ -158,8 +161,8 @@ const parseJsonData = (json) => {
         pageNavigation("page-buttons", dm.getLastPage());
     }
 
-    renderData(dm.getData(), s.renderDataClass, dm.getRenderStyle());
-    clearElement("#" + s.modal_containerID);
+    renderData(dm.getData(), attr.spClass_renderData, dm.getRenderStyle());
+    clearElement("#" + attr.modal_containerID);
 }
 
 /***************************************************************
@@ -175,7 +178,7 @@ const dataBtnManager = (data, parentID) => {
 
     if (data[0].first_name) {
 
-        const newButton = createButton("", s.buttonClass, "New Employee", "button", s.empCreateBtnAria, "", "")
+        const newButton = createButton("", attr.btnClass_sizing, "New Employee", "button", aria_newEmpBtn, "", "")
         newButton.addEventListener('click', () => {
 
             openEmpForm();
@@ -184,7 +187,7 @@ const dataBtnManager = (data, parentID) => {
     }
     else {
 
-        const newButton = createButton("", s.buttonClass, "New Task", "button", s.taskCreateBtnAria, "", "")
+        const newButton = createButton("", attr.btnClass_sizing, "New Task", "button", aria_newTaskBtn, "", "")
         newButton.addEventListener('click', () => {
 
             openTaskForm();
@@ -222,7 +225,7 @@ export const searchData = (e) => {
             }
         });
 
-        renderData(dm.getSearchResults(), s.renderDataClass, dm.getRenderStyle());
+        renderData(dm.getSearchResults(), attr.spClass_renderData, dm.getRenderStyle());
     }
 }
 
@@ -255,7 +258,7 @@ export const toggleDataStyle = async () => {
     if (dm.getData().length > 0) {
 
         dm.toggleRenderStyle();
-        classToggle(s.renderDataClass, false, "dim-window", "dos-screen");
+        classToggle(attr.spClass_renderData, false, attr.gfxClass_dimWindow, attr.gfxClass_dosScreen);
         getPage(dm.getCurrentPage());
     }
 }
@@ -270,7 +273,7 @@ const refreshEmpData = (delay, close = false) => {
 
             if (close) {
 
-                clearElement("#" + s.modal_containerID);
+                clearElement("#" + attr.modal_containerID);
             }
 
             setTimeout(() => {
@@ -292,7 +295,7 @@ const refreshTaskData = (delay, close = false) => {
 
             if (close) {
 
-                clearElement("#" + s.modal_containerID);
+                clearElement("#" + attr.modal_containerID);
             }
 
             setTimeout(() => {
@@ -310,15 +313,15 @@ const statusMessage = (messageElementID) => {
 
     if (message) {
 
-        renderMessage(message, messageElementID, s.noDisplayClass, s.messageClass);
+        renderMessage(message, messageElementID, attr.utlClass_noDisplay, attr.gfxClass_message);
     }
 }
 
 const scrollList = async () => {
 
-    await scrollToElement(s.tableBodyID, scrollDelay);
-    const lastElm = document.getElementById(s.tableBodyID).lastChild;
-    scrollEndAnimation(lastElm, s.renderDataClass, s.flash, s.trClass);
+    await scrollToElement(attr.tID_body, scrollDelay);
+    const lastElm = document.getElementById(attr.tID_body).lastChild;
+    scrollEndAnimation(lastElm, attr.spClass_renderData, attr.animClass_flash, attr.tClass_trStyle);
 }
 
 /***************************************************************
@@ -333,7 +336,7 @@ export const getPage = async (page) => {
         dm.setCurrentPage(page);
         const makeReq = await makeAjaxRequest("GET", "/api/loaded-data/page/" + page + "");
         parseJsonData(makeReq);
-        statusMessage(s.generalMsgID);
+        statusMessage(attr.msgID_general);
     }
 
     return dm.getCurrentPage();
@@ -365,7 +368,7 @@ export const advancedSearch = async (type, formID) => {
         parseJsonData(makeReq);
     }
 
-    statusMessage(s.generalMsgID);
+    statusMessage(attr.msgID_general);
 }
 
 //LOGIN
@@ -387,21 +390,21 @@ export const login = async () => {
     if (dm.getToken()) {
 
         form.reset();
-        clearElement("#" + s.loginAreaID)
-        classToggle(s.createBtnOptionsID, true);
-        renderMessage(dm.getResponse().message, s.loginMsgID, s.noDisplayClass, s.confirmedClass);
+        clearElement("#" + attr.spID_loginArea)
+        classToggle(attr.spID_createBtnOptions, true);
+        renderMessage(dm.getResponse().message, attr.msgID_login, attr.utlClass_noDisplay, attr.gfxClass_confirmed);
 
         dm.setResponse({ message: "", status: "success" });
-        renderMessage("", s.generalMsgID, s.noDisplayClass, s.confirmedClass);
+        renderMessage("", attr.msgID_general, attr.utlClass_noDisplay, attr.gfxClass_confirmed);
 
         if (dm.getData().length) {
 
-            dataBtnManager(dm.getData(), s.createBtnOptionsID);
+            dataBtnManager(dm.getData(), attr.spID_createBtnOptions);
         }
     }
     else {
 
-        statusMessage(s.loginMsgID);
+        statusMessage(attr.msgID_login);
     }
 }
 
@@ -432,7 +435,7 @@ export const createEmployee = async (formId) => {
 
     const makeReq = await makeAjaxRequest("POST", emp_register, formdata);
     parseJsonData(makeReq);
-    statusMessage(s.generalMsgID);
+    statusMessage(attr.msgID_general);
 
     if (dm.getResponse().status !== "error") {
 
@@ -458,7 +461,7 @@ export const createTask = async (formId) => {
 
     const makeReq = await makeAjaxRequest("POST", task_add, formdata);
     parseJsonData(makeReq);
-    statusMessage(s.generalMsgID);
+    statusMessage(attr.msgID_general);
 
     if (dm.getResponse().status !== "error") {
 
@@ -482,13 +485,13 @@ export const getAllEmployees = async () => {
     dm.setCurrentPage(0);
     const makeReq = await makeAjaxRequest("GET", emp_route);
     parseJsonData(makeReq);
-    statusMessage(s.generalMsgID);
-    classToggle(s.searchID, true);
-    classToggle("toggle-style-btn", true, "btn-sizing float-right");
+    statusMessage(attr.msgID_general);
+    classToggle(attr.spID_search, true);
+    classToggle(attr.btnID_toggle, true, attr.btnClass_toggle);
 
     if (dm.getToken()) {
 
-        dataBtnManager(dm.getData(), s.createBtnOptionsID);
+        dataBtnManager(dm.getData(), attr.spID_createBtnOptions);
     }
 }
 
@@ -497,13 +500,13 @@ export const getAllTasks = async () => {
     dm.setCurrentPage(0);
     const makeReq = await makeAjaxRequest("GET", task_route);
     parseJsonData(makeReq);
-    statusMessage(s.generalMsgID);
-    classToggle(s.searchID, true);
-    classToggle("toggle-style-btn", true, "btn-sizing float-right");
+    statusMessage(attr.msgID_general);
+    classToggle(attr.spID_search, true);
+    classToggle(attr.btnID_toggle, true, attr.btnClass_toggle);
 
     if (dm.getToken()) {
 
-        dataBtnManager(dm.getData(), s.createBtnOptionsID);
+        dataBtnManager(dm.getData(), attr.spID_createBtnOptions);
     }
 }
 
@@ -537,7 +540,7 @@ export const updateEmployee = async (id, formId) => {
 
     const makeReq = await makeAjaxRequest("PUT", emp_update + "?empID=" + id + "", formdata);
     parseJsonData(makeReq);
-    statusMessage(s.generalMsgID);
+    statusMessage(attr.msgID_general);
 
     if (dm.getResponse().status !== "error") {
 
@@ -557,7 +560,7 @@ export const updateTask = async (id, formId) => {
     const makeReq = await makeAjaxRequest("PUT", task_update + "?taskID=" + id + "", formdata);
 
     parseJsonData(makeReq);
-    statusMessage(s.generalMsgID);
+    statusMessage(attr.msgID_general);
 
     if (dm.getResponse().status !== "error") {
 
@@ -577,7 +580,7 @@ export const deleteEmployee = async (id) => {
 
     const makeReq = await makeAjaxRequest("DELETE", emp_delete + "?empID=" + id + "");
     parseJsonData(makeReq);
-    statusMessage(s.generalMsgID);
+    statusMessage(attr.msgID_general);
     await refreshEmpData(dataRefreshDelay, true);
 }
 
@@ -586,6 +589,6 @@ export const deleteTask = async (id) => {
 
     const makeReq = await makeAjaxRequest("DELETE", task_delete + "?taskID=" + id + "");
     parseJsonData(makeReq);
-    statusMessage(s.generalMsgID);
+    statusMessage(attr.msgID_general);
     await refreshTaskData(dataRefreshDelay, true);
 }

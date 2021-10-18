@@ -1,27 +1,34 @@
 import { preloadFormData, createDataEntryForm, createAdvancedSearchForm, changeForm } from './render/renderForm.js';
 import { deleteEmployee, deleteTask } from './routes.js';
-import * as s from './elementAttributes.js';
+import * as attr from './elementAttributes.js';
+
+const btnID_cancel = "cancel-btn";
+const advSearchTitle = "Advanced Search";
+const taskCreateTitle = "Create Task";
+const taskViewTitle = "View Task";
+const empCreateTitle = "Create Employee";
+const empViewTitle = "View Employee";
 
 //MENU CONTROL EVENTS
 //******************************************/
 
 export const advancedSearchForm = (dataSetType) => {
 
-    createAdvancedSearchForm(dataSetType, "Advanced Search", "adv-search", "cancel-btn", "Search", s.modal_containerID);
+    createAdvancedSearchForm(dataSetType, advSearchTitle, attr.fID_advSearchForm, btnID_cancel, "Search", attr.modal_containerID);
 }
 
 //This funciton will open the creat task form.
 export const openTaskForm = () => {
 
-    const taskForm = document.getElementById(s.taskFormID);
+    const taskForm = document.getElementById(attr.fID_taskForm);
 
     if (!taskForm) {
 
-        createDataEntryForm(false, "Create Task", s.taskFormID, "cancel-btn", "Create", s.modal_containerID);
+        createDataEntryForm(false, taskCreateTitle, attr.fID_taskForm, btnID_cancel, "Create", attr.modal_containerID);
     }
     else {
 
-        changeForm(false, false, s.taskFormTitleID, "Create Task", s.taskFormID, "Create");
+        changeForm(false, false, attr.fID_taskTitle, taskCreateTitle, attr.fID_taskForm, "Create");
         taskForm.reset();
     }
 }
@@ -29,18 +36,18 @@ export const openTaskForm = () => {
 //This funciton will open the update task form.
 export const openTaskUpdateForm = (data) => {
 
-    const taskForm = document.getElementById(s.taskFormID);
+    const taskForm = document.getElementById(attr.fID_taskForm);
 
     if (!taskForm) {
 
-        createDataEntryForm(false, "View Task", s.taskFormID, "cancel-btn", "Update", s.modal_containerID, true, data._id);
+        createDataEntryForm(false, taskViewTitle, attr.fID_taskForm, btnID_cancel, "Update", attr.modal_containerID, true, data._id);
     }
     else {
 
-        changeForm(false, true, s.taskFormTitleID, "View Task", s.taskFormID, "Update", data._id);
+        changeForm(false, true, attr.fID_taskTitle, taskViewTitle, attr.fID_taskForm, "Update", data._id);
     }
 
-    preloadFormData(s.taskFormID, data);
+    preloadFormData(attr.fID_taskForm, data);
 }
 
 //This funciton will prompt for confirmation on deleting a task from the database.
@@ -57,15 +64,15 @@ export const confirmDeleteTask = (data) => {
 //This function will open the create employee form.
 export const openEmpForm = () => {
 
-    const empForm = document.getElementById(s.empFormID);
+    const empForm = document.getElementById(attr.fID_empForm);
 
     if (!empForm) {
 
-        createDataEntryForm(true, "Create Employee", s.empFormID, "cancel-btn", "Create", s.modal_containerID);
+        createDataEntryForm(true, empCreateTitle, attr.fID_empForm, btnID_cancel, "Create", attr.modal_containerID);
     }
     else {
 
-        changeForm(true, false, s.empFormTitleID, "Create Employee", s.empFormID, "Create");
+        changeForm(true, false, attr.fID_empTitle, empCreateTitle, attr.fID_empForm, "Create");
         empForm.reset();
         empForm.getElementsByTagName('img')[0].src = "";
     }
@@ -74,18 +81,18 @@ export const openEmpForm = () => {
 //This will open the update employee form.
 export const openEmpUpdateForm = (data) => {
 
-    const empForm = document.getElementById(s.empFormID);
+    const empForm = document.getElementById(attr.fID_empForm);
 
     if (!empForm) {
 
-        createDataEntryForm(true, "View Employee", s.empFormID, "cancel-btn", "Update", s.modal_containerID, true, data._id);
+        createDataEntryForm(true, empViewTitle, attr.fID_empForm, btnID_cancel, "Update", attr.modal_containerID, true, data._id);
     }
     else {
 
-        changeForm(true, true, s.empFormTitleID, "View Employee", s.empFormID, "Update", data._id);
+        changeForm(true, true, attr.fID_empTitle, empViewTitle, attr.fID_empForm, "Update", data._id);
     }
 
-    preloadFormData(s.empFormID, data);
+    preloadFormData(attr.fID_empForm, data);
 }
 
 //This funciton will prompt for confirmation on deleting a employee from the database.

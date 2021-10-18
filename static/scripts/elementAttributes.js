@@ -1,185 +1,66 @@
-//Experimenting with the idea of having a centralized list of element classes and ids that are referenced throughout the code
+//This file contains many shared strings referenced throughout the code.
 
+//ANIMATION CLASSES
+export const animClass_flash = "flash-indication";
 
-//*********MEMO: add the createInput ids, and aria labels from renderForms*************
+//SPECIAL CLASSES
+//Notable classes and IDs that are important to the function of the layout.
+export const spID_loginArea = "login-area";
+export const spID_createBtnOptions = "create-options";
+export const spID_search = "search";
+export const spClass_dangerZone = "-danger-zone";//this class is used in conbination with the element ID that is passed by the functions
+export const spClass_renderData = "mock-data";
 
-
-export const ariaLabels = {
-
-    aria_empUpdateBtn: "Submit button for the employee update form.",
-    aria_taskUpdateBtn: "Submit button for the task update form.",
-    aria_empCreateBtn: "Create new employee, button.",
-    aria_taskCreateBtn: "Create new task, button."
-}
-
-export const titles = {
-
-    title_textInput: "2 to 64 characters, must begin with a letter, and may also contain single quotes, as well as spaces.",
-    title_emailInput: "8 to 128 characters, and must begin with a letter, and may also contain numbers, as well as periods."
-}
-
-export const modals = {
-
-    modalClass_overlay: "modal-overlay",
-    modalClass_container: "modal-container",
-    modalClass_heading: "modal-heading"
-};
-
-export const forms = {
-
-    formID_taskModal: "task-form",
-    formID_taskModalTitle: "task-form-title",
-    formID_empModal: "emp-form",
-    formID_empModalTitle: "emp-form-title",
-    formClass_heading: "form-heading",
-    formClass_content: "form-content",
-    formClass_infoArea: "form-info-div",
-    formClass_imagePreview: "form-image-preview",
-    formClass_imageContainer: "form-image-div"
-}
-
-export const generalID = {
-
-    ID_overlayContainer: "overlay-display",
-    ID_taskCancelBtn: "task-cancel-btn",
-    ID_empCancelBtn: "emp-cancel-btn",
-    ID_taskUpdateBtn: "emp-update-btn",
-    ID_empUpdateBtn: "task-update-btn",
-    ID_deleteBtn: "delete-btn",
-    ID_submitBtn: "submit-btn",
-    //taskFormParentID: "submit-task",//no longer used
-    //empFormParentID: "submit-emp",//no longer used
-    ID_generalMsg: "general-msg",
-    ID_loginMsg: "login-msg",
-    ID_taskMsg: "task-message",
-    ID_fnameMsg: "fname-message",
-    ID_lnameMsg: "lname-message",
-    ID_emailMsg: "email-message",
-    ID_sexMsg: "sex-message",
-    ID_taskInput: "task-id",
-    ID_fnameInput: "fname-id",
-    ID_lnameInput: "lname-id",
-    ID_emailInput: "email-id",
-    ID_imageInput: "img-upload"
-}
-
-
-//rename the properties
-
-export const tables = {
-
-    tableID: "render-table",
-    tableHeaderID: "tableHdr",
-    tableBodyID: "tableBody",
-    tableHeaderClass: "thead-style",
-    tableClass: "table-styling",
-    thClass: "th-style",
-    thActionClass: "th-action",
-    trClass: "tr-style",
-    tdClass: "td-style",
-    tdActionClass: "td-action"
-}
-
-export const buttons = {
-
-    buttonClass: "btn-sizing",
-    deleteBtnClass: "btn-sizing btn-red",
-    cancelBtnClass: "btn-red float-right"
-}
-
-export const styledID = {
-
-    createBtnOptionsID: "create-options",
-    searchID: "search",
-    renderDataClass: "mock-data",
-    dangerZoneClass: "-danger-zone",//this class is used in conbination with the element ID that is passed by the functions
-    formContainerClass: "option-border options"//class for the div container that the form resids in
-}
-
-export const graphical = {
-
-    noDisplayClass: "no-display",
-    messageClass: "message-background",
-    confirmedClass: "confirmed-background",
-    dataDisplayBGClass: "data-display-background",
-    flash: "flash-indication",
-    loading: "loading"
-}
-
-
-//will gradually be replaced by the objects defined above
-
-export const loginAreaID = "login-area";
-export const createBtnOptionsID = "create-options";
-export const searchID = "search";
-export const renderDataClass = "mock-data";
-
-export const noDisplayClass = "no-display";
-export const messageClass = "message-background";
-export const confirmedClass = "confirmed-background";
-export const dataDisplayBGClass = "data-display-background";
-export const loading = "loading";
-
-//element Titles
-export const textInputTitle = "2 to 64 characters, must begin with a letter, and may also contain single quotes, as well as spaces.";
-export const emailInputTitle = "8 to 128 characters, and must begin with a letter, and may also contain numbers, as well as periods.";
-//export const searchTitle;
-//element Aria
-export const empUpdateBtnAria = "Submit button for the employee update form.";
-export const taskUpdateBtnAria = "Submit button for the task update form.";
-export const empCreateBtnAria = "Sreate new employee, button.";
-export const taskCreateBtnAria = "Sreate new task, button.";
-//export const searchAria;
-//element Names
-
-export const modal_containerID = "overlay-display";//change to general id category
+//MODAL FORM ELEMENTS STYLES
+export const modal_containerID = "overlay-display";
 export const modal_overlayClass = "modal-overlay";
 export const modal_containerClass = "modal-container";
 export const modal_headingClass = "modal-heading";
 
-export const buttonClass = "btn-sizing";
-export const deleteBtnClass = buttonClass + " btn-red";
-export const cancelBtnClass = "btn-red float-right";
-export const dangerZoneClass = "-danger-zone";//this class is used in conbination with the element ID that is passed by the functions
-export const formContainerClass = "option-border options";//class for the div container that the form resids in
+//TABLE STYLES
+export const tID_body = "tableBody";
+export const tClass_trStyle = "tr-style";
 
-//forms
-export const taskFormID = "task-form";
-export const taskFormTitleID = "task-form-title";
-export const empFormID = "emp-form";
-export const empFormTitleID = "emp-form-title";
-export const formHeadingClass = "form-heading";
-export const formClass = "form-content";
-export const formInfoAreaClass = "form-info-div";
-export const imageAreaClass = "form-image-div";
-export const imagePreviewClass = "form-image-preview";
+//FORM IDS
+export const fID_taskForm = "task-form";
+export const fID_taskTitle = "task-form-title";
+export const fID_empForm = "emp-form";
+export const fID_empTitle = "emp-form-title";
+export const fID_advSearchForm = "adv-search";
 
-export const tableID = "render-table";
-export const tableClass = "table-styling";
-export const tableHeaderID = "tableHdr";
-export const tableHeaderClass = "thead-style";
-export const tableBodyID = "tableBody";
-export const thClass = "th-style";
-export const thActionClass = "th-action";
-export const trClass = "tr-style";
-export const tdClass = "td-style";
-export const tdActionClass = "td-action";
+//STATUS MESSAGE IDS
+//Elements with these IDs will be used throughout the code base to display context messages.
+export const msgID_general = "general-msg";
+export const msgID_login = "login-msg";
 
-export const flash = "flash-indication";
+//UTILITY CLASSES
+//Classes that use css rules to help with basic layout concerns.
+export const utlClass_noDisplay = "no-display";
 
-//general ids
-export const taskCancelBtnID = "task-cancel-btn";
-export const empCancelBtnID = "emp-cancel-btn";
-export const empUpdateBtnID = "emp-update-btn";
-export const taskUpdateBtnID = "task-update-btn";
-export const deleteBtnID = "delete-btn";
-export const submitBtnID = "submit-btn";
-export const taskFormParentID = "submit-task";
-export const empFormParentID = "submit-emp";
-export const generalMsgID = "general-msg";
-export const loginMsgID = "login-msg";
-export const taskMsgID = "task-message";
-export const fnameMsgID = "fname-message";
-export const lnameMsgID = "lname-message";
-export const emailMsgID = "email-message";
-export const sexMsgID = "sex-message";
+//GRAPHICAL CLASSES
+//Reusable classes that have css rules which focus more on being eye catching, instead of helping with the layout structure.
+export const gfxClass_loading = "loading";
+export const gfxClass_dimWindow = "dim-window";
+export const gfxClass_dosScreen = "dos-screen";
+export const gfxClass_faintGlass = "faint-glass";
+export const gfxClass_message = "message-background";
+export const gfxClass_confirmed = "confirmed-background";
+export const gfxClass_dataDisplay = "data-display-background";
+
+//ELEMENT TITLES
+export const title_textInput_2_64 = "2 to 64 characters, must begin with a letter, and may also contain single quotes, as well as spaces.";
+export const title_textInput_2_128 = "2 to 128 characters, must begin with a letter, and may also contain single quotes, as well as spaces.";
+export const title_textNumInput_2_128 = "2 to 128 characters, must begin with a letter or number, and may also contain single quotes, as well as spaces";
+
+//BUTTON STYLE CLASSES
+export const btnClass_sizing = "btn-sizing";
+export const btnClass_delete = btnClass_sizing + " btn-red";
+export const btnClass_cancel = "btn-red float-right";
+export const btnClass_toggle = btnClass_sizing + " float-right";
+
+//BUTTON IDS
+export const btnID_taskCancel = "task-cancel-btn";
+export const btnID_empCancel = "emp-cancel-btn";
+export const btnID_empUpdate = "emp-update-btn";
+export const btnID_taskUpdate = "task-update-btn";
+export const btnID_toggle = "toggle-style-btn";
