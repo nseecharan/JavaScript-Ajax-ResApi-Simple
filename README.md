@@ -1,3 +1,6 @@
+
+****10.18.2021 - Many of the features I planned to implement have been finished. The remaining are just quality of life features. That in mind, I will be taking a break to focus on personal learning, and my own wellness. Work may resume next month, or early next year. -Nigel
+
 # JavaScript Ajax RestApi
 This is a simple RestApi that runs on a Express server. The Front-End componet is a work in progress, and used strictly for testing the api in a more interactive way.
 If you wish to see my Front-End design skills, please look at these examples:
