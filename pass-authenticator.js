@@ -7,8 +7,6 @@ jwtOptions.secretOrKey = process.env.SESSION_SECRET;
 
 var strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
 
-    console.log("payloat received", jwt_payload)
-
     if (jwt_payload) {
 
         next(null, {
