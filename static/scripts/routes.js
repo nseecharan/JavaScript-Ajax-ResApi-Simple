@@ -51,6 +51,18 @@ const makeAjaxRequest = async (method, url, data) => {
         });
 }
 
+/***************************************************************
+                        MAIN FUNCTIONS                          
+***************************************************************/
+
+//This method will call the functions to update the data in memory, 
+//with the new data retireved from the API.
+const displayApiResponse = (makeReq) => {
+
+    parseJsonData(makeReq);
+    statusMessage(attr.msgID_general);
+}
+
 //Extracts relevant information from the json data, and then renderes it.
 //What gets rendered depends on what is contained in the json data.
 //In some cases it can be a status message, or an array of data to be rendered
@@ -80,10 +92,6 @@ const parseJsonData = (json) => {
     renderData(dm.getData(), attr.spClass_renderData, dm.getRenderStyle());
     clearElement("#" + attr.modal_containerID);
 }
-
-/***************************************************************
-                        MAIN FUNCTIONS                          
-***************************************************************/
 
 //This funciton will load the appropriate create button for the related data set,
 //and append it to the parent elemet with the ID specified in the second argument.
@@ -148,7 +156,7 @@ export const searchData = (e) => {
 //Will increament the page index, and then get the data at that index.
 export const nextPage = () => {
 
-    if (dm.getCurrentPage() < dm.getLastPage()) {
+    if (dm.getCurrentPage() < dm.getLastPage() - 1) {
 
         dm.incrementPage();
         getPage(dm.getCurrentPage());
@@ -160,7 +168,7 @@ export const nextPage = () => {
 //Will decrement the page index, and then get the data at that index.
 export const prevPage = () => {
 
-    if (dm.getCurrentPage() > 0) {
+    if ((dm.getCurrentPage() - 1) > -1) {
 
         dm.decrementPage();
         getPage(dm.getCurrentPage());
@@ -198,6 +206,7 @@ const scrollList = async () => {
 
 const dataIsEmp = () => {
 
+    if(dm.getData())
     if (dm.getData()[0].first_name) {
 
         return true;
@@ -218,11 +227,8 @@ export const getPage = async (page) => {
     if (page <= dm.getLastPage() && page > -1) {
 
         const pageRoute = dataIsEmp() ? emp_paging : task_paging;
-
-        dm.setCurrentPage(page);
         const makeReq = await makeAjaxRequest("GET", pageRoute + page + "");
-        parseJsonData(makeReq);
-        statusMessage(attr.msgID_general);
+        displayApiResponse(makeReq);
     }
 
     return dm.getCurrentPage();
@@ -259,50 +265,36 @@ export const advancedSearch = async (type, formID) => {
 
 const refreshEmpData = async (mostCurrentPage = false) => {
 
-    const pages = await makeAjaxRequest("GET", emp_route + "/getPaging");
 
-    setTimeout(() => {
+    if (mostCurrentPage) {
 
-        dm.setLastPage(pages - 1);
-        getPage(dm.getLastPage());
-        scrollList();
+        getPage(dm.getCurrentPage());
+    }
+    else {
+        setTimeout(() => {
 
-    }, dataRefreshDelay * 5)
+            getPage(dm.getLastPage());
+            scrollList();
+
+        }, dataRefreshDelay * 5)
+    }
 }
 
 const refreshTaskData = async (mostCurrentPage = false) => {
 
-    const pages = await makeAjaxRequest("GET", task_route + "/getPaging");
 
+    if (mostCurrentPage) {
 
-    dm.setLastPage(pages - 1);
-
-    console.log(dm.getCurrentPage(), dm.getLastPage(), (pages - 1))
-
-    if (mostCurrentPage === true) {
-
-        if (dm.getCurrentPage() > (pages - 1)) {
-
-            dm.setCurrentPage(pages - 1);
-            getPage(dm.getCurrentPage());
-        }
-        else {
-
-            getPage(dm.getCurrentPage());
-        }
+        getPage(dm.getCurrentPage());
     }
-    //  else{
+    else {
+        setTimeout(() => {
 
-    //      getPage(dm.getLastPage());
-    //      scrollList();
-    //  }
+            getPage(dm.getLastPage());
+            scrollList();
 
-    setTimeout(() => {
-
-        getPage(dm.getLastPage() - 1);
-        scrollList();
-
-    }, dataRefreshDelay * 2)
+        }, dataRefreshDelay * 2)
+    }
 }
 
 //LOGIN
@@ -368,8 +360,7 @@ export const createEmployee = async (formId) => {
     }
 
     const makeReq = await makeAjaxRequest("POST", emp_register, formdata);
-    parseJsonData(makeReq);
-    statusMessage(attr.msgID_general);
+    displayApiResponse(makeReq);
 
     if (dm.getResponse().status !== "error") {
 
@@ -387,8 +378,7 @@ export const createTask = async (formId) => {
     }
 
     const makeReq = await makeAjaxRequest("POST", task_add, formdata);
-    parseJsonData(makeReq);
-    statusMessage(attr.msgID_general);
+    displayApiResponse(makeReq);
 
     if (dm.getResponse().status !== "error") {
 
@@ -404,8 +394,7 @@ export const getAllEmployees = async () => {
 
     dm.setCurrentPage(0);
     const makeReq = await makeAjaxRequest("GET", emp_paging + dm.getCurrentPage());
-    parseJsonData(makeReq);
-    statusMessage(attr.msgID_general);
+    displayApiResponse(makeReq);
     classToggle(attr.spID_search, true);
     classToggle(attr.btnID_toggle, true, attr.btnClass_toggle);
 
@@ -419,8 +408,7 @@ export const getAllTasks = async () => {
 
     dm.setCurrentPage(0);
     const makeReq = await makeAjaxRequest("GET", task_paging + dm.getCurrentPage());
-    parseJsonData(makeReq);
-    statusMessage(attr.msgID_general);
+    displayApiResponse(makeReq);
     classToggle(attr.spID_search, true);
     classToggle(attr.btnID_toggle, true, attr.btnClass_toggle);
 
@@ -459,12 +447,11 @@ export const updateEmployee = async (id, formId) => {
     }
 
     const makeReq = await makeAjaxRequest("PUT", emp_update + "?empID=" + id + "", formdata);
-    parseJsonData(makeReq);
-    statusMessage(attr.msgID_general);
+    displayApiResponse(makeReq);
 
     if (dm.getResponse().status !== "error") {
 
-        await refreshEmpData();
+        await refreshEmpData(true);
     }
 }
 
@@ -478,13 +465,11 @@ export const updateTask = async (id, formId) => {
     }
 
     const makeReq = await makeAjaxRequest("PUT", task_update + "?taskID=" + id + "", formdata);
-
-    parseJsonData(makeReq);
-    statusMessage(attr.msgID_general);
+    displayApiResponse(makeReq);
 
     if (dm.getResponse().status !== "error") {
 
-        await refreshTaskData();
+        await refreshTaskData(true);
     }
 }
 
@@ -499,16 +484,14 @@ export const updateTask = async (id, formId) => {
 export const deleteEmployee = async (id) => {
 
     const makeReq = await makeAjaxRequest("DELETE", emp_delete + "?empID=" + id + "");
-    parseJsonData(makeReq);
-    statusMessage(attr.msgID_general);
-    await refreshEmpData();
+    displayApiResponse(makeReq);
+    await refreshEmpData(true);
 }
 
 //Permanently delete a task.
 export const deleteTask = async (id) => {
 
     const makeReq = await makeAjaxRequest("DELETE", task_delete + "?taskID=" + id + "");
-    parseJsonData(makeReq);
-    statusMessage(attr.msgID_general);
-    await refreshTaskData();
+    displayApiResponse(makeReq);
+    await refreshTaskData(true);
 }

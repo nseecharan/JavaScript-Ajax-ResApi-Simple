@@ -59,7 +59,7 @@ function onHttpStart() {
 
 async function loadTotals(collectionName) {
 
-    collectionData.numOfDocuments = await db.countDocuments(collectionName).then((total) => {
+    await db.countDocuments(collectionName).then((total) => {
 
         collectionData.numOfDocuments = total;
         collectionData.pages = numOfPages(total, numberOfResults);
@@ -73,7 +73,7 @@ function numOfPages(total, numPerPage) {
 
     return pages;
 }
-
+//Manages the current page value to make sure it is within the paging boundries.
 function updateCurrentPage(paramPage) {
 
     if (paramPage > -1) {
@@ -147,24 +147,6 @@ app.get("/", (req, res) => {
 
     return 0;
 });
-
-//Paging
-
-app.get(emp_route + "/getPaging", (req, res) => {
-
-    loadTotals("employee_data");
-    res.json(collectionData.pages);
-
-    return 0;
-})
-
-app.get(task_route + "/getPaging", (req, res) => {
-
-    loadTotals("task_data");
-    res.json(collectionData.pages);
-
-    return 0;
-})
 
 //CREATE
 /**************************************************************/
@@ -269,7 +251,7 @@ app.get(task_paging + ":page", async (req, res, next) => {
     db.getSetOfTasks(collectionData.currentPage * numberOfResults, numberOfResults).then((data) => {
 
         collectionData.data = data;
-        res.json(collectionData)
+        res.json(collectionData);
         console.log("Server: tasks, page " + (collectionData.currentPage + 1) + " of " + collectionData.pages + " retrieved");
     })
         .catch((err) => {
@@ -280,7 +262,17 @@ app.get(task_paging + ":page", async (req, res, next) => {
 });
 
 //Find by name
+
+//TODO: Add paging to advanced search results.
+//This may require the creation of a collection that will be populated with search result
+//temporarily, and clearned out when a new search is done.
+//Or consider just loading all the results, and dividing them up
+//so that it can be integrated seemlessly in to the current setup.
+//Right now there will only be 1 page for results.
+
 app.get(emp_find + "/name/:name", (req, res, next) => {
+
+    updateCurrentPage(0);
 
     const name = req.params.name;
     const validResult = validateSearch(true, name);
@@ -303,7 +295,18 @@ app.get(emp_find + "/name/:name", (req, res, next) => {
                 }
             })
 
-            res.json(paging(searchRes, numberOfResults));
+            collectionData.data = searchRes;
+            collectionData.numOfDocuments = searchRes.length;
+            //collectionData.pages = numOfPages(searchRes.length, numberOfResults);
+            collectionData.pages = 1;
+            res.json({
+                data: collectionData.data,
+                pages: collectionData.pages,
+                currentPage: collectionData.currentPage,
+                numOfDocuments: collectionData.numOfDocuments,
+                message: searchRes.length + " matches found"
+            });
+
             console.log("Server: employee search results retrieved");
         })
             .catch((err) => {
@@ -314,7 +317,9 @@ app.get(emp_find + "/name/:name", (req, res, next) => {
     }
 });
 
-app.get(task_find + "/name/:name", (req, res, next) => {
+app.get(task_find + "/name/:name", async (req, res, next) => {
+
+    updateCurrentPage(0);
 
     const name = req.params.name;
     const validResult = validateSearch(false, name);
@@ -337,7 +342,19 @@ app.get(task_find + "/name/:name", (req, res, next) => {
                 }
             })
 
-            res.json(paging(searchRes, numberOfResults));
+            collectionData.data = searchRes;
+            collectionData.numOfDocuments = searchRes.length;
+            //collectionData.pages = numOfPages(searchRes.length, numberOfResults);
+            collectionData.pages = 1;
+
+            res.json({
+                data: collectionData.data,
+                pages: collectionData.pages,
+                currentPage: collectionData.currentPage,
+                numOfDocuments: collectionData.numOfDocuments,
+                message: searchRes.length + " matches found"
+            });
+
             console.log("Server: task search results retrieved");
         })
             .catch((err) => {
