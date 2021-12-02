@@ -1,5 +1,7 @@
 
 # Updates
+*12.02.2021 - Semi return to working on this project for this year. Updated how the paging for this web application works, and fixed some minor bugs. Well the holiday season is upon us, so I will return to my personal development vacation.*
+
 *10.18.2021 - Many of the features I planned to implement have been finished. The remaining are just quality of life features. That in mind, I will be taking a break to focus on personal learning, and my own wellness. Work may resume next month, or early next year. -Nigel*
 
 # JavaScript Ajax RestApi
@@ -9,8 +11,7 @@ If you wish to see my Front-End design skills, please look at these examples:
 <a href="https://boring-hamilton-295e9a.netlify.app/">Angular Demo</a>
 Also, this documentation is written with non technical people in mind, therefore it may be a bit more verbose than what programmers may expect.
 <div>
-      <img width="873" alt="restApi 1" src="https://user-images.githubusercontent.com/44081182/137119924-df4b37a3-bde8-423d-8c7a-c2425bf17747.PNG">
-
+      <img width="905" alt="express server api" src="https://user-images.githubusercontent.com/44081182/144500503-e938bbb9-d22c-4854-83c9-763344869e9c.png">
 </div>
 <a href="https://employee-task-api.herokuapp.com/">https://employee-task-api.herokuapp.com/</a>
 
