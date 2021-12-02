@@ -6,7 +6,8 @@ currentPage.id = "current-page";
 const lastPage = document.createElement('span');
 lastPage.id = "max-page";
 
-export const pageNavigation = async (parentID, maxPages) => {
+//Renders the navigation buttons for the list of data.
+export const pageNavigation = async (parentID, maxPages, page) => {
 
     const parent = document.getElementById(parentID);
     const prevBtn = createButton("prev-btn", "arrow-left-btn", "", "button", "Button to go back one page worth of the data.", "", "Go back one page.");
@@ -16,9 +17,9 @@ export const pageNavigation = async (parentID, maxPages) => {
     const pageNumContainer = document.createElement('div');
 
     pageNumContainer.id = "page-indicator";
-    pageInput.min = 0;
+    pageInput.min = 1;
     pageInput.max = maxPages;
-    const current = await getPage();
+    const current = page;
     pageInput.value = current;
     currentPage.textContent = current;
     lastPage.textContent = maxPages + "";
@@ -29,6 +30,7 @@ export const pageNavigation = async (parentID, maxPages) => {
     navigationFunctions(parentID, maxPages);
 }
 
+//Binds the necessary functions to the navication buttons.
 export const navigationFunctions = (parentID, maxPages) => {
 
     const parent = document.getElementById(parentID);
@@ -51,15 +53,16 @@ export const navigationFunctions = (parentID, maxPages) => {
     buttons[2].addEventListener('click', async function goTo() {
 
         const page = document.getElementById(goToInput[0].id).value;
-        const current = await getPage(page);
+        const current = await getPage(page - 1);
         updatePageIndicator(current, maxPages, pageNumbers[0].id);
     })
 }
 
+//Will update the numbers for the navigation page indicators.
 const updatePageIndicator = (current, maxPages, elementID) => {
 
     if (current >= 0 && current <= maxPages) {
 
-        document.getElementById(elementID).textContent = current;
+        document.getElementById(elementID).textContent = (current + 1);
     }
 }

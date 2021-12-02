@@ -17,12 +17,14 @@ app.use('/static', express.static('static'));
 app.use(express.urlencoded({ extended: false }));//this is necessary for my form submissions
 
 const emp_route = "/api/employees";//optional name as param
-const emp_find = emp_route + "/find"
+const emp_paging = emp_route + "/page/";
+const emp_find = emp_route + "/find";
 const emp_register = emp_route + "/register";
 const emp_update = emp_route + "/update";//id as param
 const emp_delete = emp_route + "/delete";//id as param
 
 const task_route = "/api/tasks";//optional name as param
+const task_paging = task_route + "/page/";
 const task_find = task_route + "/find";
 const task_add = task_route + "/add";
 const task_update = task_route + "/update";//id as param
@@ -30,9 +32,9 @@ const task_delete = task_route + "/delete";//id as param
 
 let dbImages;
 let defaultImage;
-let orderedResults = [];
 
 const numberOfResults = 10;
+const collectionData = { numOfDocuments: 0, pages: 0, currentPage: 0, data: [] };
 
 const HTTP_PORT = process.env.PORT || 8080;
 
@@ -54,6 +56,50 @@ function onHttpStart() {
 
     console.log("Server: Express http server listening on: " + HTTP_PORT);
 }
+
+async function loadTotals(collectionName) {
+
+    collectionData.numOfDocuments = await db.countDocuments(collectionName).then((total) => {
+
+        collectionData.numOfDocuments = total;
+        collectionData.pages = numOfPages(total, numberOfResults);
+    });
+}
+
+//Returns the amount of pages based on the number of items displayed per page.
+function numOfPages(total, numPerPage) {
+
+    const pages = Math.ceil(total / numPerPage);
+
+    return pages;
+}
+
+function updateCurrentPage(paramPage) {
+
+    if (paramPage > -1) {
+
+        if (paramPage >= collectionData.pages) {
+
+            if (collectionData.pages <= 0) {
+
+                collectionData.currentPage = 0;
+            }
+            else {
+
+                collectionData.currentPage = collectionData.pages - 1;
+            }
+        }
+        else {
+
+            collectionData.currentPage = paramPage;
+        }
+    }
+    else {
+
+        collectionData.currentPage = 0;
+    }
+}
+
 
 /***************************************************************
                        API ROUTES                          
@@ -97,12 +143,28 @@ app.post("/api/login", (req, res) => {
 //home page
 app.get("/", (req, res) => {
 
-    orderedResults = [];
-
     res.sendFile(path.join(__dirname, "/views/home.html"));
 
     return 0;
 });
+
+//Paging
+
+app.get(emp_route + "/getPaging", (req, res) => {
+
+    loadTotals("employee_data");
+    res.json(collectionData.pages);
+
+    return 0;
+})
+
+app.get(task_route + "/getPaging", (req, res) => {
+
+    loadTotals("task_data");
+    res.json(collectionData.pages);
+
+    return 0;
+})
 
 //CREATE
 /**************************************************************/
@@ -180,73 +242,17 @@ app.post(task_add, (req, res, next) => {
 //READ
 /**************************************************************/
 
-function empliteList(data) {
+//Find set
+app.get(emp_paging + ":page", async (req, res, next) => {
 
-    let liteList = [];
-    data.map((item) => {
+    await loadTotals("employee_data");
+    updateCurrentPage(Number(req.params.page));
 
-        const smallObject = {
+    db.getSetOfEmployees(collectionData.currentPage * numberOfResults, numberOfResults).then((data) => {
 
-            _id: item._id,
-            first_name: item.first_name,
-            last_name: item.last_name,
-            email: item.email,
-            sex: item.sex,
-            status: item.status
-        }
-
-        liteList.push(smallObject);
-    })
-
-    return liteList;
-}
-
-function paging(data, numPerPage) {
-
-    let pageArray = data;
-    orderedResults = [];
-    const pages = Math.ceil(data.length / numPerPage);
-
-    for (let i = 0; i < pages; i++) {
-
-        let quantity = pageArray.splice(0, numPerPage);
-        orderedResults.push(quantity);
-    }
-
-    return { data: orderedResults[0], pages: pages };
-}
-
-//Change the current page of data.
-app.get("/api/loaded-data/page/:page", (req, res, next) => {
-
-    try {
-
-        const page = Number(req.params.page);
-
-        if (orderedResults.length) {
-
-            res.status(200).json({ data: orderedResults[page], pages: orderedResults.length })
-        }
-        else {
-
-            res.status(503).json({ message: "Data needs to be populated before this feature can be used", status: "error" })
-        }
-    }
-    catch (error) {
-
-        res.status(400).json({ message: "Error populating data", status: "error" })
-    }
-})
-
-//Find all items.
-app.get(emp_route, (req, res, next) => {
-
-    db.getAllEmployees().then((data) => {
-
-        //let emplite = empliteList(data);
-
-        res.json(paging(data, numberOfResults));
-        console.log("Server: employee data set retrieved");
+        collectionData.data = data;
+        res.json(collectionData)
+        console.log("Server: employees, page " + (collectionData.currentPage + 1) + " of " + collectionData.pages + " retrieved");
     })
         .catch((err) => {
 
@@ -255,12 +261,16 @@ app.get(emp_route, (req, res, next) => {
         });
 });
 
-app.get(task_route, (req, res, next) => {
+app.get(task_paging + ":page", async (req, res, next) => {
 
-    db.getAllTasks().then((data) => {
+    await loadTotals("task_data");
+    updateCurrentPage(Number(req.params.page));
 
-        res.json(paging(data, numberOfResults));
-        console.log("Server: task data set retrieved");
+    db.getSetOfTasks(collectionData.currentPage * numberOfResults, numberOfResults).then((data) => {
+
+        collectionData.data = data;
+        res.json(collectionData)
+        console.log("Server: tasks, page " + (collectionData.currentPage + 1) + " of " + collectionData.pages + " retrieved");
     })
         .catch((err) => {
 
@@ -269,7 +279,7 @@ app.get(task_route, (req, res, next) => {
         });
 });
 
-//Find by name.
+//Find by name
 app.get(emp_find + "/name/:name", (req, res, next) => {
 
     const name = req.params.name;
@@ -320,22 +330,69 @@ app.get(task_find + "/name/:name", (req, res, next) => {
 
             let searchRes = [];
             data.map((task) => {
-    
+
                 if (String(task.task).toLocaleLowerCase().includes(name.toLocaleLowerCase())) {
-    
+
                     searchRes.push(task);
                 }
             })
-    
+
             res.json(paging(searchRes, numberOfResults));
             console.log("Server: task search results retrieved");
         })
             .catch((err) => {
-    
+
                 console.log("Server: message from DB - " + err);
                 res.status(500).json({ message: err, status: "error" }).end();
             });
     }
+});
+
+//Find all items.
+//The find all functions have been replaced by the find set functions.
+//These functions will remain for testing purposes, and not intended
+//to be used in the demo.
+app.get(emp_route, (req, res, next) => {
+
+    passport.authenticate('jwt', { session: false }, (err, success, info) => {
+
+        if (err) { return next(err); }
+        if (!success) { return res.status(401).json({ message: "Please log in", status: "error" }); }
+
+        db.getAllEmployees().then((data) => {
+
+            res.json(data);
+            console.log("Server: employee data set retrieved");
+        })
+            .catch((err) => {
+
+                console.log("Server: message from DB - " + err);
+                res.status(500).json({ message: err, status: "error" }).end();
+            });
+
+    })(req, res, next);
+});
+
+app.get(task_route, (req, res, next) => {
+
+    passport.authenticate('jwt', { session: false }, (err, success, info) => {
+
+        if (err) { return next(err); }
+        if (!success) { return res.status(401).json({ message: "Please log in", status: "error" }); }
+
+        db.getAllTasks().then((data) => {
+
+            res.json(data);
+            console.log("Server: task data set retrieved");
+        })
+            .catch((err) => {
+
+                console.log("Server: message from DB - " + err);
+                res.status(500).json({ message: err, status: "error" }).end();
+            });
+
+    })(req, res, next);
+
 });
 
 //UPDATE

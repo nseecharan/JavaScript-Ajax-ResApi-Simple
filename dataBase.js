@@ -202,6 +202,22 @@ module.exports.createTask = function (taskData) {
                        DB READ                          
 ***************************************************************/
 
+module.exports.countDocuments = function (collectionName) {
+
+    return new Promise(function (resolve, reject){
+
+        db.collection(collectionName).estimatedDocumentCount({}, function (error, num) {
+
+            if (error) {
+    
+                reject(error);
+            }
+    
+            resolve(num);
+        })
+    })
+}
+
 //EMPLOYEES
 /**************************************************************/
 
