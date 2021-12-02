@@ -2,7 +2,7 @@ import * as s from '../elementAttributes.js';
 
 //Will clear out all the child nodes for the specified element.
 export const clearElement = (elementIdentifier) => {
-
+    
     document.querySelector(elementIdentifier).textContent = "";
 }
 
