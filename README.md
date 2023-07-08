@@ -13,7 +13,7 @@ Also, this documentation is written with non technical people in mind, therefore
 <div>
       <img width="905" alt="express server api" src="https://user-images.githubusercontent.com/44081182/144500503-e938bbb9-d22c-4854-83c9-763344869e9c.png">
 </div>
-<a href="https://nseecharan-simple-rest-api.cyclic.app">https://employee-task-api.herokuapp.com/</a>
+<a href="https://nseecharan-simple-rest-api.cyclic.app">https://nseecharan-simple-rest-api.cyclic.app</a>
 
 # npm start
 You run this command within the project folder, through the use of the command prompt terminal.
